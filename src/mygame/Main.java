@@ -27,7 +27,14 @@ public class Main extends SimpleApplication {
     public DirectionalLight sun;
     
     private float varScale = 1.0f;
-    private float varScaler = 1;
+    private float varScaler = 1f;
+    
+    private float timeVar = 0f;
+    
+    private float movimiento = 0f;
+    private float movimientoDireccion = 1f;
+    
+    Material mat3;
     
     public static void main(String[] args) {
         Main app = new Main();
@@ -63,7 +70,7 @@ public class Main extends SimpleApplication {
         mat2.setColor("Specular", ColorRGBA.Red);
         mat2.setFloat("Shininess", 12);
         
-        Material mat3 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        mat3 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         mat3.setBoolean("UseMaterialColors", true);
         mat3.setColor("Ambient",  ColorRGBA.Orange);
         mat3.setColor("Diffuse",  ColorRGBA.Orange);
@@ -112,21 +119,45 @@ public class Main extends SimpleApplication {
         
         blue.rotate(0.5f*tpf, 0.2f*tpf, 0.2f*tpf); 
         red.rotate(0.5f*tpf, 0.2f*tpf, 0.2f*tpf); 
-        yellow.rotate(0.5f*tpf, 0.2f*tpf, 0.2f*tpf); 
+        //yellow.rotate(0.5f*tpf, 0.2f*tpf, 0.2f*tpf); 
+        
+        
+        yellow.rotate(tpf*0.5f, 0f, 0f); 
+        //yellow.move(2, 2, 2); 
+        movimiento += tpf * movimientoDireccion;
+        
+        if (movimiento < 2f || movimiento > 10f){   
+            movimientoDireccion = movimientoDireccion * -1f;
+            if (movimiento < 2f){
+                movimiento = 2f;
+            }else if (movimiento > 10f){
+                movimiento = 10f;
+            }
+        }
+        
+        yellow.setLocalTranslation(2, 2, movimiento); 
+        
                
-        // incremint varScal
+        // increment varScal
         varScale += tpf * varScaler;
         
         // check scale range
-        if(varScale < 1.0f || varScale > 2.0) {
+        if(varScale < 1.0f || varScale > 1.5f) {
             varScaler = varScaler * -1;
             
-            // valodate in range
             if(varScale < 1.0f) {
                 varScale = 1.0f;
-            } else if(varScale > 2.0f) {
-                varScale = 2.0f;
+            } else if(varScale > 1.5f) {
+                varScale = 1.5f;
             }
+        }
+        
+        timeVar += tpf;
+        if (timeVar > 1) {
+            ColorRGBA color = ColorRGBA.randomColor();
+            mat3.setColor("Ambient",  color);
+            mat3.setColor("Diffuse",  color);
+            timeVar= 0;
         }
         
         yellow.setLocalScale(varScale);
