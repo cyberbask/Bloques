@@ -1,21 +1,15 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.font.BitmapText;
 import com.jme3.light.DirectionalLight;
-import com.jme3.light.PointLight;
-import com.jme3.light.SpotLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
-import com.jme3.util.TangentBinormalGenerator;
 
 /**
  * test
@@ -31,6 +25,9 @@ public class Main extends SimpleApplication {
     public Geometry red;
     public Geometry yellow;
     public DirectionalLight sun;
+    
+    private float varScale = 1.0f;
+    private float varScaler = 1;
     
     public static void main(String[] args) {
         Main app = new Main();
@@ -116,16 +113,23 @@ public class Main extends SimpleApplication {
         blue.rotate(0.5f*tpf, 0.2f*tpf, 0.2f*tpf); 
         red.rotate(0.5f*tpf, 0.2f*tpf, 0.2f*tpf); 
         yellow.rotate(0.5f*tpf, 0.2f*tpf, 0.2f*tpf); 
+               
+        // incremint varScal
+        varScale += tpf * varScaler;
         
-        
-        escala += tpf;
-        if (escala < 1) {
-            yellow.scale(1 + escala* 0.1f);
-        } else if (escala < 2) {
-            yellow.scale(1 - escala * 0.1f);
-        } else {
-            escala = 0;
+        // check scale range
+        if(varScale < 1.0f || varScale > 2.0) {
+            varScaler = varScaler * -1;
+            
+            // valodate in range
+            if(varScale < 1.0f) {
+                varScale = 1.0f;
+            } else if(varScale > 2.0f) {
+                varScale = 2.0f;
+            }
         }
+        
+        yellow.setLocalScale(varScale);
         
        // sun.setDirection(new Vector3f(1,0,-2).normalizeLocal());
         
