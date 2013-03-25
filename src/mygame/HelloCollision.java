@@ -13,6 +13,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -20,10 +21,12 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.util.BufferUtils;
+import jme3tools.optimize.GeometryBatchFactory;
  
 /**
  * Example 9 - How to make walls and floors solid.
@@ -52,7 +55,7 @@ public class HelloCollision extends SimpleApplication
     settings.put("Width", 800);
     settings.put("Height", 600);
     settings.put("Title", "Hello Mundo :-D");
-    settings.put("VSync", true);
+    settings.put("VSync", false);
     //Anti-Aliasing
     settings.put("Samples", 4);
 
@@ -65,7 +68,7 @@ public class HelloCollision extends SimpleApplication
     /** Set up Physics */
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);
-    //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+    bulletAppState.getPhysicsSpace().enableDebug(assetManager);
  
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
@@ -81,30 +84,42 @@ public class HelloCollision extends SimpleApplication
     Node terreno = new Node("terreno");
     rootNode.attachChild(terreno);
     
+    //terreno.setCullHint(CullHint.Never);
+    
     CompoundCollisionShape comp_coll = new CompoundCollisionShape();
     
     
     Geometry cubo = makeCube("Cubo", 0, 2f, -20);
     Geometry cubo2 = makeCube("Cubo2", 0, 4f, -20);
-    //Geometry floor = makeFloor();
-    Geometry floor = makeFloorQuad();
-    
-    //floor.setLocalScale(50f);
+   
     
     terreno.attachChild(cubo);
     terreno.attachChild(cubo2);
-    terreno.attachChild(floor);
     
+    //Geometry floor = makeFloor();
+    Geometry floor = makeFloorQuad();
     
+    for (float j=-10;j<10;j++){
+        for (float i=0;i<30;i++){
+            //floor.setLocalScale(200f);
+            Geometry floorclone = floor.clone();
+            floorclone.move(j,0,i*-1f);
+            terreno.attachChild(floorclone);
+            
+            MeshCollisionShape floorShape = new MeshCollisionShape(floorclone.getMesh());
+            comp_coll.addChildShape(floorShape, new Vector3f(j, 0, i*-1f));
+        }
+    }
+    
+    GeometryBatchFactory.optimize(terreno);
         
     MeshCollisionShape cuboShape = new MeshCollisionShape(cubo.getMesh());
     MeshCollisionShape cubo2Shape = new MeshCollisionShape(cubo2.getMesh());
-    MeshCollisionShape floorShape = new MeshCollisionShape(floor.getMesh());
-
+    
     
     comp_coll.addChildShape(cuboShape, new Vector3f(0, 0, 0));
     comp_coll.addChildShape(cubo2Shape, new Vector3f(0, 0, 0));
-    comp_coll.addChildShape(floorShape, new Vector3f(0, 0, 0));
+    
     
     
     terrenoControl = new RigidBodyControl(comp_coll, 0);
@@ -246,9 +261,9 @@ public class HelloCollision extends SimpleApplication
     // Vertex positions in space
     Vector3f [] vertices = new Vector3f[4];
     vertices[0] = new Vector3f(0,0,0);
-    vertices[1] = new Vector3f(3,0,0);
-    vertices[2] = new Vector3f(0,3,0);
-    vertices[3] = new Vector3f(3,3,0);
+    vertices[1] = new Vector3f(1,0,0);
+    vertices[2] = new Vector3f(0,0,1);
+    vertices[3] = new Vector3f(1,0,1);
 
     // Texture coordinates
     Vector2f [] texCoord = new Vector2f[4];
@@ -274,6 +289,7 @@ public class HelloCollision extends SimpleApplication
     mat1.setColor("Diffuse",  ColorRGBA.Gray);
     mat1.setColor("Specular", ColorRGBA.White);
     mat1.setFloat("Shininess", 12);
+    //mat1.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
     
     suelaco.setMaterial(mat1);
     
