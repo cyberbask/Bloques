@@ -1,17 +1,12 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
-import com.jme3.bullet.collision.shapes.HullCollisionShape;
 import com.jme3.bullet.collision.shapes.MeshCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -19,12 +14,16 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
+import com.jme3.util.BufferUtils;
  
 /**
  * Example 9 - How to make walls and floors solid.
@@ -39,6 +38,9 @@ public class HelloCollision extends SimpleApplication
   private RigidBodyControl terrenoControl;
   private CharacterControl player;
   private Vector3f walkDirection = new Vector3f();
+  private DirectionalLight dl;
+  private float movSun = -100f;
+  private float movSunDire = 1f;
   private boolean left = false, right = false, up = false, down = false;
  
   public static void main(String[] args) {
@@ -50,7 +52,7 @@ public class HelloCollision extends SimpleApplication
     settings.put("Width", 800);
     settings.put("Height", 600);
     settings.put("Title", "Hello Mundo :-D");
-    settings.put("VSync", false);
+    settings.put("VSync", true);
     //Anti-Aliasing
     settings.put("Samples", 4);
 
@@ -82,24 +84,32 @@ public class HelloCollision extends SimpleApplication
     CompoundCollisionShape comp_coll = new CompoundCollisionShape();
     
     
-    Geometry cubo = makeCube("Cubo", -10f, 2f, 2f);
-    Geometry floor = makeFloor();
+    Geometry cubo = makeCube("Cubo", 0, 2f, -20);
+    Geometry cubo2 = makeCube("Cubo2", 0, 4f, -20);
+    //Geometry floor = makeFloor();
+    Geometry floor = makeFloorQuad();
+    
+    //floor.setLocalScale(50f);
     
     terreno.attachChild(cubo);
+    terreno.attachChild(cubo2);
     terreno.attachChild(floor);
+    
     
         
     MeshCollisionShape cuboShape = new MeshCollisionShape(cubo.getMesh());
+    MeshCollisionShape cubo2Shape = new MeshCollisionShape(cubo2.getMesh());
     MeshCollisionShape floorShape = new MeshCollisionShape(floor.getMesh());
+
     
-    comp_coll.addChildShape(cuboShape, new Vector3f(0, 1, 0));
-    comp_coll.addChildShape(floorShape, new Vector3f(0, 1, 0));
+    comp_coll.addChildShape(cuboShape, new Vector3f(0, 0, 0));
+    comp_coll.addChildShape(cubo2Shape, new Vector3f(0, 0, 0));
+    comp_coll.addChildShape(floorShape, new Vector3f(0, 0, 0));
     
     
     terrenoControl = new RigidBodyControl(comp_coll, 0);
+    terrenoControl.setFriction(0.0f);
     terreno.addControl(terrenoControl);
-    
- 
     
     // We set up collision detection for the player by creating
     // a capsule collision shape and a CharacterControl.
@@ -117,17 +127,17 @@ public class HelloCollision extends SimpleApplication
     // to make them appear in the game world.
    
     //bulletAppState.getPhysicsSpace().add(landscape2);
-    bulletAppState.getPhysicsSpace().add(terrenoControl);
+    bulletAppState.getPhysicsSpace().add(terreno);
     bulletAppState.getPhysicsSpace().add(player);
   }
  
   private void setUpLight() {
     // We add light so we see the scene
     AmbientLight al = new AmbientLight();
-    al.setColor(ColorRGBA.White.mult(1.3f));
+    al.setColor(ColorRGBA.White.mult(0.5f));
     rootNode.addLight(al);
  
-    DirectionalLight dl = new DirectionalLight();
+    dl = new DirectionalLight();
     dl.setColor(ColorRGBA.White);
     dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
     rootNode.addLight(dl);
@@ -182,11 +192,25 @@ public class HelloCollision extends SimpleApplication
     if (down)  { walkDirection.addLocal(camDir.negate()); }
     player.setWalkDirection(walkDirection);
     cam.setLocation(player.getPhysicsLocation());
+    
+    /*movSun += tpf*movSunDire*20;
+    
+    if (movSun < -50f || movSun > 50f){   
+        movSunDire = movSunDire * -1f;
+        if (movSun < -50f){
+            movSun = -50f;
+        }else if (movSun > 50f){
+            movSun = 50f;
+        }
+    }
+    
+    dl.setDirection(new Vector3f(movSun, -2.8f, -2.8f).normalizeLocal());*/
+    
   }
   
    /** A floor to show that the "shot" can go through several objects. */
   protected Geometry makeFloor() {
-    Box box = new Box(Vector3f.ZERO, 30, 1f, 30);
+    Box box = new Box(Vector3f.ZERO, 200, 1f, 200);
     Geometry floor = new Geometry("the Floor", box);
     Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
     mat1.setBoolean("UseMaterialColors", true);
@@ -206,13 +230,54 @@ public class HelloCollision extends SimpleApplication
     
     Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
     mat1.setBoolean("UseMaterialColors", true);
-    mat1.setColor("Ambient",  ColorRGBA.Blue);
-    mat1.setColor("Diffuse",  ColorRGBA.Blue);
+    ColorRGBA color = ColorRGBA.randomColor();
+    mat1.setColor("Ambient",  color);
+    mat1.setColor("Diffuse",  color);
     mat1.setColor("Specular", ColorRGBA.White);
     mat1.setFloat("Shininess", 12);
 
     cube.setMaterial(mat1);
     return cube;
+  }
+  
+  protected Geometry makeFloorQuad() {
+    Mesh m = new Mesh();
+
+    // Vertex positions in space
+    Vector3f [] vertices = new Vector3f[4];
+    vertices[0] = new Vector3f(0,0,0);
+    vertices[1] = new Vector3f(3,0,0);
+    vertices[2] = new Vector3f(0,3,0);
+    vertices[3] = new Vector3f(3,3,0);
+
+    // Texture coordinates
+    Vector2f [] texCoord = new Vector2f[4];
+    texCoord[0] = new Vector2f(0,0);
+    texCoord[1] = new Vector2f(1,0);
+    texCoord[2] = new Vector2f(0,1);
+    texCoord[3] = new Vector2f(1,1);
+
+    // Indexes. We define the order in which mesh should be constructed
+    int [] indexes = {2,0,1,1,3,2};
+
+    // Setting buffers
+    m.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(vertices));
+    m.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoord));
+    m.setBuffer(Type.Index, 1, BufferUtils.createIntBuffer(indexes));
+    m.updateBound();
+
+    Geometry suelaco = new Geometry("Suelaco", m);
+    
+    Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+    mat1.setBoolean("UseMaterialColors", true);
+    mat1.setColor("Ambient",  ColorRGBA.Gray);
+    mat1.setColor("Diffuse",  ColorRGBA.Gray);
+    mat1.setColor("Specular", ColorRGBA.White);
+    mat1.setFloat("Shininess", 12);
+    
+    suelaco.setMaterial(mat1);
+    
+    return suelaco;
   }
   
   
