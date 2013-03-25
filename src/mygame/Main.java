@@ -1,6 +1,7 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.font.BitmapText;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -33,6 +34,10 @@ public class Main extends SimpleApplication {
     
     private float movimiento = 0f;
     private float movimientoDireccion = 1f;
+    
+    private float tiempototal = 0f;
+    
+    BitmapText helloText;
     
     Material mat3;
     
@@ -109,6 +114,14 @@ public class Main extends SimpleApplication {
         sun.setDirection(new Vector3f(1,0,-2).normalizeLocal());
         sun.setColor(ColorRGBA.White);
         rootNode.addLight(sun);
+        
+        guiNode.detachAllChildren();
+        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        helloText = new BitmapText(guiFont, false);
+        helloText.setSize(guiFont.getCharSet().getRenderedSize());
+        helloText.setText("Tiempo Ejecucion: "+  String.valueOf(tiempototal));
+        helloText.setLocalTranslation(300, helloText.getLineHeight(), 0);
+        guiNode.attachChild(helloText);
        
     }
 
@@ -162,15 +175,8 @@ public class Main extends SimpleApplication {
         
         yellow.setLocalScale(varScale);
         
-       // sun.setDirection(new Vector3f(1,0,-2).normalizeLocal());
-        
-        
-        /*BitmapText hudText = new BitmapText(guiFont, false);          
-        hudText.setSize(guiFont.getCharSet().getRenderedSize());      // font size
-        hudText.setColor(ColorRGBA.White);                             // font color
-        hudText.setText(String.valueOf(escala));             // the text
-        hudText.setLocalTranslation(300, hudText.getLineHeight(), 0); // position
-        guiNode.attachChild(hudText);*/
+        tiempototal += tpf;
+        helloText.setText("Tiempo Ejecucion: "+  String.valueOf(tiempototal));
     }
 
     @Override
