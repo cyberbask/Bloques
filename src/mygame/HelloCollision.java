@@ -15,6 +15,8 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -98,6 +100,7 @@ public class HelloCollision extends SimpleApplication
     
     //Geometry floor = makeFloor();
     Geometry floor = makeFloorQuad();
+    floor.setLocalRotation(new Quaternion().fromAngleAxis(180*FastMath.DEG_TO_RAD, new Vector3f(1,0,0)));
     
     for (float j=-10;j<10;j++){
         for (float i=0;i<30;i++){
@@ -283,13 +286,16 @@ public class HelloCollision extends SimpleApplication
 
     Geometry suelaco = new Geometry("Suelaco", m);
     
-    Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+    /*Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
     mat1.setBoolean("UseMaterialColors", true);
     mat1.setColor("Ambient",  ColorRGBA.Gray);
     mat1.setColor("Diffuse",  ColorRGBA.Gray);
     mat1.setColor("Specular", ColorRGBA.White);
-    mat1.setFloat("Shininess", 12);
+    mat1.setFloat("Shininess", 12);*/
     //mat1.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+    
+    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    mat1.setColor("Color", ColorRGBA.Gray);
     
     suelaco.setMaterial(mat1);
     
