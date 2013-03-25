@@ -35,7 +35,7 @@ import jme3tools.optimize.GeometryBatchFactory;
  * This collision code uses Physics and a custom Action Listener.
  * @author normen, with edits by Zathras
  */
-public class HelloCollision extends SimpleApplication
+public class HelloCollisionOtraManera extends SimpleApplication
         implements ActionListener {
  
   private Spatial sceneModel;
@@ -49,7 +49,7 @@ public class HelloCollision extends SimpleApplication
   private boolean left = false, right = false, up = false, down = false;
  
   public static void main(String[] args) {
-    HelloCollision app = new HelloCollision();
+    HelloCollisionOtraManera app = new HelloCollisionOtraManera();
     
     app.setShowSettings(false);
         
@@ -70,14 +70,11 @@ public class HelloCollision extends SimpleApplication
     /** Set up Physics */
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);
-    //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+    bulletAppState.getPhysicsSpace().enableDebug(assetManager);
  
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
     flyCam.setMoveSpeed(100);
-    
-    flyCam.setEnabled(false);
-    
     setUpKeys();
     setUpLight();
  
@@ -284,7 +281,7 @@ public class HelloCollision extends SimpleApplication
     // Setting buffers
     m.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(vertices));
     m.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoord));
-    m.setBuffer(Type.Index, 3, BufferUtils.createIntBuffer(indexes));
+    m.setBuffer(Type.Index, 1, BufferUtils.createIntBuffer(indexes));
     m.updateBound();
 
     Geometry suelaco = new Geometry("Suelaco", m);
