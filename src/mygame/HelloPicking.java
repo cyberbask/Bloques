@@ -56,13 +56,13 @@ public class HelloPicking extends SimpleApplication {
     shootables = new Node("Shootables");
     rootNode.attachChild(shootables);
     
-    boxes[0] = makeCube("a Dragon", -2f, 0f, 1f);
+    boxes[0] = makeCube(String.valueOf(0), -2f, 0f, 1f);
     
     shootables.attachChild(boxes[0]);
     
-    shootables.attachChild(makeCube("a tin can", 1f, -2f, 0f));
-    shootables.attachChild(makeCube("the Sheriff", 0f, 1f, -2f));
-    shootables.attachChild(makeCube("the Deputy", 1f, 0f, -4f));
+    shootables.attachChild(makeCube("1", 1f, -2f, 0f));
+    shootables.attachChild(makeCube("2", 0f, 1f, -2f));
+    shootables.attachChild(makeCube("3", 1f, 0f, -4f));
     shootables.attachChild(makeFloor());
     
     //cam.setFrustumFar(20000f);
@@ -107,8 +107,16 @@ public class HelloPicking extends SimpleApplication {
          // rootNode.attachChild(mark);
           
           Geometry g = closest.getGeometry();
-          
-          shootables.detachChild(g);
+          if (g.getName() == "the Floor"){
+            
+            
+          }else{
+            int muerto = Integer.parseInt(g.getName());
+            shootables.detachChild(g);
+
+            boxes[muerto] = makeCube(String.valueOf(muerto), -2f, 0f, 1f);
+            shootables.attachChild(boxes[muerto]);
+          }
 
         } else {
           // No hits? Then remove the red mark.
