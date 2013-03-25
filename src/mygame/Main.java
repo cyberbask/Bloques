@@ -47,8 +47,8 @@ public class Main extends SimpleApplication {
         app.setShowSettings(false);
         
         AppSettings settings = new AppSettings(true);
-        settings.put("Width", 1024);
-        settings.put("Height", 768);
+        settings.put("Width", 800);
+        settings.put("Height", 600);
         settings.put("Title", "Hello Mundo :-D");
         settings.put("VSync", false);
         //Anti-Aliasing
@@ -123,6 +123,9 @@ public class Main extends SimpleApplication {
         helloText.setLocalTranslation(300, helloText.getLineHeight(), 0);
         guiNode.attachChild(helloText);
        
+        cam.setFrustumFar(20000f);
+        cam.setLocation(cam.getLocation().add(0f, 0f, 30f));
+        cam.update();
     }
 
     @Override
