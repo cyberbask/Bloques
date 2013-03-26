@@ -102,11 +102,13 @@ public class HelloCollision extends SimpleApplication
     terreno.attachChild(cubo2);
     
     //Geometry floor = makeFloor();
-    Geometry floor = makeFloorQuad(3);
+    int tamano = 3;
+    
+    Geometry floor = makeFloorQuad(tamano);
     floor.setLocalRotation(new Quaternion().fromAngleAxis(180*FastMath.DEG_TO_RAD, new Vector3f(1,0,0)));
     
-    for (float j=-30;j<30;j=j+3){
-        for (float i=-30;i<30;i=i+3){
+    for (float j=-30;j<30;j=j+tamano){
+        for (float i=-30;i<30;i=i+tamano){
             //floor.setLocalScale(200f);
             Geometry floorclone = floor.clone();
             floorclone.move(j,0,i*-1f);
