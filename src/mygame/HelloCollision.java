@@ -2,6 +2,7 @@ package mygame;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
+import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -29,8 +30,11 @@ import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
+import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
 import jme3tools.optimize.GeometryBatchFactory;
+import jme3tools.optimize.TextureAtlas;
+import jme3tools.optimize.TextureAtlas.TextureAtlasTile;
  
 /**
  * Example 9 - How to make walls and floors solid.
@@ -97,9 +101,12 @@ public class HelloCollision extends SimpleApplication
     cubo = makeCube("Cubo", 0, 1f, -10);
     Geometry cubo2 = makeCube("Cubo2", 0, 3f, -10);
    
+    Geometry cubo3 = makeQuad(3);
+    cubo3.move(0, 6f, -10);
     
     terreno.attachChild(cubo);
     terreno.attachChild(cubo2);
+    terreno.attachChild(cubo3);
     
     //Geometry floor = makeFloor();
     int tamano = 3;
@@ -125,6 +132,7 @@ public class HelloCollision extends SimpleApplication
     Texture tex3 = assetManager.loadTexture(key3);
     tex3.setWrap(WrapMode.Repeat);
     mat1.setTexture("ColorMap", tex3);
+    //mat1.setTexture("ColorMap", atlas.getAtlasTexture("Bloques"));
     suelo.setMaterial(mat1);
     
     terreno.attachChild(suelo);
@@ -351,6 +359,47 @@ public class HelloCollision extends SimpleApplication
     mat1.setColor("Color", ColorRGBA.Gray);
     
     suelaco.setMaterial(mat1);*/
+    
+    return suelaco;
+  }
+  
+  protected Geometry makeQuad(int tamano) {
+    Mesh m = new Mesh();
+
+    // Vertex positions in space
+    Vector3f [] vertices = new Vector3f[4];
+    vertices[0] = new Vector3f(0,0,0);
+    vertices[1] = new Vector3f(tamano,0,0);
+    vertices[2] = new Vector3f(0,tamano,0);
+    vertices[3] = new Vector3f(tamano,tamano,0);
+
+    // Texture coordinates
+    Vector2f [] texCoord = new Vector2f[4];
+    texCoord[0] = new Vector2f(0,0);
+    texCoord[1] = new Vector2f(1,0);
+    texCoord[2] = new Vector2f(0,1);
+    texCoord[3] = new Vector2f(1,1);
+
+    // Indexes. We define the order in which mesh should be constructed
+    int [] indexes = {2,0,1,1,3,2};
+
+    // Setting buffers
+    m.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(vertices));
+    m.setBuffer(Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoord));
+    m.setBuffer(Type.Index, 3, BufferUtils.createIntBuffer(indexes));
+    m.updateBound();
+
+    Geometry suelaco = new Geometry("Suelaco", m);
+    
+    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    //TextureKey key3 = new TextureKey("Textures/sphax_ctm.png");
+    //key3.setGenerateMips(true);
+    //Texture tex3 = assetManager.loadTexture(key3);
+    Texture tex3 = assetManager.loadTexture("Textures/sphax_ctm.png");
+    //tex3.setWrap(WrapMode.BorderClamp);
+    mat1.setTexture("ColorMap", tex3);    
+    
+    suelaco.setMaterial(mat1);
     
     return suelaco;
   }
