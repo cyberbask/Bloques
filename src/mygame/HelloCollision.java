@@ -2,7 +2,6 @@ package mygame;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.TextureKey;
-import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -30,11 +29,8 @@ import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
 import jme3tools.optimize.GeometryBatchFactory;
-import jme3tools.optimize.TextureAtlas;
-import jme3tools.optimize.TextureAtlas.TextureAtlasTile;
  
 /**
  * Example 9 - How to make walls and floors solid.
@@ -51,6 +47,7 @@ public class HelloCollision extends SimpleApplication
   private Vector3f walkDirection = new Vector3f();
   private DirectionalLight dl;
   private float movSun = -100f;
+  private boolean vsync = true;
   private float movSunDire = 1f;
   private boolean left = false, right = false, up = false, down = false;
   Geometry cubo;
@@ -65,7 +62,7 @@ public class HelloCollision extends SimpleApplication
     settings.put("Width", 800);
     settings.put("Height", 576);
     settings.put("Title", "Hello Mundo :-D");
-    settings.put("VSync", false);
+    settings.put("VSync", true);
     //Anti-Aliasing
     settings.put("Samples", 4);
 
@@ -194,11 +191,13 @@ public class HelloCollision extends SimpleApplication
     inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
     inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
     inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+    inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_V));
     inputManager.addListener(this, "Left");
     inputManager.addListener(this, "Right");
     inputManager.addListener(this, "Up");
     inputManager.addListener(this, "Down");
     inputManager.addListener(this, "Jump");
+    inputManager.addListener(this, "VSync");
   }
  
   /** These are our custom actions triggered by key presses.
@@ -212,7 +211,12 @@ public class HelloCollision extends SimpleApplication
       up = value;
     } else if (binding.equals("Down")) {
       down = value;
-    } else if (binding.equals("Jump")) {
+    } else if (binding.equals("VSync") && !value) {
+        vsync = !vsync;
+        AppSettings Appsett = this.getContext().getSettings();
+        Appsett.put("VSync", vsync);
+        this.getContext().restart();
+    }else if (binding.equals("Jump")) {
       player.jump();
     }
   }
