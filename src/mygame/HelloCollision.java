@@ -251,7 +251,8 @@ public class HelloCollision extends SimpleApplication
     
     //esto no funcionaria, ya que toda la geometria esta metida en un batch
     //si se saca del batch funciona
-    /*cuboTiempo += tpf;
+    /** /
+    cuboTiempo += tpf;
     if (cuboTiempo > 2f){
         Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         mat1.setBoolean("UseMaterialColors", true);
@@ -263,7 +264,8 @@ public class HelloCollision extends SimpleApplication
         cubo.setMaterial(mat1);
 
         cuboTiempo = 0f;
-    }*/
+    }
+    /**/
     
   }
   
