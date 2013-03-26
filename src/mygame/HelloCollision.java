@@ -85,7 +85,7 @@ public class HelloCollision extends SimpleApplication
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
     flyCam.setMoveSpeed(100);
-    flyCam.setEnabled(false);//hace vibrar la camara al incrustarse en el suelo
+    flyCam.setEnabled(true);//hace vibrar la camara al incrustarse en el suelo
     
     setUpKeys();
     setUpLight();
