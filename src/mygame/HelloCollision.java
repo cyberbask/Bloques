@@ -1,19 +1,20 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.TextureKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
-import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -23,10 +24,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
+import com.jme3.texture.Texture;
+import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.BufferUtils;
 import jme3tools.optimize.GeometryBatchFactory;
  
@@ -47,6 +49,8 @@ public class HelloCollision extends SimpleApplication
   private float movSun = -100f;
   private float movSunDire = 1f;
   private boolean left = false, right = false, up = false, down = false;
+  Geometry cubo;
+  private float cuboTiempo = 0f;
  
   public static void main(String[] args) {
     HelloCollision app = new HelloCollision();
@@ -55,7 +59,7 @@ public class HelloCollision extends SimpleApplication
         
     AppSettings settings = new AppSettings(true);
     settings.put("Width", 800);
-    settings.put("Height", 600);
+    settings.put("Height", 576);
     settings.put("Title", "Hello Mundo :-D");
     settings.put("VSync", false);
     //Anti-Aliasing
@@ -67,6 +71,8 @@ public class HelloCollision extends SimpleApplication
   }
  
   public void simpleInitApp() {
+    initCrossHairs();  
+     
     /** Set up Physics */
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);
@@ -75,60 +81,67 @@ public class HelloCollision extends SimpleApplication
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
     flyCam.setMoveSpeed(100);
-    
-    flyCam.setEnabled(false);
+    flyCam.setEnabled(false);//hace vibrar la camara al incrustarse en el suelo
     
     setUpKeys();
     setUpLight();
- 
-    // We load the scene from the zip file and adjust its size.
-    //assetManager.registerLocator("town.zip", ZipLocator.class);
-    //sceneModel = assetManager.loadModel("main.scene");
-    //sceneModel.setLocalScale(2f);
- 
+  
     Node terreno = new Node("terreno");
-    rootNode.attachChild(terreno);
-    
+    Node suelo = new Node("suelo");
+       
     //terreno.setCullHint(CullHint.Never);
     
-    CompoundCollisionShape comp_coll = new CompoundCollisionShape();
+    //CompoundCollisionShape comp_coll = new CompoundCollisionShape();
     
     
-    Geometry cubo = makeCube("Cubo", 0, 2f, -20);
-    Geometry cubo2 = makeCube("Cubo2", 0, 4f, -20);
+    cubo = makeCube("Cubo", 0, 1f, -10);
+    Geometry cubo2 = makeCube("Cubo2", 0, 3f, -10);
    
     
     terreno.attachChild(cubo);
     terreno.attachChild(cubo2);
     
     //Geometry floor = makeFloor();
-    Geometry floor = makeFloorQuad();
+    Geometry floor = makeFloorQuad(3);
     floor.setLocalRotation(new Quaternion().fromAngleAxis(180*FastMath.DEG_TO_RAD, new Vector3f(1,0,0)));
     
-    for (float j=-10;j<10;j++){
-        for (float i=0;i<30;i++){
+    for (float j=-30;j<30;j=j+3){
+        for (float i=-30;i<30;i=i+3){
             //floor.setLocalScale(200f);
             Geometry floorclone = floor.clone();
             floorclone.move(j,0,i*-1f);
-            terreno.attachChild(floorclone);
+            suelo.attachChild(floorclone);
             
-            MeshCollisionShape floorShape = new MeshCollisionShape(floorclone.getMesh());
-            comp_coll.addChildShape(floorShape, new Vector3f(j, 0, i*-1f));
+            //MeshCollisionShape floorShape = new MeshCollisionShape(floorclone.getMesh());
+            //comp_coll.addChildShape(floorShape, new Vector3f(j, 0, i*-1f));
         }
     }
     
-    GeometryBatchFactory.optimize(terreno);
+    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    TextureKey key3 = new TextureKey("Textures/Terrain/splat/grass.jpg");
+    key3.setGenerateMips(true);
+    Texture tex3 = assetManager.loadTexture(key3);
+    tex3.setWrap(WrapMode.Repeat);
+    mat1.setTexture("ColorMap", tex3);
+    suelo.setMaterial(mat1);
+    
+    terreno.attachChild(suelo);
         
-    MeshCollisionShape cuboShape = new MeshCollisionShape(cubo.getMesh());
-    MeshCollisionShape cubo2Shape = new MeshCollisionShape(cubo2.getMesh());
+    Spatial optimizado = GeometryBatchFactory.optimize(terreno);
     
+    CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) terreno);
     
-    comp_coll.addChildShape(cuboShape, new Vector3f(0, 0, 0));
-    comp_coll.addChildShape(cubo2Shape, new Vector3f(0, 0, 0));
+    //comp_coll.addChildShape(sceneShape, new Vector3f(0,1,0));
     
+    rootNode.attachChild(optimizado);
+        
+    //MeshCollisionShape cuboShape = new MeshCollisionShape(cubo.getMesh());
+    //MeshCollisionShape cubo2Shape = new MeshCollisionShape(cubo2.getMesh());
     
+    //comp_coll.addChildShape(cuboShape, new Vector3f(0, 0, 0));
+    //comp_coll.addChildShape(cubo2Shape, new Vector3f(0, 0, 0));
     
-    terrenoControl = new RigidBodyControl(comp_coll, 0);
+    terrenoControl = new RigidBodyControl(sceneShape, 0);
     terrenoControl.setFriction(0.0f);
     terreno.addControl(terrenoControl);
     
@@ -147,7 +160,6 @@ public class HelloCollision extends SimpleApplication
     // We attach the scene and the player to the rootNode and the physics space,
     // to make them appear in the game world.
    
-    //bulletAppState.getPhysicsSpace().add(landscape2);
     bulletAppState.getPhysicsSpace().add(terreno);
     bulletAppState.getPhysicsSpace().add(player);
   }
@@ -227,6 +239,33 @@ public class HelloCollision extends SimpleApplication
     
     dl.setDirection(new Vector3f(movSun, -2.8f, -2.8f).normalizeLocal());*/
     
+    //esto no funcionaria, ya que toda la geometria esta metida en un batch
+    /*cuboTiempo += tpf;
+    if (cuboTiempo > 2f){
+        Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        mat1.setBoolean("UseMaterialColors", true);
+        ColorRGBA color = ColorRGBA.randomColor();
+        mat1.setColor("Ambient",  color);
+        mat1.setColor("Diffuse",  color);
+        mat1.setColor("Specular", ColorRGBA.White);
+        mat1.setFloat("Shininess", 12);
+        cubo.setMaterial(mat1);
+
+        cuboTiempo = 0f;
+    }*/
+    
+  }
+  
+  protected void initCrossHairs() {
+    guiNode.detachAllChildren();
+    guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
+    BitmapText ch = new BitmapText(guiFont, false);
+    ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
+    ch.setText("+"); // crosshairs
+    ch.setLocalTranslation( // center
+      settings.getWidth() / 2 - guiFont.getCharSet().getRenderedSize() / 3 * 2,
+      settings.getHeight() / 2 + ch.getLineHeight() / 2, 0);
+    guiNode.attachChild(ch);
   }
   
    /** A floor to show that the "shot" can go through several objects. */
@@ -261,15 +300,15 @@ public class HelloCollision extends SimpleApplication
     return cube;
   }
   
-  protected Geometry makeFloorQuad() {
+  protected Geometry makeFloorQuad(int tamano) {
     Mesh m = new Mesh();
 
     // Vertex positions in space
     Vector3f [] vertices = new Vector3f[4];
     vertices[0] = new Vector3f(0,0,0);
-    vertices[1] = new Vector3f(1,0,0);
-    vertices[2] = new Vector3f(0,0,1);
-    vertices[3] = new Vector3f(1,0,1);
+    vertices[1] = new Vector3f(tamano,0,0);
+    vertices[2] = new Vector3f(0,0,tamano);
+    vertices[3] = new Vector3f(tamano,0,tamano);
 
     // Texture coordinates
     Vector2f [] texCoord = new Vector2f[4];
@@ -297,10 +336,11 @@ public class HelloCollision extends SimpleApplication
     mat1.setFloat("Shininess", 12);*/
     //mat1.getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
     
-    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    /*Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    mat1.setTexture("ColorMap", assetManager.loadTexture("Textures/Terrain/splat/grass.jpg"));
     mat1.setColor("Color", ColorRGBA.Gray);
     
-    suelaco.setMaterial(mat1);
+    suelaco.setMaterial(mat1);*/
     
     return suelaco;
   }
