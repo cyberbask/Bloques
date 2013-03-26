@@ -291,13 +291,20 @@ public class HelloCollision extends SimpleApplication
     Box box = new Box(new Vector3f(x, y, z), 1, 1, 1);
     Geometry cube = new Geometry(name, box);
     
-    Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+    /*Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
     mat1.setBoolean("UseMaterialColors", true);
     ColorRGBA color = ColorRGBA.randomColor();
     mat1.setColor("Ambient",  color);
     mat1.setColor("Diffuse",  color);
     mat1.setColor("Specular", ColorRGBA.White);
-    mat1.setFloat("Shininess", 12);
+    mat1.setFloat("Shininess", 12);*/
+    
+    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    TextureKey key3 = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
+    key3.setGenerateMips(true);
+    Texture tex3 = assetManager.loadTexture(key3);
+    tex3.setWrap(WrapMode.Repeat);
+    mat1.setTexture("ColorMap", tex3);    
 
     cube.setMaterial(mat1);
     return cube;
