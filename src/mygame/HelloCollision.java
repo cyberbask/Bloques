@@ -242,6 +242,7 @@ public class HelloCollision extends SimpleApplication
     dl.setDirection(new Vector3f(movSun, -2.8f, -2.8f).normalizeLocal());*/
     
     //esto no funcionaria, ya que toda la geometria esta metida en un batch
+    //si se saca del batch funciona
     /*cuboTiempo += tpf;
     if (cuboTiempo > 2f){
         Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
