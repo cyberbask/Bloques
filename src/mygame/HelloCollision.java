@@ -17,6 +17,7 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -52,6 +53,8 @@ public class HelloCollision extends SimpleApplication
   private boolean left = false, right = false, up = false, down = false;
   Geometry cubo;
   private float cuboTiempo = 0f;
+  
+  protected Vector3f initialUpVec;
  
   public static void main(String[] args) {
     HelloCollision app = new HelloCollision();
@@ -70,10 +73,13 @@ public class HelloCollision extends SimpleApplication
     
     app.start();
   }
+    
  
   public void simpleInitApp() {
+    initialUpVec = cam.getUp().clone();
+    
     initCrossHairs();  
-     
+    
     /** Set up Physics */
     bulletAppState = new BulletAppState();
     stateManager.attach(bulletAppState);
@@ -81,8 +87,9 @@ public class HelloCollision extends SimpleApplication
  
     // We re-use the flyby camera for rotation, while positioning is handled by physics
     viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-    flyCam.setMoveSpeed(100);
-    flyCam.setEnabled(true);//hace vibrar la camara al incrustarse en el suelo
+    //flyCam.setMoveSpeed(100);
+    flyCam.setRotationSpeed(3f);
+    //flyCam.setEnabled(false);
     
     setUpKeys();
     setUpLight();
@@ -159,8 +166,8 @@ public class HelloCollision extends SimpleApplication
     // We also put the player in its starting position.
     CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
     player = new CharacterControl(capsuleShape, 0.05f);
-    player.setJumpSpeed(20);
-    player.setFallSpeed(30);
+    player.setJumpSpeed(10);
+    player.setFallSpeed(50);
     player.setGravity(30);
     player.setPhysicsLocation(new Vector3f(0, 10, 0));
  
@@ -192,12 +199,23 @@ public class HelloCollision extends SimpleApplication
     inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
     inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
     inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_V));
+    
+   /* inputManager.addMapping("MouseLeft", new MouseAxisTrigger(MouseInput.AXIS_X, true));
+    inputManager.addMapping("MouseRigth", new MouseAxisTrigger(MouseInput.AXIS_X, false));
+    inputManager.addMapping("MouseUp", new MouseAxisTrigger(MouseInput.AXIS_Y, false) );
+    inputManager.addMapping("MouseDown", new MouseAxisTrigger(MouseInput.AXIS_Y, true) );*/
+    
     inputManager.addListener(this, "Left");
     inputManager.addListener(this, "Right");
     inputManager.addListener(this, "Up");
     inputManager.addListener(this, "Down");
     inputManager.addListener(this, "Jump");
     inputManager.addListener(this, "VSync");
+    
+    /*inputManager.addListener(analogListener, "MouseLeft");
+    inputManager.addListener(analogListener, "MouseRigth");
+    inputManager.addListener(analogListener, "MouseUp");
+    inputManager.addListener(analogListener, "MouseDown");*/
   }
  
   /** These are our custom actions triggered by key presses.
@@ -213,13 +231,37 @@ public class HelloCollision extends SimpleApplication
       down = value;
     } else if (binding.equals("VSync") && !value) {
         vsync = !vsync;
+        
         AppSettings Appsett = this.getContext().getSettings();
         Appsett.put("VSync", vsync);
         this.getContext().restart();
+        
     }else if (binding.equals("Jump")) {
       player.jump();
     }
   }
+  
+  
+  /*private AnalogListener analogListener = new AnalogListener() {
+      public void onAnalog(String name, float value, float tpf) {
+        if (name.equals("MouseLeft")){
+            rotateCamera(value,initialUpVec);
+            System.out.println("left:"+value);
+        }
+        if (name.equals("MouseRigth")){
+            rotateCamera(-value,initialUpVec);
+            System.out.println("rigth:"+value);
+        }
+        if (name.equals("MouseUp")){
+            rotateCamera(-value,cam.getLeft());
+            System.out.println("up:"+value);
+        }
+        if (name.equals("MouseDown")){
+            rotateCamera(value,cam.getLeft());
+            System.out.println("down:"+value);
+        }
+      }
+    };*/
  
   /**
    * This is the main event loop--walking happens here.
@@ -229,9 +271,10 @@ public class HelloCollision extends SimpleApplication
    * We also make sure here that the camera moves with player.
    */
   @Override
-  public void simpleUpdate(float tpf) {
-    Vector3f camDir = cam.getDirection().clone().multLocal(0.3f);
-    Vector3f camLeft = cam.getLeft().clone().multLocal(0.2f);
+  public void simpleUpdate(float tpf) {    
+    Vector3f camDir = cam.getDirection().clone().multLocal(0.25f);
+    camDir.setY(0f); //evita despegarse del chan :-D
+    Vector3f camLeft = cam.getLeft().clone().multLocal(0.175f);
     walkDirection.set(0, 0, 0);
     if (left)  { walkDirection.addLocal(camLeft); }
     if (right) { walkDirection.addLocal(camLeft.negate()); }
@@ -240,6 +283,9 @@ public class HelloCollision extends SimpleApplication
     player.setWalkDirection(walkDirection);
     cam.setLocation(player.getPhysicsLocation());
     
+    //flyCam.setEnabled(true); 
+    //inputManager.setCursorVisible(false);
+   
     /*movSun += tpf*movSunDire*20;
     
     if (movSun < -50f || movSun > 50f){   
@@ -272,6 +318,27 @@ public class HelloCollision extends SimpleApplication
     /**/
     
   }
+  
+    /*protected void rotateCamera(float value, Vector3f axis){
+        float rotationSpeed = 2f;
+
+        Matrix3f mat = new Matrix3f();
+        mat.fromAngleNormalAxis(rotationSpeed * value, axis);
+
+        Vector3f upp = cam.getUp();
+        Vector3f leftt = cam.getLeft();
+        Vector3f dirr = cam.getDirection();
+
+        mat.mult(upp, upp);
+        mat.mult(leftt, leftt);
+        mat.mult(dirr, dirr);
+
+        Quaternion q = new Quaternion();
+        q.fromAxes(leftt, upp, dirr);
+        q.normalizeLocal();
+
+        cam.setAxes(q);
+    }*/
   
   protected void initCrossHairs() {
     guiNode.detachAllChildren();
