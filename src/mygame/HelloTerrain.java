@@ -1,25 +1,44 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.TextureKey;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.HillHeightMap; // for exercise 2
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
  
 /** Sample 10 - How to create fast-rendering terrains from heightmaps,
 and how to use texture splatting to make the terrain look good.  */
 public class HelloTerrain extends SimpleApplication implements ActionListener {
-  //private static final Logger logger = Logger.getLogger(HelloTerrain.class.getName());
+  
+  ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
+  Future future = null;
+  Node terreno = null;
+  boolean yasta = false;
+  Map<Integer,Geometry> mapaCajitas=new HashMap<Integer, Geometry>();
+  Map<Integer,ColorRGBA> colorazos=new HashMap<Integer, ColorRGBA>();
     
   private TerrainQuad terrain;
   Material mat_terrain;
@@ -65,16 +84,89 @@ public class HelloTerrain extends SimpleApplication implements ActionListener {
     flyCam.setMoveSpeed(50);
     
     setUpKeys();
-
-    generateTerrain();
     
-    cam.setLocation(new Vector3f(0, 60f, 50f));
-    //cam.lookAt(new Vector3f(2, 2, 0), Vector3f.UNIT_Y);
+    /** /
+    generateTerrain();
+    /**/
+    
+    /*HillHeightMap heightmap = generateTerrainconReturn();
+    try {
+        generateTerrainBox(heightmap);
+    } catch (InterruptedException ex) {
+        Logger.getLogger(HelloTerrain.class.getName()).log(Level.SEVERE, null, ex);
+    }*/
+            
+    //cam.setLocation(new Vector3f(0, 10f, 10f));
+    //cam.lookAt(new Vector3f(0, 0, 0f), Vector3f.UNIT_Y);
+    
+    cam.setLocation(new Vector3f(0, 4f, 6f));
+    cam.lookAt(new Vector3f(2, 2, 0), Vector3f.UNIT_Y);
   }
   
   private void setUpKeys() {
       inputManager.addMapping("Regenera", new KeyTrigger(KeyInput.KEY_1));
       inputManager.addListener(this, "Regenera");
+  }
+  
+  public void onAction(String binding, boolean value, float tpf) {
+    if (binding.equals("Regenera") && !value) {
+        rootNode.detachAllChildren();
+        
+        /** /
+        generateTerrain();
+        /**/
+        
+        /** /
+        HillHeightMap heightmap = generateTerrainconReturn();
+        generateTerrainBox(heightmap);  
+        /**/
+    } 
+  }
+  
+  @Override
+  public void simpleUpdate(float tpf) {   
+        try{
+              //If we have no waylist and not started a callable yet, do so!
+              if(terreno == null && future == null){
+                  future = executor.submit(generaCubos);    //  Thread starts!
+              }
+              //If we have started a callable already, we check the status
+              else if(future != null){
+                  //Get the waylist when its done
+                  if(future.isDone()){
+                      terreno = (Node) future.get();
+                      future = null;
+                  }
+                  else if(future.isCancelled()){
+                      //Set future to null. Maybe we succeed next time...
+                      future = null;
+                  }
+              }
+          } 
+          catch(Exception e){ 
+            
+          }
+          /*if(terreno != null && !yasta){
+              yasta = true;
+              Spatial optimizado = GeometryBatchFactory.optimize(terreno);
+              rootNode.attachChild(optimizado);
+          }*/
+        
+        Integer[] keys = (Integer[])( mapaCajitas.keySet().toArray( new Integer[mapaCajitas.size()] ) );
+        
+        //System.out.println("claves: "+String.valueOf(keys.length));
+        
+        for(int i=0; i<keys.length; i++){
+            int claveActual = keys[i];
+            Geometry cuboActual = mapaCajitas.get(claveActual);
+            
+            rootNode.attachChild(cuboActual);
+            
+            mapaCajitas.remove(claveActual);
+	}
+        
+        
+      
   }
   
   private void generateTerrain(){
@@ -124,7 +216,7 @@ public class HelloTerrain extends SimpleApplication implements ActionListener {
     try {
         heightmap = new HillHeightMap(513, 1000, 1, 100, result[0]); // byte 3 is a random seed
     } catch (Exception ex) {
-        ex.printStackTrace();
+        //ex.printStackTrace();
     }
     //heightmap.setHeightScale(0.001f);
     heightmap.load();
@@ -138,7 +230,7 @@ public class HelloTerrain extends SimpleApplication implements ActionListener {
      * 3.5) We supply the prepared heightmap itself.
      */
     int patchSize = 65;
-    float[] heightMap = heightmap.getHeightMap();
+    //float[] heightMap = heightmap.getHeightMap();
     
     System.out.println("altura:"+heightmap.getScaledHeightAtPoint(1,2));
     System.out.println("altura:"+heightmap.getScaledHeightAtPoint(1,3));
@@ -167,10 +259,141 @@ public class HelloTerrain extends SimpleApplication implements ActionListener {
       
   }
   
-  public void onAction(String binding, boolean value, float tpf) {
-    if (binding.equals("Regenera") && !value) {
-        rootNode.detachAllChildren();
-        generateTerrain();
-    } 
+  private HillHeightMap generateTerrainconReturn(){
+    byte[] result= new byte[5];
+    Random random= new Random();
+    random.nextBytes(result);
+
+    
+    HillHeightMap heightmap = null;
+    HillHeightMap.NORMALIZE_RANGE = 100; // optional
+    try {
+        heightmap = new HillHeightMap(513, 1000, 1, 100, result[0]); // byte 3 is a random seed
+    } catch (Exception ex) {
+
+    }
+    //heightmap.setHeightScale(0.001f);
+    heightmap.load();
+ 
+    return heightmap;     
   }
+  
+  protected Geometry makeCube(String name, float x, float y, float z) {
+    Box box = new Box(new Vector3f(x, y, z), 1, 1, 1);
+    Geometry cube = new Geometry(name, box);
+  
+    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    TextureKey key3 = new TextureKey("Textures/Terrain/Rock/Rock.PNG");
+    key3.setGenerateMips(true);
+    Texture tex3 = assetManager.loadTexture(key3);
+    tex3.setWrap(WrapMode.Repeat);
+    mat1.setTexture("ColorMap", tex3);
+    
+    /*ColorRGBA colorActual;
+    
+    ColorRGBA foo = colorazos.get((int) y);
+    if (foo != null){
+       colorActual = foo;
+    }else{
+       colorActual = ColorRGBA.randomColor();
+       colorazos.put((int) y,colorActual);
+    }
+    
+    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    mat1.setColor("Color", colorActual);*/
+
+    cube.setMaterial(mat1);
+    return cube;
+  }
+  
+  private void generateTerrainBox(HillHeightMap heightmap) throws InterruptedException, ExecutionException{
+      terreno = new Node("terreno");
+      
+      //Node buffer = new Node("buffer");
+      int contaBuffer = 0;
+      int contaCajas = 0;
+      
+      int contaBucles = 0;
+      
+      int maxX = 50;
+      int maxZ = 50;
+      
+      for (int x = 1; x <= maxX; x++){
+         for (int z = 1; z <= maxZ; z++){ 
+             int y = (int) heightmap.getScaledHeightAtPoint(x,z);
+             final Geometry cubo = makeCube("box-"+x+"-"+"z"+"y", x*2, y*2, -z*2);
+             
+             //mapaCajitas.put(contaCajas, cubo);
+             
+             final int contaCajasActual = contaCajas;
+             
+            this.enqueue(new Callable() {
+                public Object call() throws Exception {
+                    mapaCajitas.put(contaCajasActual, cubo);
+                    return null;
+                }
+            });
+             //buffer.attachChild(cubo);
+             
+             contaBuffer += 1;
+             contaCajas += 1;
+             
+             if (contaBuffer > 100){
+                 contaBuffer = 0;
+                 //this.rootNode.attachChild(buffer);
+                 //buffer = new Node("buffer");
+                 
+                 int cuentaClaves;
+                 
+                 contaBucles = 0;
+                 
+                 do {
+                    Thread.sleep(250);
+                    contaBucles += 1;
+                    
+                    cuentaClaves = this.enqueue(new Callable<Integer>() {
+                       public Integer call() throws Exception {
+                           Integer[] keys = (Integer[])( mapaCajitas.keySet().toArray( new Integer[mapaCajitas.size()] ) );
+                           return keys.length;
+                       }
+                   }).get();
+                 } while(cuentaClaves > 0 || contaBucles > 10);
+                 
+             }
+         }
+      }
+      
+      
+  }
+  
+  // A self-contained time-intensive task:
+    private Callable<Node> generaCubos = new Callable<Node>(){
+        public Node call() throws Exception {
+
+            //Read or write data from the scene graph -- via the execution queue:
+            /*Vector3f location = app.enqueue(new Callable<Vector3f>() {
+                public Vector3f call() throws Exception {
+                    //we clone the location so we can use the variable safely on our thread
+                    return mySpatial.getLocalTranslation().clone();
+                }
+            }).get();
+            */
+
+            // This world class allows safe access via synchronized methods
+            //Data data = myWorld.getData(); 
+
+            HillHeightMap heightmap = generateTerrainconReturn();
+            generateTerrainBox(heightmap);  
+            //... Now process data and find the way ...
+
+            return terreno;
+        }
+    };
+  
+  @Override
+    public void destroy() {
+        super.destroy();
+        executor.shutdown();
+    }
+  
 }
