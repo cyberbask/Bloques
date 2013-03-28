@@ -14,14 +14,12 @@ import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.heightmap.HillHeightMap; // for exercise 2
+import com.jme3.terrain.heightmap.HillHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -306,6 +304,7 @@ public class HelloTerrain extends SimpleApplication implements ActionListener {
     return cube;
   }
   
+  @SuppressWarnings("SleepWhileInLoop")
   private void generateTerrainBox(HillHeightMap heightmap) throws InterruptedException, ExecutionException{
       terreno = new Node("terreno");
       
@@ -313,7 +312,7 @@ public class HelloTerrain extends SimpleApplication implements ActionListener {
       int contaBuffer = 0;
       int contaCajas = 0;
       
-      int contaBucles = 0;
+      int contaBucles;
       
       int maxX = 50;
       int maxZ = 50;
