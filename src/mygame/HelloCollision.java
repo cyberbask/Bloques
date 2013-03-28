@@ -17,6 +17,7 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -27,10 +28,12 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.control.Control;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.scene.shape.Sphere.TextureMode;
 import com.jme3.system.AppSettings;
+import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.BufferUtils;
@@ -60,6 +63,7 @@ public class HelloCollision extends SimpleApplication
   protected Vector3f initialUpVec;
   
   
+  private int controlmuro = 0;
   //Para el tema de los disparos
   Material wall_mat;
   Material stone_mat;
@@ -127,7 +131,6 @@ public class HelloCollision extends SimpleApplication
     setUpLight();
     
     initMaterials();
-    initWall();
   
     Node terreno = new Node("terreno");
     Node suelo = new Node("suelo");
@@ -214,8 +217,8 @@ public class HelloCollision extends SimpleApplication
     
     
     /** Configure cam to look at scene */
-    cam.setLocation(new Vector3f(0, 4f, 6f));
-    cam.lookAt(new Vector3f(2, 2, 0), Vector3f.UNIT_Y);
+    //cam.setLocation(new Vector3f(0, 4f, 6f));
+    //cam.lookAt(new Vector3f(2, 2, 0), Vector3f.UNIT_Y);
     
   }
  
@@ -240,6 +243,7 @@ public class HelloCollision extends SimpleApplication
     inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
     inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
     inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_V));
+    inputManager.addMapping("Murete", new KeyTrigger(KeyInput.KEY_1));
     
     inputManager.addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
     inputManager.addListener(this, "shoot");
@@ -255,6 +259,7 @@ public class HelloCollision extends SimpleApplication
     inputManager.addListener(this, "Down");
     inputManager.addListener(this, "Jump");
     inputManager.addListener(this, "VSync");
+    inputManager.addListener(this, "Murete");
     
     /*inputManager.addListener(analogListener, "MouseLeft");
     inputManager.addListener(analogListener, "MouseRigth");
@@ -280,7 +285,19 @@ public class HelloCollision extends SimpleApplication
         Appsett.put("VSync", vsync);
         this.getContext().restart();
         
-    }else if (binding.equals("Jump")) {
+    } else if (binding.equals("Murete") && !value) {
+        for(int i=1;i<100;i++){
+            try{
+                Spatial child = rootNode.getChild("brick"+String.valueOf(i));
+                Geometry cosa = (Geometry) child;
+                bulletAppState.getPhysicsSpace().remove(cosa.getControl(0)) ; 
+                rootNode.detachChildNamed("brick"+String.valueOf(i));
+            }catch(Exception e) {
+            
+            }
+        }
+        controlmuro = 1;
+    } else if (binding.equals("Jump")) {
       player.jump();
     }
     
@@ -330,6 +347,13 @@ public class HelloCollision extends SimpleApplication
     if (down)  { walkDirection.addLocal(camDir.negate()); }
     player.setWalkDirection(walkDirection);
     cam.setLocation(player.getPhysicsLocation());
+    
+    if (controlmuro == 1){
+        controlmuro = 2;
+    }else if(controlmuro == 2){
+        controlmuro = 0;
+        initWall();
+    }
     
     //flyCam.setEnabled(true); 
     //inputManager.setCursorVisible(false);
@@ -485,21 +509,50 @@ public class HelloCollision extends SimpleApplication
   }
   
   protected Geometry makeQuad(int tamano) {
+    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+    //TextureKey key3 = new TextureKey("Textures/sphax_ctm.png");
+    //key3.setGenerateMips(true);
+    //Texture tex3 = assetManager.loadTexture(key3);
+    //Texture tex3 = assetManager.loadTexture("Textures/sphax_ctm.png");
+    Texture tex3 = assetManager.loadTexture("Textures/sphax_ctm_128.png");
+    Image image = tex3.getImage();
+    int width = image.getWidth();
+    //tex3.setWrap(WrapMode.BorderClamp);
+    mat1.setTexture("ColorMap", tex3);    
+    mat1.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+      
+    float tamanoTile = (float) width / 16f;
+    tamanoTile = tamanoTile / (float) width;
+    System.out.println("tile: "+tamanoTile);
+    
     Mesh m = new Mesh();
-
+    
     // Vertex positions in space
     Vector3f [] vertices = new Vector3f[4];
     vertices[0] = new Vector3f(0,0,0);
     vertices[1] = new Vector3f(tamano,0,0);
     vertices[2] = new Vector3f(0,tamano,0);
     vertices[3] = new Vector3f(tamano,tamano,0);
-
-    // Texture coordinates
+    
+    float x = 12f * tamanoTile; //siempre es uno menos, el cero cuenta
+    float y = -5f * tamanoTile; //siempre es uno menos, el cero cuenta
+    
+    float sumapixel = 0.0005f; //x a la izquierda del cuadrado
+    float sumapixel2 = -0.0005f; //y arriba del cuadrado
+    float sumapixel3 = 0.0005f;  //y abajo del cuadrado
+    float sumapixel4 = -0.0005f; //x a la derecha del cuadrado
+    /** /
+    sumapixel = 0f;
+    sumapixel2 = 0f;
+    sumapixel3 = 0f;
+    sumapixel4 = 0f;
+    /**/
+    
     Vector2f [] texCoord = new Vector2f[4];
-    texCoord[0] = new Vector2f(0,0);
-    texCoord[1] = new Vector2f(1,0);
-    texCoord[2] = new Vector2f(0,1);
-    texCoord[3] = new Vector2f(1,1);
+    texCoord[0] = new Vector2f(0 + x + sumapixel,1 - tamanoTile + y + sumapixel3);
+    texCoord[1] = new Vector2f(tamanoTile + x + sumapixel4,1 - tamanoTile + y + sumapixel3);
+    texCoord[2] = new Vector2f(0 + x + sumapixel,1 + y + sumapixel2);
+    texCoord[3] = new Vector2f(tamanoTile + x + sumapixel4,1 + y + sumapixel2);
 
     // Indexes. We define the order in which mesh should be constructed
     int [] indexes = {2,0,1,1,3,2};
@@ -510,15 +563,7 @@ public class HelloCollision extends SimpleApplication
     m.setBuffer(Type.Index, 3, BufferUtils.createIntBuffer(indexes));
     m.updateBound();
 
-    Geometry suelaco = new Geometry("Suelaco", m);
-    
-    Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    //TextureKey key3 = new TextureKey("Textures/sphax_ctm.png");
-    //key3.setGenerateMips(true);
-    //Texture tex3 = assetManager.loadTexture(key3);
-    Texture tex3 = assetManager.loadTexture("Textures/sphax_ctm.png");
-    //tex3.setWrap(WrapMode.BorderClamp);
-    mat1.setTexture("ColorMap", tex3);    
+    Geometry suelaco = new Geometry("Suelaco", m);   
     
     suelaco.setMaterial(mat1);
     
@@ -550,13 +595,15 @@ public class HelloCollision extends SimpleApplication
   
   /** This loop builds a wall out of individual bricks. */
   public void initWall() {
+    int conta = 1;
     float startpt = brickLength / 4;
     float height = 0;
     for (int j = 0; j < 15; j++) {
       for (int i = 0; i < 6; i++) {
         Vector3f vt =
          new Vector3f(i * brickLength * 2 + startpt, brickHeight + height, 0);
-        makeBrick(vt);
+        makeBrick(vt,conta);
+        conta = conta + 1;
       }
       startpt = -startpt;
       height += 2 * brickHeight;
@@ -564,9 +611,9 @@ public class HelloCollision extends SimpleApplication
   }
   
   /** This method creates one individual physical brick. */
-  public void makeBrick(Vector3f loc) {
+  public void makeBrick(Vector3f loc,int conta) {
     /** Create a brick geometry and attach to scene graph. */
-    Geometry brick_geo = new Geometry("brick", box);
+    Geometry brick_geo = new Geometry("brick"+String.valueOf(conta), box);
     brick_geo.setMaterial(wall_mat);
     rootNode.attachChild(brick_geo);
     /** Position the brick geometry  */
@@ -588,6 +635,7 @@ public class HelloCollision extends SimpleApplication
     rootNode.attachChild(ball_geo);
     
     Vector3f direction = cam.getDirection();
+    direction = direction.multLocal(3f);
     Vector3f location = cam.getLocation();
     location.setX(location.getX()+direction.getX());
     location.setY(location.getY()+direction.getY());
