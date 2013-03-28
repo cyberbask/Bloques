@@ -44,8 +44,7 @@ import jme3tools.optimize.GeometryBatchFactory;
  * This collision code uses Physics and a custom Action Listener.
  * @author normen, with edits by Zathras
  */
-public class HelloCollision extends SimpleApplication
-        implements ActionListener {
+public class HelloCollision extends SimpleApplication implements ActionListener {
  
   private Spatial sceneModel;
   private BulletAppState bulletAppState;
@@ -98,7 +97,7 @@ public class HelloCollision extends SimpleApplication
     app.setShowSettings(false);
         
     AppSettings settings = new AppSettings(true);
-    settings.put("Width", 800);
+    settings.put("Width", 1024);
     settings.put("Height", 576);
     settings.put("Title", "Hello Mundo :-D");
     settings.put("VSync", true);
