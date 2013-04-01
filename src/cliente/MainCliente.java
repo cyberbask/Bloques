@@ -1,12 +1,7 @@
 package cliente;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
 import utiles.AppUtiles;
 
 /**
@@ -25,8 +20,8 @@ public class MainCliente extends SimpleApplication {
     }
 
     @Override
-    public void simpleInitApp() {
-        //Seteamos la Applicacion State principal del juego
+    public void simpleInitApp() {        
+        //Seteamos la "Applicacion State" principal del juego
         StateJuego stateJuego = new StateJuego();
         stateManager.attach(stateJuego);
     }

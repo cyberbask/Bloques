@@ -4,6 +4,7 @@
 package utiles;
 
 import cliente.MainCliente;
+import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
 
 /**
@@ -32,4 +33,15 @@ public class AppUtiles {
         
         return app;
     }  
+    
+    /**
+     * Devuelve las settings actuales de la app
+     * @param app
+     * @return
+     */
+    public static AppSettings getSettings(SimpleApplication app){
+        AppSettings settings = app.getContext().getSettings();
+        
+        return settings;
+    }
 }
