@@ -59,6 +59,33 @@ public class Bloques {
                
                return datosBloque;
             }
+            
+            //bloque tierra
+            if ("Roca".equals(nomBloque)){
+               datosBloque.setNombreTextura("bloques1");
+               
+               datosBloque.setPosicionTexturasX(0, 1);//frontal
+               datosBloque.setPosicionTexturasY(0, 2);
+               
+               datosBloque.setPosicionTexturasX(1, 2);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 2);
+               
+               datosBloque.setPosicionTexturasX(2, 3);//trasera
+               datosBloque.setPosicionTexturasY(2, 2);
+               
+               datosBloque.setPosicionTexturasX(3, 4);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 2);
+               
+               datosBloque.setPosicionTexturasX(4, 5);//Superior
+               datosBloque.setPosicionTexturasY(4, 2);
+               
+               datosBloque.setPosicionTexturasX(5, 6); //inferior
+               datosBloque.setPosicionTexturasY(5, 2);
+               
+               bloques.put(nomBloque,datosBloque);
+               
+               return datosBloque;
+            }
         }
         
         return null;

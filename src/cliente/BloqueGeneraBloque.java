@@ -8,8 +8,6 @@ import bloques.BloquesDatos;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -24,18 +22,30 @@ import com.jme3.util.BufferUtils;
  * 
  * @author mcarballo
  */
-public class BloqueGenera {
-    private SimpleApplication app;
-    private AssetManager      assetManager;
+public class BloqueGeneraBloque {
+    /**
+     *
+     */
+    protected SimpleApplication app;
+    /**
+     *
+     */
+    protected AssetManager      assetManager;
     
-    private TextureAtlasJuego atlas;
-    private Bloques bloques;
+    /**
+     *
+     */
+    protected TextureAtlasJuego atlas;
+    /**
+     *
+     */
+    protected Bloques bloques;
     
     /**
      *
      * @param app
      */
-    public BloqueGenera(Application app){
+    public BloqueGeneraBloque(Application app){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         
@@ -48,6 +58,7 @@ public class BloqueGenera {
     /**
      *
      * @param tamano
+     * @param tipo 
      * @return
      */
     protected Node makeBloque(int tamano,String tipo) {
@@ -58,11 +69,6 @@ public class BloqueGenera {
         
         float tamanoTile = (float) atlas.getAnchoImagenTextura() / 16f;
         tamanoTile = tamanoTile / (float) atlas.getAnchoImagenTextura();
-        
-        //TODO material con iluminacion
-        Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setTexture("ColorMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
-        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
         
         for (int i = 0; i<6; i++){
             Mesh m = new Mesh();
@@ -108,8 +114,6 @@ public class BloqueGenera {
 
             Geometry cara = new Geometry("Cara-"+String.valueOf(i)+"-Bloque-x-y", m);   
 
-            cara.setMaterial(mat1);
-
             //colocamos las caras en su sitio
             switch(i){
                 case 0: //cara 1
@@ -140,8 +144,6 @@ public class BloqueGenera {
             
             bloque.attachChild(cara); 
         }
-        
-        //bloque.setMaterial(mat1);
         
         return bloque;
     }

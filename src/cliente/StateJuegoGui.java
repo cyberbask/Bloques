@@ -18,6 +18,7 @@ import utiles.AppUtiles;
  */
 public class StateJuegoGui {
     private SimpleApplication app;
+    private AssetManager      assetManager;
     
     /**
      *
