@@ -1,9 +1,8 @@
 /*
  * Aqui se generaran los chunks y el terreno en general
  */
-package cliente;
+package bloques;
 
-import bloques.BloquesDatos;
 import com.jme3.app.Application;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -14,8 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import jme3tools.optimize.GeometryBatchFactory;
 
 /**
  *
@@ -25,6 +26,9 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
     ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
     Future future = null;
     Boolean primeravez = true;
+    
+    //graficos
+    Map<Integer,Spatial> bloquesMostrar=new HashMap<Integer, Spatial>();
     
     
     /**
@@ -44,7 +48,7 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
         HillHeightMap heightmap = null;
         HillHeightMap.NORMALIZE_RANGE = 100; // optional
         try {
-            heightmap = new HillHeightMap(513, 1000, 20, 40, result[0]); // byte 3 is a random seed
+            heightmap = new HillHeightMap(513, 1000, 20, 30, result[0]); // byte 3 is a random seed
         } catch (Exception ex) {
 
         }
@@ -56,10 +60,11 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
         
     /**
      *
-     * @return
+     * @throws InterruptedException
+     * @throws ExecutionException  
      */
-    public void generaTerrenoCompleto(){
-        Node bloquesFinales = new Node("bloques");
+    @SuppressWarnings("SleepWhileInLoop")
+    public void generaTerrenoCompleto() throws InterruptedException, ExecutionException{
         Map<String,Node> bloquesGenerados = new HashMap<String,Node>();
         
         //TODO material con iluminacion
@@ -93,9 +98,13 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
         
         int conta = 0;
         int y = 0;
-        int minY = -5;
-        for (int x = 0;x<10;x++){
-            for (int z = 0;z<10;z++){
+        int minY = 0;
+        
+        int contaBloquesActual = 0;
+        int contaBuffer = 0;
+        
+        for (int x = 0;x<300;x++){
+            for (int z = 0;z<300;z++){
                 int originalY = y;
                 
                 y = (int) heightmap.getScaledHeightAtPoint(x,z);
@@ -104,8 +113,10 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
                     y = originalY;
                 }
                 
+                //minY = y //sin relleno;
+                
                 for (int a=y; a>=minY; a--){    
-                    Spatial bloqueClonado;
+                    final Spatial bloqueClonado;
                     if (conta == 0){ //tierra
                         bloqueClonado = bloquesGenerados.get("Tierra").clone();
                         conta = 1;
@@ -113,35 +124,73 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
                         bloqueClonado = bloquesGenerados.get("Roca").clone();
                         conta = 0;
                     }
-
+                    
+                    bloqueClonado.setMaterial(mat1);
+                    
                     bloqueClonado.move(x,a,z);
-
-                    /*this.enqueue(new Callable() {
+                    
+                    final int contaBloquesActualFinal = contaBloquesActual;
+                    
+                    contaBloquesActual++;
+                    contaBuffer++;
+                    
+                    app.enqueue(new Callable() {
                         public Object call() throws Exception {
-                            mapaCajitas.put(contaCajasActual, cubo);
+                            bloquesMostrar.put(contaBloquesActualFinal, bloqueClonado);
                             return null;
                         }
-                    });*/
+                    });
+                    
+                    
+                    /**/
+                    if (contaBuffer > 1000){
+                        contaBuffer = 0;
+                        //this.rootNode.attachChild(buffer);
+                        //buffer = new Node("buffer");
+
+                        int cuentaClaves;
+
+                        int contaBucles = 0;
+
+                        do {
+                           Thread.sleep(100);
+                           contaBucles += 1;
+
+                           cuentaClaves = app.enqueue(new Callable<Integer>() {
+                              public Integer call() throws Exception {
+                                  Integer[] keys = (Integer[])( bloquesMostrar.keySet().toArray( new Integer[bloquesMostrar.size()] ) );
+                                  return keys.length;
+                              }
+                          }).get();
+                        } while(cuentaClaves > 0 && contaBucles < 5);
+
+                    }
+                    /**/
                     
                     //bloquesFinales.attachChild(bloqueClonado);
                 }
             }
         }
         
-        bloquesFinales.setMaterial(mat1);   
+        //bloquesFinales.setMaterial(mat1);   
     }
     
     // A self-contained time-intensive task:
     private Callable<Boolean> generaTerrenoHilo = new Callable<Boolean>(){
         public Boolean call() throws Exception {
-            BloqueGeneraTerreno bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
-            bloqueGeneraTerreno.generaTerrenoCompleto();
+            //BloqueGeneraTerreno bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
+            generaTerrenoCompleto();
             
             return false;
         }
     };
     
-    public void generaTerreno(){
+    /**
+     *
+     * @return
+     */
+    public Spatial generaTerreno(){
+        //TODO - esto deberia hacer en una libreria para los graficos, no las librerias de bloques
         try{
             if(future == null && primeravez){
                 future = executor.submit(generaTerrenoHilo);
@@ -161,9 +210,37 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
         }
         
         primeravez = false;
+        
+        Node bloquesAcumulados = new Node("bloquesAcumulados");
+        
+        Integer[] keys = (Integer[])( bloquesMostrar.keySet().toArray( new Integer[bloquesMostrar.size()] ) );
+        
+        if (keys.length > 0){
+        
+            for(int i=0; i<keys.length; i++){
+                int claveActual = keys[i];
+                Spatial cuboActual = bloquesMostrar.get(claveActual);
+
+                bloquesAcumulados.attachChild(cuboActual);
+
+                bloquesMostrar.remove(claveActual);
+            }
+
+            Spatial optimizado = GeometryBatchFactory.optimize(bloquesAcumulados);
+        
+            return optimizado;
+        }else{
+            return null;
+        }
     }
     
+    /**
+     *
+     */
     public void destroy() {
+        //asi parece que cierra bien
+        //el problema esta en el do while con el sleep de hilo
+        executor.shutdownNow();
         executor.shutdown();
     }
 }

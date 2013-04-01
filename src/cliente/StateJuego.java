@@ -3,6 +3,7 @@
  */
 package cliente;
 
+import bloques.BloqueGeneraTerreno;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -17,9 +18,6 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
-import java.util.HashMap;
-import java.util.Map;
-import jme3tools.optimize.GeometryBatchFactory;
 import utiles.AppUtiles;
 
 /**
@@ -39,8 +37,6 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     private boolean left = false, right = false, up = false, down = false;
     private boolean vsync = true;
     
-    //graficos
-    Map<Integer,Node> bloquesMostrar=new HashMap<Integer, Node>();
     BloqueGeneraTerreno bloqueGeneraTerreno;
  
     /**
@@ -88,23 +84,11 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     // Note that update is only called while the state is both attached and enabled.
     @Override
     public void update(float tpf) {
-        bloqueGeneraTerreno.generaTerreno();
+        Spatial devueltoGeneraTerreno = bloqueGeneraTerreno.generaTerreno();
         
-        Node bloquesAcumulados = new Node("bloquesAcumulados");
-        
-        Integer[] keys = (Integer[])( bloquesMostrar.keySet().toArray( new Integer[bloquesMostrar.size()] ) );
-
-        for(int i=0; i<keys.length; i++){
-            int claveActual = keys[i];
-            Node cuboActual = bloquesMostrar.get(claveActual);
-
-            bloquesAcumulados.attachChild(cuboActual);
-
-            bloquesMostrar.remove(claveActual);
+        if (devueltoGeneraTerreno != null) {
+            rootNode.attachChild(devueltoGeneraTerreno);
         }
-        
-        Spatial optimizado = GeometryBatchFactory.optimize(bloquesAcumulados);
-        rootNode.attachChild(optimizado);
     }
  
     
@@ -146,6 +130,9 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         }
     }
     
+    /**
+     *
+     */
     public void destroy() {
         bloqueGeneraTerreno.destroy(); //lo ejecutamos para cerrar los hilos que pueda haber abiertos
     }

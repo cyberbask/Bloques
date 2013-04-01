@@ -1,10 +1,9 @@
 /*
  * Clase para generar un bloque mediante triangulos, sus caras, las texturas de cada cara ...
  */
-package cliente;
+package bloques;
 
-import bloques.Bloques;
-import bloques.BloquesDatos;
+import cliente.TextureAtlasJuego;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
