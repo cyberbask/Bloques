@@ -49,8 +49,8 @@ public class Bloques {
                datosBloque.setPosicionTexturasX(3, 1);//lateral izquierda
                datosBloque.setPosicionTexturasY(3, 4);
                
-               datosBloque.setPosicionTexturasX(4, 13);//Superior
-               datosBloque.setPosicionTexturasY(4, 6);
+               datosBloque.setPosicionTexturasX(4, 1);//Superior
+               datosBloque.setPosicionTexturasY(4, 5);
                
                datosBloque.setPosicionTexturasX(5, 1); //inferior
                datosBloque.setPosicionTexturasY(5, 6);
