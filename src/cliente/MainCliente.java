@@ -11,7 +11,8 @@ import utiles.AppUtiles;
  * @author normenhansen
  */
 public class MainCliente extends SimpleApplication {
-
+    StateJuego stateJuego;
+            
     /**
      *
      * @param args
@@ -33,7 +34,7 @@ public class MainCliente extends SimpleApplication {
         Logger.getLogger("").setLevel(Level.WARNING);
         
         //Seteamos la "Applicacion State" principal del juego
-        StateJuego stateJuego = new StateJuego();
+        stateJuego = new StateJuego();
         stateManager.attach(stateJuego);
         
         //setamos la velocidad estandar de la flycam
@@ -57,4 +58,11 @@ public class MainCliente extends SimpleApplication {
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
     }
+    
+    @Override
+    public void destroy() {
+        super.destroy();
+        stateJuego.destroy(); //lo ejecutamos para cerrar cualquier posible hilo
+    }
+       
 }

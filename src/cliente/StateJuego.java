@@ -17,6 +17,8 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
+import java.util.HashMap;
+import java.util.Map;
 import jme3tools.optimize.GeometryBatchFactory;
 import utiles.AppUtiles;
 
@@ -25,7 +27,6 @@ import utiles.AppUtiles;
  * @author mcarballo
  */
 public class StateJuego extends AbstractAppState implements ActionListener{
- 
     private SimpleApplication app;
     private Node              rootNode;
     private AssetManager      assetManager;
@@ -37,6 +38,10 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     //teclas
     private boolean left = false, right = false, up = false, down = false;
     private boolean vsync = true;
+    
+    //graficos
+    Map<Integer,Node> bloquesMostrar=new HashMap<Integer, Node>();
+    BloqueGeneraTerreno bloqueGeneraTerreno;
  
     /**
      *
@@ -60,14 +65,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         StateJuegoGui juegoGui = new StateJuegoGui(app);
         juegoGui.initPuntoMira();
         
-        //probamos la generacion de bloques
-        BloqueGeneraTerreno bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
-        Node bloques = bloqueGeneraTerreno.generaTerreno();
-        
-        Spatial optimizado = GeometryBatchFactory.optimize(bloques);
-        rootNode.attachChild(optimizado);
-        //fin de probamos la generacion de bloques
-        
+        bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
     }
  
     @Override
@@ -90,7 +88,23 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     // Note that update is only called while the state is both attached and enabled.
     @Override
     public void update(float tpf) {
-           
+        bloqueGeneraTerreno.generaTerreno();
+        
+        Node bloquesAcumulados = new Node("bloquesAcumulados");
+        
+        Integer[] keys = (Integer[])( bloquesMostrar.keySet().toArray( new Integer[bloquesMostrar.size()] ) );
+
+        for(int i=0; i<keys.length; i++){
+            int claveActual = keys[i];
+            Node cuboActual = bloquesMostrar.get(claveActual);
+
+            bloquesAcumulados.attachChild(cuboActual);
+
+            bloquesMostrar.remove(claveActual);
+        }
+        
+        Spatial optimizado = GeometryBatchFactory.optimize(bloquesAcumulados);
+        rootNode.attachChild(optimizado);
     }
  
     
@@ -130,6 +144,10 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         } else if (name.equals("Jump")) {
             //player.jump();
         }
+    }
+    
+    public void destroy() {
+        bloqueGeneraTerreno.destroy(); //lo ejecutamos para cerrar los hilos que pueda haber abiertos
     }
     
 }

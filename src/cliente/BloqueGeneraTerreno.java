@@ -13,12 +13,20 @@ import com.jme3.terrain.heightmap.HillHeightMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  *
  * @author mcarballo
  */
 public class BloqueGeneraTerreno extends BloqueGeneraBloque{
+    ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
+    Future future = null;
+    Boolean primeravez = true;
+    
+    
     /**
      *
      * @param app
@@ -50,7 +58,7 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
      *
      * @return
      */
-    public Node generaTerreno(){
+    public void generaTerrenoCompleto(){
         Node bloquesFinales = new Node("bloques");
         Map<String,Node> bloquesGenerados = new HashMap<String,Node>();
         
@@ -85,31 +93,77 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
         
         int conta = 0;
         int y = 0;
-        for (int x = 0;x<200;x++){
-            for (int z = 0;z<200;z++){
+        int minY = -5;
+        for (int x = 0;x<10;x++){
+            for (int z = 0;z<10;z++){
                 int originalY = y;
+                
                 y = (int) heightmap.getScaledHeightAtPoint(x,z);
+                
                 if (y == 0){
                     y = originalY;
                 }
+                
+                for (int a=y; a>=minY; a--){    
+                    Spatial bloqueClonado;
+                    if (conta == 0){ //tierra
+                        bloqueClonado = bloquesGenerados.get("Tierra").clone();
+                        conta = 1;
+                    }else{ //roca
+                        bloqueClonado = bloquesGenerados.get("Roca").clone();
+                        conta = 0;
+                    }
 
-                Spatial bloqueClonado;
-                if (conta == 0){ //tierra
-                    bloqueClonado = bloquesGenerados.get("Tierra").clone();
-                    conta = 1;
-                }else{ //roca
-                    bloqueClonado = bloquesGenerados.get("Roca").clone();
-                    conta = 0;
+                    bloqueClonado.move(x,a,z);
+
+                    /*this.enqueue(new Callable() {
+                        public Object call() throws Exception {
+                            mapaCajitas.put(contaCajasActual, cubo);
+                            return null;
+                        }
+                    });*/
+                    
+                    //bloquesFinales.attachChild(bloqueClonado);
                 }
-
-                bloqueClonado.move(x,y,z);
-
-                bloquesFinales.attachChild(bloqueClonado);
             }
         }
         
-        bloquesFinales.setMaterial(mat1);
+        bloquesFinales.setMaterial(mat1);   
+    }
+    
+    // A self-contained time-intensive task:
+    private Callable<Boolean> generaTerrenoHilo = new Callable<Boolean>(){
+        public Boolean call() throws Exception {
+            BloqueGeneraTerreno bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
+            bloqueGeneraTerreno.generaTerrenoCompleto();
+            
+            return false;
+        }
+    };
+    
+    public void generaTerreno(){
+        try{
+            if(future == null && primeravez){
+                future = executor.submit(generaTerrenoHilo);
+            }
+            else if(future != null){
+                if(future.isDone()){
+                    //Boolean devuelto = (Boolean) future.get();
+                    future = null;
+                }
+                else if(future.isCancelled()){
+                    future = null;
+                }
+            }
+        } 
+        catch(Exception e){ 
+
+        }
         
-        return bloquesFinales;
+        primeravez = false;
+    }
+    
+    public void destroy() {
+        executor.shutdown();
     }
 }
