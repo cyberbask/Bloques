@@ -9,13 +9,16 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
+import jme3tools.optimize.GeometryBatchFactory;
 import utiles.AppUtiles;
 
 /**
@@ -57,6 +60,20 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         
         StateJuegoGui juegoGui = new StateJuegoGui(app);
         juegoGui.initPuntoMira();
+        
+        //probamos la generacion de bloques
+        FlyByCamera flyCam = new FlyByCamera(app.getCamera());
+        flyCam.setMoveSpeed(10f);
+        flyCam.registerWithInput(app.getInputManager());
+        
+        GeneraBloque generaBloque = new GeneraBloque(app);
+        Node bloque = generaBloque.makeQuad(1);
+        bloque.move(-0.5f,0,5f);
+        
+        Spatial optimizado = GeometryBatchFactory.optimize(bloque);
+        rootNode.attachChild(optimizado);
+        //fin de probamos la generacion de bloques
+        
     }
  
     @Override
@@ -120,4 +137,5 @@ public class StateJuego extends AbstractAppState implements ActionListener{
             //player.jump();
         }
     }
+    
 }

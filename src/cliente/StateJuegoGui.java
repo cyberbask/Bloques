@@ -37,6 +37,7 @@ public class StateJuegoGui {
 
         //Por ahora comentamos esta linea ya que machaca las estadisticas laterales
         //guiNode.detachAllChildren();
+        
         BitmapFont guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         BitmapText ch = new BitmapText(guiFont, false);
         ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);

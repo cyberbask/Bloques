@@ -10,6 +10,10 @@ import utiles.AppUtiles;
  */
 public class MainCliente extends SimpleApplication {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         MainCliente app = new MainCliente();
         
@@ -19,6 +23,9 @@ public class MainCliente extends SimpleApplication {
         app.start();
     }
 
+    /**
+     *
+     */
     @Override
     public void simpleInitApp() {        
         //Seteamos la "Applicacion State" principal del juego
@@ -26,11 +33,19 @@ public class MainCliente extends SimpleApplication {
         stateManager.attach(stateJuego);
     }
 
+    /**
+     *
+     * @param tpf
+     */
     @Override
     public void simpleUpdate(float tpf) {
         //TODO: add update code
     }
 
+    /**
+     *
+     * @param rm
+     */
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
