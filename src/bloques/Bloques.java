@@ -40,20 +40,20 @@ public class Bloques {
                datosBloque.setPosicionTexturasX(0, 1);//frontal
                datosBloque.setPosicionTexturasY(0, 1);
                
-               datosBloque.setPosicionTexturasX(1, 1);//lateral derecha
-               datosBloque.setPosicionTexturasY(1, 2);
+               datosBloque.setPosicionTexturasX(1, 2);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 1);
                
-               datosBloque.setPosicionTexturasX(2, 1);//trasera
-               datosBloque.setPosicionTexturasY(2, 3);
+               datosBloque.setPosicionTexturasX(2, 3);//trasera
+               datosBloque.setPosicionTexturasY(2, 1);
                
-               datosBloque.setPosicionTexturasX(3, 1);//lateral izquierda
-               datosBloque.setPosicionTexturasY(3, 4);
+               datosBloque.setPosicionTexturasX(3, 4);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 1);
                
-               datosBloque.setPosicionTexturasX(4, 1);//Superior
-               datosBloque.setPosicionTexturasY(4, 5);
+               datosBloque.setPosicionTexturasX(4, 5);//Superior
+               datosBloque.setPosicionTexturasY(4, 1);
                
-               datosBloque.setPosicionTexturasX(5, 1); //inferior
-               datosBloque.setPosicionTexturasY(5, 6);
+               datosBloque.setPosicionTexturasX(5, 6); //inferior
+               datosBloque.setPosicionTexturasY(5, 1);
                
                bloques.put(nomBloque,datosBloque);
                

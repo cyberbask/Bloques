@@ -66,12 +66,18 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         Node bloque;
         
         BloqueGenera generaBloque = new BloqueGenera(app);
+        bloque = generaBloque.makeBloque(1,"Tierra");
         
-        for (int i = 0;i<1;i++){
-            bloque = generaBloque.makeBloque(1,"Tierra");
-            bloque.move(-0.5f +(1*i),-1f,5f);
-            
-            bloques.attachChild(bloque);
+        for (int i = 0;i<50;i++){
+            for (int j = 0;j<50;j++){
+                for (int h = 0;h<10;h++){
+                    Spatial bloqueClonado = bloque.clone();
+
+                    bloqueClonado.move(-0.5f +(1*i),-1f + (1*h),5f + (1*j));
+
+                    bloques.attachChild(bloqueClonado);
+                }
+            }
         }
         
         Spatial optimizado = GeometryBatchFactory.optimize(bloques);

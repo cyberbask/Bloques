@@ -83,6 +83,13 @@ public class BloqueGenera {
             float sumapixel2 = -0.0005f; //y arriba del cuadrado
             float sumapixel3 = 0.0005f;  //y abajo del cuadrado
             float sumapixel4 = -0.0005f; //x a la derecha del cuadrado
+            
+            /** /
+            sumapixel = 0;
+            sumapixel2 = 0;
+            sumapixel3 = 0;
+            sumapixel4 = 0;
+            /**/
 
             Vector2f [] texCoord = new Vector2f[4];
             texCoord[0] = new Vector2f(x + sumapixel,1 - tamanoTile + y + sumapixel3);
@@ -134,6 +141,7 @@ public class BloqueGenera {
             bloque.attachChild(cara); 
         }
         
+        //bloque.setMaterial(mat1);
         
         return bloque;
     }

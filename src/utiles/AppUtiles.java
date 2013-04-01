@@ -27,7 +27,7 @@ public class AppUtiles {
         settings.put("Title", "Bloques");
         settings.put("VSync", true);
         //Anti-Aliasing
-        settings.put("Samples", 4);
+        settings.put("Samples", 0);
 
         app.setSettings(settings);
         
