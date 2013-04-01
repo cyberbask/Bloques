@@ -7,6 +7,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
+import utiles.AppUtiles;
 
 /**
  * test
@@ -16,19 +17,18 @@ public class MainCliente extends SimpleApplication {
 
     public static void main(String[] args) {
         MainCliente app = new MainCliente();
+        
+        //inicializamos las settings del app
+        app = AppUtiles.initSettings(app);
+        
         app.start();
     }
 
     @Override
     public void simpleInitApp() {
-        Box b = new Box(Vector3f.ZERO, 1, 1, 1);
-        Geometry geom = new Geometry("Box", b);
-
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
-        geom.setMaterial(mat);
-
-        rootNode.attachChild(geom);
+        //Seteamos la Applicacion State principal del juego
+        StateJuego stateJuego = new StateJuego();
+        stateManager.attach(stateJuego);
     }
 
     @Override
