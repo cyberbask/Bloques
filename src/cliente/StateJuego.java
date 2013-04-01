@@ -62,15 +62,19 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         juegoGui.initPuntoMira();
         
         //probamos la generacion de bloques
-        FlyByCamera flyCam = new FlyByCamera(app.getCamera());
-        flyCam.setMoveSpeed(10f);
-        flyCam.registerWithInput(app.getInputManager());
+        Node bloques = new Node("bloques");
+        Node bloque;
         
-        GeneraBloque generaBloque = new GeneraBloque(app);
-        Node bloque = generaBloque.makeQuad(1);
-        bloque.move(-0.5f,0,5f);
+        BloqueGenera generaBloque = new BloqueGenera(app);
         
-        Spatial optimizado = GeometryBatchFactory.optimize(bloque);
+        for (int i = 0;i<1;i++){
+            bloque = generaBloque.makeBloque(1,"Tierra");
+            bloque.move(-0.5f +(1*i),-1f,5f);
+            
+            bloques.attachChild(bloque);
+        }
+        
+        Spatial optimizado = GeometryBatchFactory.optimize(bloques);
         rootNode.attachChild(optimizado);
         //fin de probamos la generacion de bloques
         

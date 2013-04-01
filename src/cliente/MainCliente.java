@@ -2,6 +2,8 @@ package cliente;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.renderer.RenderManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import utiles.AppUtiles;
 
 /**
@@ -27,10 +29,15 @@ public class MainCliente extends SimpleApplication {
      *
      */
     @Override
-    public void simpleInitApp() {        
+    public void simpleInitApp() {     
+        Logger.getLogger("").setLevel(Level.WARNING);
+        
         //Seteamos la "Applicacion State" principal del juego
         StateJuego stateJuego = new StateJuego();
         stateManager.attach(stateJuego);
+        
+        //setamos la velocidad estandar de la flycam
+        flyCam.setMoveSpeed(10f);
     }
 
     /**

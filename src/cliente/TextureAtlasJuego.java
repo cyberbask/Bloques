@@ -14,7 +14,7 @@ import jme3tools.optimize.TextureAtlas;
  *
  * @author mcarballo
  */
-public class StateJuegoTextureAtlas extends TextureAtlas{
+public class TextureAtlasJuego extends TextureAtlas{
     private SimpleApplication app;
     private AssetManager      assetManager;
     
@@ -24,7 +24,7 @@ public class StateJuegoTextureAtlas extends TextureAtlas{
      *
      * @param app
      */
-    public StateJuegoTextureAtlas(Application app){
+    public TextureAtlasJuego(Application app){
         super(2048,2048);
         initVarios(app);
     }
@@ -35,7 +35,7 @@ public class StateJuegoTextureAtlas extends TextureAtlas{
      * @param y
      * @param app  
      */
-    public StateJuegoTextureAtlas(int x, int y,Application app){
+    public TextureAtlasJuego(int x, int y,Application app){
         super(x,y);
         initVarios(app);
         
@@ -55,7 +55,7 @@ public class StateJuegoTextureAtlas extends TextureAtlas{
         Image image = textura.getImage();
         setAnchoImagenTextura(image.getWidth()); //esto se hace la primera vez para los calculos posteriores
         
-        addTexture(textura, "Bloques1");
+        addTexture(textura, "bloques1");
     }
     
     /**
