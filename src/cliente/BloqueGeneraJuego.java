@@ -1,9 +1,10 @@
 /*
  * Clase para generar un bloque mediante triangulos, sus caras, las texturas de cada cara ...
  */
-package bloques;
+package cliente;
 
-import cliente.TextureAtlasJuego;
+import bloques.BloqueGenericos;
+import bloques.BloqueGenericosDatos;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
@@ -21,7 +22,7 @@ import com.jme3.util.BufferUtils;
  * 
  * @author mcarballo
  */
-public class BloqueGeneraBloque {
+public class BloqueGeneraJuego {
     /**
      *
      */
@@ -34,24 +35,24 @@ public class BloqueGeneraBloque {
     /**
      *
      */
-    protected TextureAtlasJuego atlas;
+    public TextureAtlasJuego atlas;
     /**
      *
      */
-    protected BloqueGenericos bloques;
+    public BloqueGenericos bloquesGenericos;
     
     /**
      *
      * @param app
      */
-    public BloqueGeneraBloque(Application app){
+    public BloqueGeneraJuego(Application app){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         
         atlas = new TextureAtlasJuego(app);
         atlas.setTexturesInAtlas();
         
-        bloques = new BloqueGenericos();
+        bloquesGenericos = new BloqueGenericos();
     }
     
     /**
@@ -60,11 +61,11 @@ public class BloqueGeneraBloque {
      * @param tipo 
      * @return
      */
-    protected Node makeBloque(int tamano,String tipo) {
+    public Node makeBloque(int tamano,String tipo) {
         //TODO Pasar datos de bloques adyacentes para no generar las caras que no se van a usar
         
         Node bloque = new Node("bloque");
-        BloqueGenericosDatos bloquesDatos = bloques.getBloqueTipo(tipo);
+        BloqueGenericosDatos bloquesDatos = bloquesGenericos.getBloqueTipo(tipo);
         
         float tamanoTile = (float) atlas.getAnchoImagenTextura() / 16f;
         tamanoTile = tamanoTile / (float) atlas.getAnchoImagenTextura();
@@ -146,4 +147,5 @@ public class BloqueGeneraBloque {
         
         return bloque;
     }
+
 }

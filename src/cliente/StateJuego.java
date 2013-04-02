@@ -131,7 +131,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
      *
      */
     public void destroy() {
-        
+        graficos.destroy();
     }
     
 }

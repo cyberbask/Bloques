@@ -38,33 +38,6 @@ public class BloqueGenericos {
                datosBloque.setNombreTextura("bloques1");
                
                datosBloque.setPosicionTexturasX(0, 1);//frontal
-               datosBloque.setPosicionTexturasY(0, 1);
-               
-               datosBloque.setPosicionTexturasX(1, 2);//lateral derecha
-               datosBloque.setPosicionTexturasY(1, 1);
-               
-               datosBloque.setPosicionTexturasX(2, 3);//trasera
-               datosBloque.setPosicionTexturasY(2, 1);
-               
-               datosBloque.setPosicionTexturasX(3, 4);//lateral izquierda
-               datosBloque.setPosicionTexturasY(3, 1);
-               
-               datosBloque.setPosicionTexturasX(4, 5);//Superior
-               datosBloque.setPosicionTexturasY(4, 1);
-               
-               datosBloque.setPosicionTexturasX(5, 6); //inferior
-               datosBloque.setPosicionTexturasY(5, 1);
-               
-               bloques.put(nomBloque,datosBloque);
-               
-               return datosBloque;
-            }
-            
-            //bloque tierra
-            if ("Roca".equals(nomBloque)){
-               datosBloque.setNombreTextura("bloques1");
-               
-               datosBloque.setPosicionTexturasX(0, 1);//frontal
                datosBloque.setPosicionTexturasY(0, 2);
                
                datosBloque.setPosicionTexturasX(1, 2);//lateral derecha
@@ -81,6 +54,33 @@ public class BloqueGenericos {
                
                datosBloque.setPosicionTexturasX(5, 6); //inferior
                datosBloque.setPosicionTexturasY(5, 2);
+               
+               bloques.put(nomBloque,datosBloque);
+               
+               return datosBloque;
+            }
+            
+            //bloque roca
+            if ("Roca".equals(nomBloque)){
+               datosBloque.setNombreTextura("bloques1");
+               
+               datosBloque.setPosicionTexturasX(0, 1);//frontal
+               datosBloque.setPosicionTexturasY(0, 1);
+               
+               datosBloque.setPosicionTexturasX(1, 2);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 1);
+               
+               datosBloque.setPosicionTexturasX(2, 3);//trasera
+               datosBloque.setPosicionTexturasY(2, 1);
+               
+               datosBloque.setPosicionTexturasX(3, 4);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 1);
+               
+               datosBloque.setPosicionTexturasX(4, 5);//Superior
+               datosBloque.setPosicionTexturasY(4, 1);
+               
+               datosBloque.setPosicionTexturasX(5, 6); //inferior
+               datosBloque.setPosicionTexturasY(5, 1);
                
                bloques.put(nomBloque,datosBloque);
                
