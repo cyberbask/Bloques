@@ -48,7 +48,7 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
         HillHeightMap heightmap = null;
         HillHeightMap.NORMALIZE_RANGE = 100; // optional
         try {
-            heightmap = new HillHeightMap(513, 1000, 20, 30, result[0]); // byte 3 is a random seed
+            heightmap = new HillHeightMap(513, 1000, 50, 100, result[0]); // byte 3 is a random seed
         } catch (Exception ex) {
 
         }
@@ -113,7 +113,7 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
                     y = originalY;
                 }
                 
-                //minY = y //sin relleno;
+                //minY = y; //sin relleno;
                 
                 for (int a=y; a>=minY; a--){    
                     final Spatial bloqueClonado;
