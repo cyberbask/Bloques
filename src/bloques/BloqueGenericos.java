@@ -10,13 +10,13 @@ import java.util.Map;
  *
  * @author mcarballo
  */
-public class Bloques {
-    Map<String,BloquesDatos> bloques = new HashMap<String,BloquesDatos>();
+public class BloqueGenericos {
+    Map<String,BloqueGenericosDatos> bloques = new HashMap<String,BloqueGenericosDatos>();
     
     /**
      *
      */
-    public Bloques(){
+    public BloqueGenericos(){
         
     }
     
@@ -25,13 +25,13 @@ public class Bloques {
      * @param nomBloque
      * @return
      */
-    public BloquesDatos getBloqueTipo(String nomBloque){
+    public BloqueGenericosDatos getBloqueTipo(String nomBloque){
         if (bloques.get(nomBloque) != null){
             return bloques.get(nomBloque);
         }else{
             //TODO sacar los datos de algun sitio real
             
-            BloquesDatos datosBloque = new BloquesDatos();
+            BloqueGenericosDatos datosBloque = new BloqueGenericosDatos();
             
             //bloque tierra
             if ("Tierra".equals(nomBloque)){

@@ -3,7 +3,6 @@
  */
 package cliente;
 
-import bloques.BloqueGeneraTerreno;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -16,7 +15,6 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import utiles.AppUtiles;
 
@@ -37,7 +35,9 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     private boolean left = false, right = false, up = false, down = false;
     private boolean vsync = true;
     
-    BloqueGeneraTerreno bloqueGeneraTerreno;
+    //Graficos
+    GraficosJuego graficos;
+    
  
     /**
      *
@@ -61,7 +61,8 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         StateJuegoGui juegoGui = new StateJuegoGui(app);
         juegoGui.initPuntoMira();
         
-        bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
+        //manejo de graficos
+        graficos = new GraficosJuego(app);
     }
  
     @Override
@@ -84,11 +85,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     // Note that update is only called while the state is both attached and enabled.
     @Override
     public void update(float tpf) {
-        Spatial devueltoGeneraTerreno = bloqueGeneraTerreno.generaTerreno();
-        
-        if (devueltoGeneraTerreno != null) {
-            rootNode.attachChild(devueltoGeneraTerreno);
-        }
+        graficos.generarTerreno();
     }
  
     
@@ -134,7 +131,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
      *
      */
     public void destroy() {
-        bloqueGeneraTerreno.destroy(); //lo ejecutamos para cerrar los hilos que pueda haber abiertos
+        
     }
     
 }

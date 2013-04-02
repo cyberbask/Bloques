@@ -38,7 +38,7 @@ public class BloqueGeneraBloque {
     /**
      *
      */
-    protected Bloques bloques;
+    protected BloqueGenericos bloques;
     
     /**
      *
@@ -51,7 +51,7 @@ public class BloqueGeneraBloque {
         atlas = new TextureAtlasJuego(app);
         atlas.setTexturesInAtlas();
         
-        bloques = new Bloques();
+        bloques = new BloqueGenericos();
     }
     
     /**
@@ -64,7 +64,7 @@ public class BloqueGeneraBloque {
         //TODO Pasar datos de bloques adyacentes para no generar las caras que no se van a usar
         
         Node bloque = new Node("bloque");
-        BloquesDatos bloquesDatos = bloques.getBloqueTipo(tipo);
+        BloqueGenericosDatos bloquesDatos = bloques.getBloqueTipo(tipo);
         
         float tamanoTile = (float) atlas.getAnchoImagenTextura() / 16f;
         tamanoTile = tamanoTile / (float) atlas.getAnchoImagenTextura();

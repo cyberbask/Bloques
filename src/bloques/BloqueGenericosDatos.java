@@ -7,7 +7,7 @@ package bloques;
  *
  * @author mcarballo
  */
-public class BloquesDatos {
+public class BloqueGenericosDatos {
     private String nombreTextura; 
     private int[] posicionTexturaX = new int[6];
     private int[] posicionTexturaY = new int[6];
@@ -15,7 +15,7 @@ public class BloquesDatos {
     /**
      *
      */
-    public BloquesDatos(){
+    public BloqueGenericosDatos(){
         
     }
     

@@ -25,7 +25,7 @@ import jme3tools.optimize.GeometryBatchFactory;
 public class BloqueGeneraTerreno extends BloqueGeneraBloque{
     ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
     Future future = null;
-    Boolean primeravez = true;
+    protected Boolean primeravez = true;
     
     //graficos
     Map<Integer,Spatial> bloquesMostrar=new HashMap<Integer, Spatial>();
@@ -70,7 +70,7 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
         //TODO material con iluminacion
         
         //tierra
-        BloquesDatos bloquesDatos = bloques.getBloqueTipo("Tierra");
+        BloqueGenericosDatos bloquesDatos = bloques.getBloqueTipo("Tierra");
         
         Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat1.setTexture("ColorMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
@@ -174,6 +174,37 @@ public class BloqueGeneraTerreno extends BloqueGeneraBloque{
         
         //bloquesFinales.setMaterial(mat1);   
     }
+    
+    public void generaTerrenoInicialPosiciones(){
+        HillHeightMap heightmap = generateTerrainconReturn();
+        
+        
+        
+        int y = 0;
+        int minY = 0;
+        
+        for (int x = 0;x<300;x++){
+            for (int z = 0;z<300;z++){
+                int originalY = y;
+                
+                y = (int) heightmap.getScaledHeightAtPoint(x,z);
+                
+                if (y == 0){
+                    y = originalY;
+                }
+                
+                //minY = y; //sin relleno;
+                
+                for (int a=y; a>=minY; a--){    
+                    
+                }
+            }
+        }
+        
+        
+    }
+    
+    
     
     // A self-contained time-intensive task:
     private Callable<Boolean> generaTerrenoHilo = new Callable<Boolean>(){
