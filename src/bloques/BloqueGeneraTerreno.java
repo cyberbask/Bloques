@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -24,7 +25,7 @@ public class BloqueGeneraTerreno{
     Future future = null;
     
     //chunks
-    BloqueChunks chunks = null;
+    public BloqueChunks chunks = null;
     Map<Integer,BloqueChunks> updates=new HashMap<Integer, BloqueChunks>();
     int contadorUpdates = 0;
     
@@ -58,21 +59,24 @@ public class BloqueGeneraTerreno{
     /**
      *
      */
-    public void generaTerrenoInicialPosiciones(){
+    @SuppressWarnings("SleepWhileInLoop")
+    public void generaTerrenoInicialPosiciones() throws InterruptedException, ExecutionException{
         HillHeightMap heightmap = generateTerrainconReturn();
         
         int y = 0;
         int minY = BloqueChunkUtiles.MIN_ALTURA_BLOQUES;
         int maxY = BloqueChunkUtiles.MAX_ALTURA_BLOQUES;
         
-        int ultimoGrupoChunkX = 0;
+        int ultimoGrupoChunkX = (BloqueChunkUtiles.TAMANO_CHUNK - 1);
         int ultimoGrupoChunkZ = 0;
         
         int x;
         int z;
         
-        for (x = 0;x<32;x++){
-            for (z = 0;z<32;z++){
+        int totalTamano = 64;
+        
+        for (x = 0;x<totalTamano;x++){
+            for (z = 0;z<totalTamano;z++){
                 int originalY = y;
                 
                 y = (int) heightmap.getScaledHeightAtPoint(x,z);
@@ -81,38 +85,60 @@ public class BloqueGeneraTerreno{
                     y = originalY;
                 }
                 
-                //minY = y; //sin relleno;
                 
                 for (int a=maxY; a>=minY; a--){ 
                     if (a <= y){
+                    //if (a == y){ //sin relleno
                         chunks.setBloque(x, a, z, new BloqueChunkDatos("Tierra"));
+                    }else{
+                        chunks.setBloque(x, a, z, null);
                     }
                     
                 }
                 
-                
-                if ((x / BloqueChunkUtiles.TAMANO_CHUNK) > ultimoGrupoChunkX || (z / BloqueChunkUtiles.TAMANO_CHUNK) > ultimoGrupoChunkZ){
-                    final BloqueChunks grupoChunks = chunks.getGrupoChunks(x-1, z-1);
+                //TODO esto deberia ir guardado en algun sitio, y luego cargarlo desde ahi
+                if (x >= ultimoGrupoChunkX && (z / (BloqueChunkUtiles.TAMANO_CHUNK - 1)) > ultimoGrupoChunkZ){
+                    System.out.println("chunkear x"+x+"z"+z);
+                    final BloqueChunks grupoChunks = chunks.getGrupoChunks(x, z);
                     
                     app.enqueue(new Callable() {
                         public Object call() throws Exception {
                             updates.put(contadorUpdates, grupoChunks);
+                            System.out.println("chunkeado");
                             contadorUpdates++;
                             return null;
                         }
                     });
                     
-                    if ((x / BloqueChunkUtiles.TAMANO_CHUNK) > ultimoGrupoChunkX){
-                        ultimoGrupoChunkX++;
-                    }
-                    
-                    if ((z / BloqueChunkUtiles.TAMANO_CHUNK) > ultimoGrupoChunkZ){
+                    if ((z / (BloqueChunkUtiles.TAMANO_CHUNK - 1)) > ultimoGrupoChunkZ){
                         ultimoGrupoChunkZ++;
                     }
+                    
+                    /*int contaBucles = 0;
+                    
+                    int cuentaClaves;
+                    
+                    do {
+                        Thread.sleep(1000);
+                        contaBucles += 1;
+
+                        cuentaClaves = app.enqueue(new Callable<Integer>() {
+                            public Integer call() throws Exception {
+                                Integer[] keys = (Integer[])( updates.keySet().toArray( new Integer[updates.size()] ) );
+                                return keys.length;
+                            }
+                        }).get();
+                    } while(cuentaClaves > 0 && contaBucles < 5);*/
+                    
+                    Thread.sleep(10);
                 }
             }
             
             ultimoGrupoChunkZ = 0;
+            
+            if (x >= ultimoGrupoChunkX){
+                ultimoGrupoChunkX = ultimoGrupoChunkX + (BloqueChunkUtiles.TAMANO_CHUNK - 1);
+            }
         }
         
          
@@ -131,7 +157,7 @@ public class BloqueGeneraTerreno{
      *
      * @return
      */
-    public Map<Integer, BloqueChunks> generaTerreno(){
+    public void generaTerreno(){
         try{
             if(future == null && chunks == null){
                 chunks = new BloqueChunks();
@@ -149,24 +175,40 @@ public class BloqueGeneraTerreno{
         catch(Exception e){ 
 
         }
-        
-        Integer[] keys = (Integer[])( updates.keySet().toArray( new Integer[updates.size()] ) );
-        
-        if (keys.length > 0){
-            Map<Integer,BloqueChunks> chunksDevolver=new HashMap<Integer, BloqueChunks>();
-            
-            for(int i=0; i<keys.length; i++){
-                int claveActual = keys[i];
-                
-                chunksDevolver.put(i, updates.get(claveActual));
+    }
+    
+    public Map<Integer,BloqueChunks> getUpdates(){
+        return updates;
+    }
+    
+    public Map<Integer,BloqueChunks> getUpdates(Boolean vaciarUpdate){
+        if (vaciarUpdate){
+            Map<Integer,BloqueChunks> updatesCopia = new HashMap<Integer, BloqueChunks>();
 
+            Integer[] keys = (Integer[])( updates.keySet().toArray( new Integer[updates.size()] ) ); 
+
+            if (keys.length > 0){
+                int claveActual = keys[0];
+                    
+                updatesCopia.put(claveActual,updates.get(claveActual));
+                    
                 updates.remove(claveActual);
+
+                return updatesCopia;
+            }else{
+               return null;
             }
-        
-            return chunksDevolver;
+        }else{
+            return getUpdates();
         }
-        
-        return null;
+    }
+    
+    public BloqueChunks getChunks() {
+        return chunks;
+    }
+
+    public void setChunks(BloqueChunks chunks) {
+        this.chunks = chunks;
     }
     
     /**

@@ -72,6 +72,16 @@ public class BloqueChunk {
         }
     }
     
+    public BloqueChunkDatos getDatosBloque(int[] coordenadas){
+        int bloquePeticion = this.getNumBloque(coordenadas[0], coordenadas[1], coordenadas[2]);
+        
+        if (bloquePeticion > 0){
+            return bloquesDatos[bloquePeticion];
+        }else{
+            return null;
+        }
+    }
+    
     /**
      * Actualiza los datos del bloque segun su posicion
      * @param x

@@ -51,13 +51,14 @@ public class GraficosJuego {
     int contadorUpdates = 0;
     
     //clase para manejo de bloques
-    BloqueGeneraJuego bloques;
+    GeneraBloqueJuego bloques;
     
     
     /**
      * Objeto que contiene todo el procesado de posiciones y bloques
      */
     protected BloqueGeneraTerreno bloqueGeneraTerreno;
+    
     
     /**
      * Constructor
@@ -74,49 +75,52 @@ public class GraficosJuego {
         
         bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
         
-        bloques = new BloqueGeneraJuego(app);
+        bloques = new GeneraBloqueJuego(app);
     }
     
+    @SuppressWarnings("SleepWhileInLoop")
     public void updateaRootNode() throws InterruptedException, ExecutionException{
         //TODO - Clase para Materiales
-        
-        Map<String,Node> bloquesGenerados = new HashMap<String,Node>();
-        
-        //tierra
-        BloqueGenericosDatos bloquesDatos = bloques.bloquesGenericos.getBloqueTipo("Tierra");
-        
-        Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setTexture("ColorMap", bloques.atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
-        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
-        
-        BloqueGeneraJuego generaBloque = new BloqueGeneraJuego(app);
-        Node bloque = bloques.makeBloque(1,"Tierra");
-        
-        bloquesGenerados.put("Tierra",bloque);
-        
-        //roca
-        bloquesDatos = bloques.bloquesGenericos.getBloqueTipo("Roca");
-        
-        mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat1.setTexture("ColorMap", bloques.atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
-        mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
-        
-        generaBloque = new BloqueGeneraJuego(app);
-        bloque = generaBloque.makeBloque(1,"Roca");
-        
-        bloquesGenerados.put("Roca",bloque);
-        
         
         //sacamos el array de chunks a updatar
         Map updatear = app.enqueue(new Callable<Map<Integer,BloqueChunks>>() {
             public Map<Integer,BloqueChunks> call() throws Exception {
-                return updates;
+                return bloqueGeneraTerreno.getUpdates(true);
             }
         }).get();
         
         //recorremos el array
-        Integer[] keys = (Integer[])( updatear.keySet().toArray( new Integer[updatear.size()] ) );    
+        Integer[] keys = (Integer[])( updatear.keySet().toArray( new Integer[updatear.size()] ) ); 
+        
         if (keys.length > 0){
+            
+            Map<String,Node> bloquesGenerados = new HashMap<String,Node>();
+        
+            //tierra
+            BloqueGenericosDatos bloquesDatos = bloques.bloquesGenericos.getBloqueTipo("Tierra");
+
+            Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            mat1.setTexture("ColorMap", bloques.atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
+
+            GeneraBloqueJuego generaBloque = new GeneraBloqueJuego(app);
+            Node bloque = bloques.makeBloque(1,"Tierra");
+
+            bloquesGenerados.put("Tierra",bloque);
+
+            //roca
+            bloquesDatos = bloques.bloquesGenericos.getBloqueTipo("Roca");
+
+            mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            mat1.setTexture("ColorMap", bloques.atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
+
+            generaBloque = new GeneraBloqueJuego(app);
+            bloque = generaBloque.makeBloque(1,"Roca");
+
+            bloquesGenerados.put("Roca",bloque);
+            
+            
             for(int i=0; i<keys.length; i++){
                 int claveActual = keys[i];
                 
@@ -130,52 +134,69 @@ public class GraficosJuego {
                         String claveActualAllChunks = keysAllChunks[j];
                         
                         BloqueChunk chunkActual = allChunks.get(claveActualAllChunks);
-                        
+  
                         int tamano = BloqueChunkUtiles.TAMANO_CHUNK;
-                        
+
                         Node bloquesMostrar = new Node(claveActualAllChunks);
-                        
-                        System.out.println(claveActualAllChunks);
-                        
+
+                        System.out.println("chunk "+claveActualAllChunks);
+
                         int mostrar = 0;
-                        
+
                         for(int x = 0;x<tamano;x++){
                             for(int y = 0;y<tamano;y++){
                                 for(int z = 0;z<tamano;z++){
                                     BloqueChunkDatos datosBloque = chunkActual.getDatosBloque(x, y, z);
-                                    
+
                                     if (datosBloque != null){
-                                        Spatial bloqueClonado;
-                                        bloqueClonado = bloquesGenerados.get(datosBloque.getNomBloque()).clone();
+                                        Node bloqueClonado;
+                                        bloqueClonado = (Node) bloquesGenerados.get(datosBloque.getNomBloque()).clone();
 
-                                        bloqueClonado.setMaterial(mat1);
-                                        //se le pasan las coordenadas reales del cubo, no las del chunk
-                                        int[] coordenadas = BloqueChunkUtiles.calculaCoordenadasBloqueAPartirDeChunk(claveActualAllChunks, x, y, z);
-                                        bloqueClonado.move(coordenadas[0],coordenadas[1],coordenadas[2]);          
+                                        //coordenadas reales del cubo, no las del chunk
+                                        final int[] coordenadas = BloqueChunkUtiles.calculaCoordenadasBloqueAPartirDeChunk(claveActualAllChunks, x, y, z);
 
-                                        bloquesMostrar.attachChild(bloqueClonado);
-                                        
-                                        mostrar = 1;
+                                        //le quitamos las caras que no se ven
+                                        int contaCarasQuitadas = 0;
+                                        int[] bloquesVecinos = bloqueGeneraTerreno.chunks.getBloquesVecinos(coordenadas[0],coordenadas[1],coordenadas[2]);
+                                        for(int h = 0;h<6;h++){
+                                            if (bloquesVecinos[h] == 1){ //si hay vecino
+                                                bloqueClonado.detachChildNamed("Cara-"+h); 
+                                                contaCarasQuitadas++;
+                                            }
+                                        }
+
+                                        if (contaCarasQuitadas < 6){
+                                            bloqueClonado.move(coordenadas[0],coordenadas[1],coordenadas[2]); 
+
+                                            bloqueClonado.setMaterial(mat1);
+
+                                            bloquesMostrar.attachChild(bloqueClonado);
+
+                                            mostrar = 1;
+                                        }
                                     }
                                 }
                             }
                         }
-                        
+
+                        System.out.println("chunk "+claveActualAllChunks+" Terminado");
+
                         if (mostrar == 1){
+                            //bloquesMostrar.setMaterial(mat1);
+
                             final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrar);
-                            
+
                             app.enqueue(new Callable() {
                                 public Object call() throws Exception {
                                     rootNode.attachChild(optimizado);
                                     return null;
                                 }
                             });
-                            
+
                         }
                     }
                 }
-                
-                updatear.remove(claveActual);
+                Thread.sleep(10);
             }
         }
         
@@ -193,29 +214,8 @@ public class GraficosJuego {
     /**
      * Esta funcion se llamara en el update del AppState
      */
-    public void generarTerreno(){
-        /*Spatial devueltoGeneraTerreno = bloqueGeneraTerreno.generaTerreno();
-        if (devueltoGeneraTerreno != null) {
-        rootNode.attachChild(devueltoGeneraTerreno);
-        }*/
-        
-        Map<Integer, BloqueChunks> terrenoGenerado = bloqueGeneraTerreno.generaTerreno();
-           
-        if (terrenoGenerado != null){
-            
-            
-            Integer[] keys = (Integer[])( terrenoGenerado.keySet().toArray( new Integer[terrenoGenerado.size()] ) );
-            
-            if (keys.length > 0){
-                for(int i=0; i<keys.length; i++){
-                    int claveActual = keys[i];
-                    updates.put(contadorUpdates, terrenoGenerado.get(claveActual));
-                    contadorUpdates++;
-                }
-            }
-            
-            int yo=0;
-        }
+    public void generarTerreno(){        
+        bloqueGeneraTerreno.generaTerreno();
         
         try{
             if(future == null && !generandoGraficos){

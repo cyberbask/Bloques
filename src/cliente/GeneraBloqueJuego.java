@@ -22,7 +22,7 @@ import com.jme3.util.BufferUtils;
  * 
  * @author mcarballo
  */
-public class BloqueGeneraJuego {
+public class GeneraBloqueJuego {
     /**
      *
      */
@@ -45,7 +45,7 @@ public class BloqueGeneraJuego {
      *
      * @param app
      */
-    public BloqueGeneraJuego(Application app){
+    public GeneraBloqueJuego(Application app){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         
@@ -112,7 +112,8 @@ public class BloqueGeneraJuego {
             m.setBuffer(VertexBuffer.Type.Index, 3, BufferUtils.createIntBuffer(indexes));
             m.updateBound();
 
-            Geometry cara = new Geometry("Cara-"+String.valueOf(i)+"-Bloque-x-y", m);   
+            //Geometry cara = new Geometry("Cara-"+String.valueOf(i)+"-Bloque-x-y", m);   
+            Geometry cara = new Geometry("Cara-"+String.valueOf(i), m);   
 
             //colocamos las caras en su sitio
             switch(i){
