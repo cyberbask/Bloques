@@ -38,7 +38,7 @@ public class MainCliente extends SimpleApplication {
         stateManager.attach(stateJuego);
         
         //setamos la velocidad estandar de la flycam
-        flyCam.setMoveSpeed(10f);
+        flyCam.setMoveSpeed(10f);       
     }
 
     /**

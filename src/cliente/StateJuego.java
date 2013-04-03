@@ -63,6 +63,9 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         
         //manejo de graficos
         graficos = new GraficosJuego(app);
+        
+        //esta linea impide que la ejecucion se pare aunque se pierda el foco
+        app.setPauseOnLostFocus(false);
     }
  
     @Override
