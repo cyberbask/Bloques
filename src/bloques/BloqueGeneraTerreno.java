@@ -90,7 +90,7 @@ public class BloqueGeneraTerreno{
                 
                 
                 for (int a=maxY; a>=minY; a--){ 
-                    //if (a == y){ //sin relleno
+                    //if (a == y){ //sin relleno                   
                     if (a <= y){
                         String tipoTerreno;
                         if (variacion == 0){
@@ -105,6 +105,7 @@ public class BloqueGeneraTerreno{
                         }
     
                         chunks.setBloque(x, a, z, new BloqueChunkDatos(tipoTerreno));
+                        
                     }else{
                         chunks.setBloque(x, a, z, null);
                     }
@@ -204,10 +205,10 @@ public class BloqueGeneraTerreno{
             
             SortedSet<Integer> keys = new TreeSet<Integer>(updates.keySet());
             for (Integer key : keys) { 
-               updatesCopia.put(key,updates.get(key));
-               updates.remove(key);
-               hayDatos = true;
-               break;
+                updatesCopia.put(key,updates.get(key));
+                updates.remove(key);
+                hayDatos = true;
+                break;
             }
             
             if (hayDatos){

@@ -64,6 +64,7 @@ public class BloqueChunkUtiles {
         nuevasCoordenadas[0] = chunkX * TAMANO_CHUNK;
         nuevasCoordenadas[1] = chunkY * TAMANO_CHUNK;
         nuevasCoordenadas[2] = chunkZ * TAMANO_CHUNK;
+        
         if (nuevasCoordenadas[0] < 0){
             nuevasCoordenadas[0] = nuevasCoordenadas[0] + TAMANO_CHUNK;
         }

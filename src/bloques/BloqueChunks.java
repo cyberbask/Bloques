@@ -48,6 +48,11 @@ public class BloqueChunks {
         return null;
     }
     
+    public BloqueChunkDatos getBloquePorCoordenadas(int x, int y, int z){  
+        BloqueChunk chunk = getChunk(x, y, z);
+        return getBloque(x, y, z,chunk);
+    }
+    
     public BloqueChunkDatos getBloqueAPartirDeChunk(int x, int y, int z){
         BloqueChunk chunk = getChunk(x, y, z);
         
@@ -161,5 +166,30 @@ public class BloqueChunks {
         
         return caras;
     }    
+    
+    public int getBloqueConMasAltura(int x, int z){
+        int devolverAltura = 0;
+        
+        int maxbucle = BloqueChunkUtiles.MAX_ALTURA_BLOQUES / BloqueChunkUtiles.TAMANO_CHUNK;
+        
+        for (int i=(maxbucle - 1);i>=0;i--){
+            int a = i * BloqueChunkUtiles.TAMANO_CHUNK;
+            
+            BloqueChunk chunk = getChunk(x, a, z);
+            if (chunk != null){
+               for(int y = (maxbucle - 1);y>=0;y--){
+                    int b = y + a;
+                    BloqueChunkDatos datosBloque = getBloque(x, y, z, chunk);
+                            
+                    if (datosBloque != null){
+                        devolverAltura = b;
+                        return devolverAltura;
+                    }
+                }
+            }
+        }
+        
+        return devolverAltura;
+    }
             
 }

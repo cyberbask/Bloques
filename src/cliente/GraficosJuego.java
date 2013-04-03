@@ -9,7 +9,6 @@ import bloques.BloqueChunkDatos;
 import bloques.BloqueChunkUtiles;
 import bloques.BloqueChunks;
 import bloques.BloqueGeneraTerreno;
-import bloques.BloqueGenericosDatos;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -18,10 +17,11 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -46,6 +46,7 @@ public class GraficosJuego {
     private InputManager      inputManager;
     private ViewPort          viewPort;
     private BulletAppState    physics;
+    private Camera       cam;
     
     ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
     Future future = null;
@@ -57,13 +58,14 @@ public class GraficosJuego {
     
     //clase para manejo de bloques
     GeneraBloqueJuego bloques;
-    
-    
+   
     /**
      * Objeto que contiene todo el procesado de posiciones y bloques
      */
     protected BloqueGeneraTerreno bloqueGeneraTerreno;
     
+    //variable para controlar si posicionamos la camara
+    Boolean posicionarCamara = true;
     
     /**
      * Constructor
@@ -77,6 +79,7 @@ public class GraficosJuego {
         this.inputManager = this.app.getInputManager();
         this.viewPort     = this.app.getViewPort();
         this.physics      = this.stateManager.getState(BulletAppState.class);
+        this.cam          = this.app.getCamera();
         
         bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
         
@@ -93,7 +96,7 @@ public class GraficosJuego {
         rootNode.addLight(al);
 
         DirectionalLight dl = new DirectionalLight();
-        dl.setColor(ColorRGBA.White.mult(0.4f));
+        dl.setColor(ColorRGBA.White.mult(0.5f));
         dl.setDirection(new Vector3f(1,0,-1).normalizeLocal());
         //dl.setDirection(new Vector3f(50f, -50f, -50f).normalizeLocal());
         //dl.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
@@ -216,6 +219,18 @@ public class GraficosJuego {
                 if(future.isDone()){
                     generandoGraficos = false;
                     future = null;
+                    
+                    if (posicionarCamara){
+                        int bloqueConMasAltura = bloqueGeneraTerreno.chunks.getBloqueConMasAltura(10, 10);
+                        if (bloqueConMasAltura > 0){
+                            cam.setLocation(new Vector3f(10, bloqueConMasAltura + 4, 10));
+                            cam.setRotation(new Quaternion().fromAngleAxis(90*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
+                            cam.update();
+                            cam.setRotation(new Quaternion().fromAngleAxis(60*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
+                            cam.update();
+                            posicionarCamara = false;
+                        }
+                    }
                 }
                 else if(future.isCancelled()){
                     generandoGraficos = false;
