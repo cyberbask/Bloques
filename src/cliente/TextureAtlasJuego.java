@@ -6,6 +6,7 @@ package cliente;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
+import com.jme3.asset.TextureKey;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import jme3tools.optimize.TextureAtlas;
@@ -50,12 +51,14 @@ public class TextureAtlasJuego extends TextureAtlas{
      * Añade todas las texturas que tenemos al Atlas
      */
     public void setTexturesInAtlas(){
-        Texture textura = assetManager.loadTexture("Textures/bloques1.png");
+        TextureKey textura = new TextureKey("Textures/bloques1.png");
+        textura.setGenerateMips(true);
+        Texture text = assetManager.loadTexture(textura);
         
-        Image image = textura.getImage();
+        Image image = text.getImage();
         setAnchoImagenTextura(image.getWidth()); //esto se hace la primera vez para los calculos posteriores
         
-        addTexture(textura, "bloques1");
+        addTexture(text, "bloques1");
     }
     
     /**

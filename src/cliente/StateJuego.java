@@ -13,6 +13,7 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
@@ -66,6 +67,9 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         
         //esta linea impide que la ejecucion se pare aunque se pierda el foco
         app.setPauseOnLostFocus(false);
+        
+        //cambiamos el color del fondo
+        viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
     }
  
     @Override

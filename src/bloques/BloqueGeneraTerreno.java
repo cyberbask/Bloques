@@ -48,7 +48,7 @@ public class BloqueGeneraTerreno{
         HillHeightMap heightmap = null;
         HillHeightMap.NORMALIZE_RANGE = 100; // optional
         try {
-            heightmap = new HillHeightMap(257, 1000, 50, 100, result[0]); // byte 3 is a random seed
+            heightmap = new HillHeightMap(257, 1000, 40, 50, result[0]); // byte 3 is a random seed
         } catch (Exception ex) {
 
         }
@@ -76,6 +76,7 @@ public class BloqueGeneraTerreno{
         int z;
         
         int totalTamano = 256;
+        int variacion = 0;
         
         for (x = 0;x<totalTamano;x++){
             for (z = 0;z<totalTamano;z++){
@@ -91,7 +92,19 @@ public class BloqueGeneraTerreno{
                 for (int a=maxY; a>=minY; a--){ 
                     //if (a == y){ //sin relleno
                     if (a <= y){
-                        chunks.setBloque(x, a, z, new BloqueChunkDatos("Tierra"));
+                        String tipoTerreno;
+                        if (variacion == 0){
+                            tipoTerreno = "Tierra";
+                            variacion = 1;
+                        }else if(variacion == 1){
+                            tipoTerreno = "Roca";
+                            variacion = 2;
+                        }else{
+                            tipoTerreno = "Arena";
+                            variacion = 0;
+                        }
+    
+                        chunks.setBloque(x, a, z, new BloqueChunkDatos(tipoTerreno));
                     }else{
                         chunks.setBloque(x, a, z, null);
                     }

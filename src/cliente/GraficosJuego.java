@@ -16,11 +16,16 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.util.TangentBinormalGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -76,6 +81,23 @@ public class GraficosJuego {
         bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
         
         bloques = new GeneraBloqueJuego(app);
+        
+        //Luces basicas
+        setUpLight();
+    }
+    
+    private void setUpLight() {
+        // We add light so we see the scene
+        AmbientLight al = new AmbientLight();
+        al.setColor(ColorRGBA.White.mult(0.6f));
+        rootNode.addLight(al);
+
+        DirectionalLight dl = new DirectionalLight();
+        dl.setColor(ColorRGBA.White.mult(0.4f));
+        dl.setDirection(new Vector3f(1,0,-1).normalizeLocal());
+        //dl.setDirection(new Vector3f(50f, -50f, -50f).normalizeLocal());
+        //dl.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
+        rootNode.addLight(dl);
     }
     
     @SuppressWarnings("SleepWhileInLoop")
@@ -137,9 +159,9 @@ public class GraficosJuego {
 
                                         if (contaCarasQuitadas < 6){
                                             bloqueClonado.move(coordenadas[0],coordenadas[1],coordenadas[2]); 
-
-                                            //bloqueClonado.setMaterial(mat1);
-
+                                            
+                                            TangentBinormalGenerator.generate(bloqueClonado);
+                                            
                                             bloquesMostrar.attachChild(bloqueClonado);
 
                                             mostrar = 1;
@@ -152,8 +174,6 @@ public class GraficosJuego {
                         System.out.println("chunk "+claveActualAllChunks+" Terminado");
 
                         if (mostrar == 1){
-                            //bloquesMostrar.setMaterial(mat1);
-
                             final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrar);
 
                             app.enqueue(new Callable() {

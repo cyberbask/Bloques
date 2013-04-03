@@ -10,6 +10,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -80,14 +81,14 @@ public class GeneraBloqueJuego {
         for (int i = 0; i<6; i++){
             Mesh m = new Mesh();
 
-            // Vertices, posiciones en el espacio
+            //VERTICES -  posiciones en el espacio
             Vector3f [] vertices = new Vector3f[4];
             vertices[0] = new Vector3f(0,0,0);
             vertices[1] = new Vector3f(tamano,0,0);
             vertices[2] = new Vector3f(0,tamano,0);
             vertices[3] = new Vector3f(tamano,tamano,0);
 
-            //Posiciones de las texturas
+            //TEXTURAS - Posiciones de las texturas
             float x = (( (float) bloquesDatos.getPosicionTexturasX()[i] ) - 1 ) * tamanoTile; //siempre es uno menos, el cero cuenta
             float y = ((( (float) bloquesDatos.getPosicionTexturasY()[i] ) - 1 ) * -1) * tamanoTile; //siempre es uno menos, el cero cuenta
 
@@ -110,13 +111,17 @@ public class GeneraBloqueJuego {
             texCoord[2] = new Vector2f(x + sumapixel,1 + y + sumapixel2);
             texCoord[3] = new Vector2f(tamanoTile + x + sumapixel4,1 + y + sumapixel2);
 
-            // Indices de los vertices, en que orden se construyen
+            //NORMALES - para la iluminacion
+            float[] normals = new float[]{0,0,1, 0,0,1, 0,0,1, 0,0,1};
+            
+            //INDICES -  Indices de los vertices, en que orden se construyen
             int [] indexes = {2,0,1,1,3,2};
-
+            
             // Setting buffers
             m.setBuffer(VertexBuffer.Type.Position, 3, BufferUtils.createFloatBuffer(vertices));
             m.setBuffer(VertexBuffer.Type.TexCoord, 2, BufferUtils.createFloatBuffer(texCoord));
             m.setBuffer(VertexBuffer.Type.Index, 3, BufferUtils.createIntBuffer(indexes));
+            m.setBuffer(VertexBuffer.Type.Normal, 3, BufferUtils.createFloatBuffer(normals));
             m.updateBound();
 
             //Geometry cara = new Geometry("Cara-"+String.valueOf(i)+"-Bloque-x-y", m);   
@@ -163,13 +168,21 @@ public class GeneraBloqueJuego {
             return (Node) bloqueGenerado.clone();
         }else{
             BloqueGenericosDatos bloquesDatos = bloquesGenericos.getBloqueTipo(nomBloque);
-
-            Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setTexture("ColorMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
+            
+            //Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+            //mat1.setTexture("ColorMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura())); 
+            mat1.setTexture("DiffuseMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
             mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
+            
+            //luces
+            mat1.setBoolean("UseMaterialColors", true);
+            mat1.setColor("Ambient",  ColorRGBA.White);
+            mat1.setColor("Diffuse",  ColorRGBA.White);
+            mat1.setColor("Specular", ColorRGBA.White);
+            mat1.setFloat("Shininess", 1f);
 
-            GeneraBloqueJuego generaBloque = new GeneraBloqueJuego(app);
-            Node bloque = makeBloque(1,"Tierra");
+            Node bloque = makeBloque(1,nomBloque);
             
             bloque.setMaterial(mat1);
             
