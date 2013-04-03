@@ -9,6 +9,8 @@ import com.jme3.terrain.heightmap.HillHeightMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -46,7 +48,7 @@ public class BloqueGeneraTerreno{
         HillHeightMap heightmap = null;
         HillHeightMap.NORMALIZE_RANGE = 100; // optional
         try {
-            heightmap = new HillHeightMap(513, 1000, 50, 100, result[0]); // byte 3 is a random seed
+            heightmap = new HillHeightMap(257, 1000, 50, 100, result[0]); // byte 3 is a random seed
         } catch (Exception ex) {
 
         }
@@ -73,7 +75,7 @@ public class BloqueGeneraTerreno{
         int x;
         int z;
         
-        int totalTamano = 64;
+        int totalTamano = 256;
         
         for (x = 0;x<totalTamano;x++){
             for (z = 0;z<totalTamano;z++){
@@ -87,8 +89,8 @@ public class BloqueGeneraTerreno{
                 
                 
                 for (int a=maxY; a>=minY; a--){ 
-                    if (a <= y){
                     //if (a == y){ //sin relleno
+                    if (a <= y){
                         chunks.setBloque(x, a, z, new BloqueChunkDatos("Tierra"));
                     }else{
                         chunks.setBloque(x, a, z, null);
@@ -130,7 +132,7 @@ public class BloqueGeneraTerreno{
                         }).get();
                     } while(cuentaClaves > 0 && contaBucles < 5);*/
                     
-                    Thread.sleep(10);
+                    //Thread.sleep(10);
                 }
             }
             
@@ -185,15 +187,17 @@ public class BloqueGeneraTerreno{
         if (vaciarUpdate){
             Map<Integer,BloqueChunks> updatesCopia = new HashMap<Integer, BloqueChunks>();
 
-            Integer[] keys = (Integer[])( updates.keySet().toArray( new Integer[updates.size()] ) ); 
-
-            if (keys.length > 0){
-                int claveActual = keys[0];
-                    
-                updatesCopia.put(claveActual,updates.get(claveActual));
-                    
-                updates.remove(claveActual);
-
+            Boolean hayDatos = false;
+            
+            SortedSet<Integer> keys = new TreeSet<Integer>(updates.keySet());
+            for (Integer key : keys) { 
+               updatesCopia.put(key,updates.get(key));
+               updates.remove(key);
+               hayDatos = true;
+               break;
+            }
+            
+            if (hayDatos){
                 return updatesCopia;
             }else{
                return null;

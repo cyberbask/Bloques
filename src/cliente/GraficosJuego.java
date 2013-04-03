@@ -80,8 +80,6 @@ public class GraficosJuego {
     
     @SuppressWarnings("SleepWhileInLoop")
     public void updateaRootNode() throws InterruptedException, ExecutionException{
-        //TODO - Clase para Materiales
-        
         //sacamos el array de chunks a updatar
         Map updatear = app.enqueue(new Callable<Map<Integer,BloqueChunks>>() {
             public Map<Integer,BloqueChunks> call() throws Exception {
@@ -93,34 +91,6 @@ public class GraficosJuego {
         Integer[] keys = (Integer[])( updatear.keySet().toArray( new Integer[updatear.size()] ) ); 
         
         if (keys.length > 0){
-            
-            Map<String,Node> bloquesGenerados = new HashMap<String,Node>();
-        
-            //tierra
-            BloqueGenericosDatos bloquesDatos = bloques.bloquesGenericos.getBloqueTipo("Tierra");
-
-            Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setTexture("ColorMap", bloques.atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
-
-            GeneraBloqueJuego generaBloque = new GeneraBloqueJuego(app);
-            Node bloque = bloques.makeBloque(1,"Tierra");
-
-            bloquesGenerados.put("Tierra",bloque);
-
-            //roca
-            bloquesDatos = bloques.bloquesGenericos.getBloqueTipo("Roca");
-
-            mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat1.setTexture("ColorMap", bloques.atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
-
-            generaBloque = new GeneraBloqueJuego(app);
-            bloque = generaBloque.makeBloque(1,"Roca");
-
-            bloquesGenerados.put("Roca",bloque);
-            
-            
             for(int i=0; i<keys.length; i++){
                 int claveActual = keys[i];
                 
@@ -150,8 +120,8 @@ public class GraficosJuego {
 
                                     if (datosBloque != null){
                                         Node bloqueClonado;
-                                        bloqueClonado = (Node) bloquesGenerados.get(datosBloque.getNomBloque()).clone();
-
+                                        bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
+                                        
                                         //coordenadas reales del cubo, no las del chunk
                                         final int[] coordenadas = BloqueChunkUtiles.calculaCoordenadasBloqueAPartirDeChunk(claveActualAllChunks, x, y, z);
 
@@ -168,7 +138,7 @@ public class GraficosJuego {
                                         if (contaCarasQuitadas < 6){
                                             bloqueClonado.move(coordenadas[0],coordenadas[1],coordenadas[2]); 
 
-                                            bloqueClonado.setMaterial(mat1);
+                                            //bloqueClonado.setMaterial(mat1);
 
                                             bloquesMostrar.attachChild(bloqueClonado);
 
@@ -196,7 +166,7 @@ public class GraficosJuego {
                         }
                     }
                 }
-                Thread.sleep(10);
+                //Thread.sleep(10);
             }
         }
         

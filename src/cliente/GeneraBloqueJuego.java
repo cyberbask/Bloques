@@ -8,6 +8,8 @@ import bloques.BloqueGenericosDatos;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -17,6 +19,8 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.BufferUtils;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -40,6 +44,9 @@ public class GeneraBloqueJuego {
      *
      */
     public BloqueGenericos bloquesGenericos;
+    
+    
+    Map<String,Node> bloquesGenerados = new HashMap<String,Node>();
     
     /**
      *
@@ -147,6 +154,30 @@ public class GeneraBloqueJuego {
         }
         
         return bloque;
+    }
+    
+    public Node getBloqueGenerado(String nomBloque){
+        Node bloqueGenerado = bloquesGenerados.get(nomBloque);
+        
+        if (bloqueGenerado != null){
+            return (Node) bloqueGenerado.clone();
+        }else{
+            BloqueGenericosDatos bloquesDatos = bloquesGenericos.getBloqueTipo(nomBloque);
+
+            Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+            mat1.setTexture("ColorMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
+            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
+
+            GeneraBloqueJuego generaBloque = new GeneraBloqueJuego(app);
+            Node bloque = makeBloque(1,"Tierra");
+            
+            bloque.setMaterial(mat1);
+            
+            bloquesGenerados.put(nomBloque,bloque);
+
+            return (Node) bloque.clone();
+        }
+        
     }
 
 }
