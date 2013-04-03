@@ -21,12 +21,18 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  * @author mcarballo
  */
 public class BloqueGeneraTerreno{
+    /**
+     *
+     */
     protected SimpleApplication app;
     
     ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
     Future future = null;
     
     //chunks
+    /**
+     *
+     */
     public BloqueChunks chunks = null;
     Map<Integer,BloqueChunks> updates=new HashMap<Integer, BloqueChunks>();
     int contadorUpdates = 0;
@@ -60,6 +66,8 @@ public class BloqueGeneraTerreno{
     
     /**
      *
+     * @throws InterruptedException 
+     * @throws ExecutionException 
      */
     @SuppressWarnings("SleepWhileInLoop")
     public void generaTerrenoInicialPosiciones() throws InterruptedException, ExecutionException{
@@ -171,7 +179,6 @@ public class BloqueGeneraTerreno{
     
     /**
      *
-     * @return
      */
     public void generaTerreno(){
         try{
@@ -193,10 +200,19 @@ public class BloqueGeneraTerreno{
         }
     }
     
+    /**
+     *
+     * @return
+     */
     public Map<Integer,BloqueChunks> getUpdates(){
         return updates;
     }
     
+    /**
+     *
+     * @param vaciarUpdate
+     * @return
+     */
     public Map<Integer,BloqueChunks> getUpdates(Boolean vaciarUpdate){
         if (vaciarUpdate){
             Map<Integer,BloqueChunks> updatesCopia = new HashMap<Integer, BloqueChunks>();
@@ -221,10 +237,18 @@ public class BloqueGeneraTerreno{
         }
     }
     
+    /**
+     *
+     * @return
+     */
     public BloqueChunks getChunks() {
         return chunks;
     }
 
+    /**
+     *
+     * @param chunks
+     */
     public void setChunks(BloqueChunks chunks) {
         this.chunks = chunks;
     }

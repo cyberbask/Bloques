@@ -13,18 +13,42 @@ import java.util.Map;
 public class BloqueChunks {
     Map<String,BloqueChunk> chunks = new HashMap<String, BloqueChunk>();
     
+    /**
+     *
+     */
     public BloqueChunks(){
         
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @param chunk
+     */
     public void setChunk(int x, int y, int z, BloqueChunk chunk){
         chunks.put(BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(x, y, z)), chunk);
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public BloqueChunk getChunk(int x, int y, int z){
         return chunks.get(BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(x, y, z)));
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @param datos
+     */
     public void setBloque(int x, int y, int z, BloqueChunkDatos datos){
         BloqueChunk chunk = getChunk(x, y, z);
         
@@ -40,6 +64,14 @@ public class BloqueChunks {
         
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @param chunk
+     * @return
+     */
     public BloqueChunkDatos getBloque(int x, int y, int z, BloqueChunk chunk){        
         if (chunk != null){ 
             return chunk.getDatosBloque(BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z));
@@ -48,11 +80,25 @@ public class BloqueChunks {
         return null;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public BloqueChunkDatos getBloquePorCoordenadas(int x, int y, int z){  
         BloqueChunk chunk = getChunk(x, y, z);
         return getBloque(x, y, z,chunk);
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public BloqueChunkDatos getBloqueAPartirDeChunk(int x, int y, int z){
         BloqueChunk chunk = getChunk(x, y, z);
         
@@ -63,6 +109,12 @@ public class BloqueChunks {
         return null;
     }
     
+    /**
+     *
+     * @param x
+     * @param z
+     * @return
+     */
     public BloqueChunks getGrupoChunks(int x, int z){
         int maxbucle = BloqueChunkUtiles.MAX_ALTURA_BLOQUES / BloqueChunkUtiles.TAMANO_CHUNK;
         
@@ -80,10 +132,21 @@ public class BloqueChunks {
         return grupoChunks;
     }
     
+    /**
+     *
+     * @return
+     */
     public Map<String, BloqueChunk> getAllChunks(){
         return chunks;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public int[] getBloquesVecinos(int x, int y, int z){
         int caras[] = new int[6];
         
@@ -167,6 +230,12 @@ public class BloqueChunks {
         return caras;
     }    
     
+    /**
+     *
+     * @param x
+     * @param z
+     * @return
+     */
     public int getBloqueConMasAltura(int x, int z){
         int devolverAltura = 0;
         

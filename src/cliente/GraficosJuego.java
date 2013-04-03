@@ -50,6 +50,9 @@ public class GraficosJuego {
     
     ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
     Future future = null;
+    /**
+     *
+     */
     protected boolean generandoGraficos = false;
     
     //graficos
@@ -103,6 +106,11 @@ public class GraficosJuego {
         rootNode.addLight(dl);
     }
     
+    /**
+     *
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
     @SuppressWarnings("SleepWhileInLoop")
     public void updateaRootNode() throws InterruptedException, ExecutionException{
         //sacamos el array de chunks a updatar

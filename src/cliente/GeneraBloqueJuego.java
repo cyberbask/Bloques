@@ -161,6 +161,11 @@ public class GeneraBloqueJuego {
         return bloque;
     }
     
+    /**
+     *
+     * @param nomBloque
+     * @return
+     */
     public Node getBloqueGenerado(String nomBloque){
         Node bloqueGenerado = bloquesGenerados.get(nomBloque);
         

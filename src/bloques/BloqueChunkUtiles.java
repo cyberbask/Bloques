@@ -9,12 +9,31 @@ package bloques;
  * @author cyberbask
  */
 public class BloqueChunkUtiles {
+    /**
+     *
+     */
     public static final int TAMANO_CHUNK = 16; //16x16x16
+    /**
+     *
+     */
     public static final int TOTAL_BLOQUES = 4096; //16x16x16
     
+    /**
+     *
+     */
     public static final int MAX_ALTURA_BLOQUES = 256;
+    /**
+     *
+     */
     public static final int MIN_ALTURA_BLOQUES = 0; 
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public static int[] calculaCoordenadasChunk(int x, int y, int z){
         int nuevasCoordenadas[] = new int[3];
         
@@ -36,6 +55,13 @@ public class BloqueChunkUtiles {
         return nuevasCoordenadas;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public static int[] calculaCoordenadasBloqueDentroDeChunk(int x, int y, int z){
         int nuevasCoordenadas[] = calculaCoordenadasChunk(x, y, z);
         
@@ -58,6 +84,16 @@ public class BloqueChunkUtiles {
         return nuevasCoordenadasBloque;
     }
     
+    /**
+     *
+     * @param chunkX
+     * @param chunkY
+     * @param chunkZ
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public static int[] calculaCoordenadasBloqueAPartirDeChunk(int chunkX, int chunkY, int chunkZ, int x, int y, int z){
         int nuevasCoordenadas[] = new int[3];
  
@@ -84,6 +120,14 @@ public class BloqueChunkUtiles {
         return nuevasCoordenadasBloque;
     }
     
+    /**
+     *
+     * @param nomChunk
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public static int[] calculaCoordenadasBloqueAPartirDeChunk(String nomChunk, int x, int y, int z){
         int nuevasCoordenadas[] = new int[3];
         
@@ -111,10 +155,22 @@ public class BloqueChunkUtiles {
         return nuevasCoordenadasBloque;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public static String generarNombreChunk(int x, int y, int z){
         return String.valueOf(x)+"__"+String.valueOf(y)+"__"+String.valueOf(z);
     }
     
+    /**
+     *
+     * @param coordenadas
+     * @return
+     */
     public static String generarNombreChunk(int[] coordenadas){
         return String.valueOf(coordenadas[0])+"__"+String.valueOf(coordenadas[1])+"__"+String.valueOf(coordenadas[2]);
     }

@@ -72,6 +72,11 @@ public class BloqueChunk {
         }
     }
     
+    /**
+     *
+     * @param coordenadas
+     * @return
+     */
     public BloqueChunkDatos getDatosBloque(int[] coordenadas){
         int bloquePeticion = this.getNumBloque(coordenadas[0], coordenadas[1], coordenadas[2]);
         
@@ -87,6 +92,7 @@ public class BloqueChunk {
      * @param x
      * @param y
      * @param z
+     * @param datos  
      */
     public void setDatosBloque(int x, int y, int z, BloqueChunkDatos datos){
         int bloquePeticion = this.getNumBloque(x, y, z);
@@ -102,9 +108,8 @@ public class BloqueChunk {
     
     /**
      * Actualiza los datos del bloque segun su posicion
-     * @param x
-     * @param y
-     * @param z
+     * @param coodernadas 
+     * @param datos 
      */
     public void setDatosBloque(int[] coodernadas, BloqueChunkDatos datos){
         int bloquePeticion = this.getNumBloque(coodernadas[0], coodernadas[1], coodernadas[2]);
