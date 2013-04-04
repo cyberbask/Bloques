@@ -3,6 +3,7 @@
  */
 package cliente;
 
+import bloques.BloqueChunkUtiles;
 import bloques.BloqueGenericos;
 import bloques.BloqueGenericosDatos;
 import com.jme3.app.Application;
@@ -112,7 +113,7 @@ public class GeneraBloqueJuego {
             texCoord[3] = new Vector2f(tamanoTile + x + sumapixel4,1 + y + sumapixel2);
 
             //NORMALES - para la iluminacion
-            float[] normals = new float[]{0,0,1, 0,0,1, 0,0,1, 0,0,1};
+            float[] normals = new float[]{0,0,tamano, 0,0,tamano, 0,0,tamano, 0,0,tamano};
             
             //INDICES -  Indices de los vertices, en que orden se construyen
             int [] indexes = {2,0,1,1,3,2};
@@ -133,24 +134,24 @@ public class GeneraBloqueJuego {
                     //esta ya va bien de serie
                 break;
                 case 1: //cara 2
-                   cara.move(1,0,0); 
-                   cara.setLocalRotation(new Quaternion().fromAngleAxis(90*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
+                   cara.move(tamano,0,0); 
+                   cara.setLocalRotation(new Quaternion().fromAngleAxis(90*FastMath.DEG_TO_RAD, new Vector3f(0,tamano,0)));
                 break;
                 case 2: //cara 3
-                   cara.move(1,0,-1); 
-                   cara.setLocalRotation(new Quaternion().fromAngleAxis(180*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
+                   cara.move(tamano,0,-tamano); 
+                   cara.setLocalRotation(new Quaternion().fromAngleAxis(180*FastMath.DEG_TO_RAD, new Vector3f(0,tamano,0)));
                 break;
                 case 3: //cara 4
-                   cara.move(0,0,-1); 
-                   cara.setLocalRotation(new Quaternion().fromAngleAxis(-90*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
+                   cara.move(0,0,-tamano); 
+                   cara.setLocalRotation(new Quaternion().fromAngleAxis(-90*FastMath.DEG_TO_RAD, new Vector3f(0,tamano,0)));
                 break;
                 case 4: //cara 5
-                    cara.move(0,1,0); 
-                    cara.setLocalRotation(new Quaternion().fromAngleAxis(-90*FastMath.DEG_TO_RAD, new Vector3f(1,0,0)));
+                    cara.move(0,tamano,0); 
+                    cara.setLocalRotation(new Quaternion().fromAngleAxis(-90*FastMath.DEG_TO_RAD, new Vector3f(tamano,0,0)));
                 break;
                 case 5: //cara 6
-                    cara.move(0,0,-1); 
-                    cara.setLocalRotation(new Quaternion().fromAngleAxis(90*FastMath.DEG_TO_RAD, new Vector3f(1,0,0)));
+                    cara.move(0,0,-tamano); 
+                    cara.setLocalRotation(new Quaternion().fromAngleAxis(90*FastMath.DEG_TO_RAD, new Vector3f(tamano,0,0)));
                 break;
                 
             }
@@ -187,7 +188,7 @@ public class GeneraBloqueJuego {
             mat1.setColor("Specular", ColorRGBA.White);
             mat1.setFloat("Shininess", 1f);
 
-            Node bloque = makeBloque(1,nomBloque);
+            Node bloque = makeBloque(BloqueChunkUtiles.TAMANO_BLOQUE,nomBloque);
             
             bloque.setMaterial(mat1);
             

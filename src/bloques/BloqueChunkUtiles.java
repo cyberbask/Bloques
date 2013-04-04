@@ -9,6 +9,7 @@ package bloques;
  * @author cyberbask
  */
 public class BloqueChunkUtiles {
+    public static final int TAMANO_BLOQUE = 2; //16x16x16
     /**
      *
      */
@@ -27,6 +28,8 @@ public class BloqueChunkUtiles {
      */
     public static final int MIN_ALTURA_BLOQUES = 0; 
     
+    
+    
     /**
      *
      * @param x
@@ -37,17 +40,17 @@ public class BloqueChunkUtiles {
     public static int[] calculaCoordenadasChunk(int x, int y, int z){
         int nuevasCoordenadas[] = new int[3];
         
-        nuevasCoordenadas[0] = x / TAMANO_CHUNK;
+        nuevasCoordenadas[0] = x / TAMANO_BLOQUE / TAMANO_CHUNK;
         if (x > -TAMANO_CHUNK && x < 0){
             nuevasCoordenadas[0] = nuevasCoordenadas[0] -1;
         
         }
-        nuevasCoordenadas[1] = y / TAMANO_CHUNK;
+        nuevasCoordenadas[1] = y / TAMANO_BLOQUE / TAMANO_CHUNK;
         if (y > -TAMANO_CHUNK && y < 0){
             nuevasCoordenadas[1] = nuevasCoordenadas[1] -1;
         
         }
-        nuevasCoordenadas[2] = z / TAMANO_CHUNK;
+        nuevasCoordenadas[2] = z / TAMANO_BLOQUE / TAMANO_CHUNK;
         if (z > -TAMANO_CHUNK && z < 0){
             nuevasCoordenadas[2] = nuevasCoordenadas[2] -1;
         }
@@ -67,9 +70,9 @@ public class BloqueChunkUtiles {
         
         int nuevasCoordenadasBloque[] = new int[3];
         
-        nuevasCoordenadasBloque[0] = x - (nuevasCoordenadas[0] * TAMANO_CHUNK);
-        nuevasCoordenadasBloque[1] = y - (nuevasCoordenadas[1] * TAMANO_CHUNK);
-        nuevasCoordenadasBloque[2] = z - (nuevasCoordenadas[2] * TAMANO_CHUNK);
+        nuevasCoordenadasBloque[0] = (x / TAMANO_BLOQUE) - (nuevasCoordenadas[0] * TAMANO_CHUNK);
+        nuevasCoordenadasBloque[1] = (y / TAMANO_BLOQUE) - (nuevasCoordenadas[1] * TAMANO_CHUNK);
+        nuevasCoordenadasBloque[2] = (z / TAMANO_BLOQUE) - (nuevasCoordenadas[2] * TAMANO_CHUNK);
         
         if (nuevasCoordenadasBloque[0] < 0) {
             nuevasCoordenadasBloque[0] = TAMANO_CHUNK + nuevasCoordenadasBloque[0];
@@ -97,9 +100,9 @@ public class BloqueChunkUtiles {
     public static int[] calculaCoordenadasBloqueAPartirDeChunk(int chunkX, int chunkY, int chunkZ, int x, int y, int z){
         int nuevasCoordenadas[] = new int[3];
  
-        nuevasCoordenadas[0] = chunkX * TAMANO_CHUNK;
-        nuevasCoordenadas[1] = chunkY * TAMANO_CHUNK;
-        nuevasCoordenadas[2] = chunkZ * TAMANO_CHUNK;
+        nuevasCoordenadas[0] = (chunkX / TAMANO_BLOQUE) * TAMANO_CHUNK;
+        nuevasCoordenadas[1] = (chunkY / TAMANO_BLOQUE) * TAMANO_CHUNK;
+        nuevasCoordenadas[2] = (chunkZ / TAMANO_BLOQUE) * TAMANO_CHUNK;
         
         if (nuevasCoordenadas[0] < 0){
             nuevasCoordenadas[0] = nuevasCoordenadas[0] + TAMANO_CHUNK;
@@ -133,9 +136,9 @@ public class BloqueChunkUtiles {
         
         String[] tokens = nomChunk.split("__");
  
-        nuevasCoordenadas[0] = Integer.valueOf(tokens[0]) * TAMANO_CHUNK;
-        nuevasCoordenadas[1] = Integer.valueOf(tokens[1]) * TAMANO_CHUNK;
-        nuevasCoordenadas[2] = Integer.valueOf(tokens[2]) * TAMANO_CHUNK;
+        nuevasCoordenadas[0] = (Integer.valueOf(tokens[0]) * TAMANO_BLOQUE) * TAMANO_CHUNK;
+        nuevasCoordenadas[1] = (Integer.valueOf(tokens[1]) * TAMANO_BLOQUE) * TAMANO_CHUNK;
+        nuevasCoordenadas[2] = (Integer.valueOf(tokens[2]) * TAMANO_BLOQUE) * TAMANO_CHUNK;
         if (nuevasCoordenadas[0] < 0){
             nuevasCoordenadas[0] = nuevasCoordenadas[0] + TAMANO_CHUNK;
         }

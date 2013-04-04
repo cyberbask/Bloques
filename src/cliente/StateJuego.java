@@ -33,7 +33,6 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     private BulletAppState    physics;
     
     //teclas
-    private boolean left = false, right = false, up = false, down = false;
     private boolean vsync = true;
     
     //Graficos
@@ -92,7 +91,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     // Note that update is only called while the state is both attached and enabled.
     @Override
     public void update(float tpf) {
-        graficos.generarTerreno();
+        graficos.update(tpf);
     }
  
     
@@ -117,20 +116,20 @@ public class StateJuego extends AbstractAppState implements ActionListener{
 
     public void onAction(String name, boolean isPressed, float tpf) {
         if (name.equals("Left")) {
-            left = isPressed;
+            graficos.personaje.left = isPressed;
         } else if (name.equals("Right")) {
-            right = isPressed;
+            graficos.personaje.right = isPressed;
         } else if (name.equals("Up")) {
-            up = isPressed;
+            graficos.personaje.up = isPressed;
         } else if (name.equals("Down")) {
-            down = isPressed;
+            graficos.personaje.down = isPressed;
         } else if (name.equals("VSync") && !isPressed) {
             vsync = !vsync;
             AppSettings Appsett = AppUtiles.getSettings(app);
             Appsett.put("VSync", vsync);
             this.app.getContext().restart();
         } else if (name.equals("Jump")) {
-            //player.jump();
+            graficos.personaje.player.jump();
         }
     }
     

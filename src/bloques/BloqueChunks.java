@@ -121,7 +121,7 @@ public class BloqueChunks {
         BloqueChunks grupoChunks = new BloqueChunks();
         
         for (int i=0;i<maxbucle;i++){
-            int y = i * BloqueChunkUtiles.TAMANO_CHUNK;
+            int y = i * BloqueChunkUtiles.TAMANO_CHUNK * BloqueChunkUtiles.TAMANO_BLOQUE;
             
             BloqueChunk chunk = getChunk(x, y, z);
             if (chunk != null){
@@ -162,66 +162,66 @@ public class BloqueChunks {
         //      con esto evitamos que salgan las caras de los bordes del mundo
         
         //frontal z+1
-        chunk = getChunk(x, y, z + 1);
+        chunk = getChunk(x, y, z + BloqueChunkUtiles.TAMANO_BLOQUE);
         if (chunk == null){
             caras[0] = 1;
         }else{
-            bloque = getBloque(x, y, z + 1,chunk);
+            bloque = getBloque(x, y, z + BloqueChunkUtiles.TAMANO_BLOQUE,chunk);
             if (bloque != null) {
                 caras[0] = 1;
             }
         }
         
         //lateral derecha x+1
-        chunk = getChunk(x + 1, y, z);
+        chunk = getChunk(x + BloqueChunkUtiles.TAMANO_BLOQUE, y, z);
         if (chunk == null){
             caras[1] = 1;
         }else{
-            bloque = getBloque(x + 1, y, z,chunk);
+            bloque = getBloque(x + BloqueChunkUtiles.TAMANO_BLOQUE, y, z,chunk);
             if (bloque != null) {
                 caras[1] = 1;
             }
         }
         
         //trasera z-1
-        chunk = getChunk(x, y, z - 1);
+        chunk = getChunk(x, y, z - BloqueChunkUtiles.TAMANO_BLOQUE);
         if (chunk == null){
             caras[2] = 1;
         }else{
-            bloque = getBloque(x, y, z - 1,chunk);
+            bloque = getBloque(x, y, z - BloqueChunkUtiles.TAMANO_BLOQUE,chunk);
             if (bloque != null) {
                 caras[2] = 1;
             }
         }
         
         //lateral izquierda x-1
-        chunk = getChunk(x - 1, y, z);
+        chunk = getChunk(x - BloqueChunkUtiles.TAMANO_BLOQUE, y, z);
         if (chunk == null){
             caras[3] = 1;
         }else{
-            bloque = getBloque(x - 1, y, z,chunk);
+            bloque = getBloque(x - BloqueChunkUtiles.TAMANO_BLOQUE, y, z,chunk);
             if (bloque != null) {
                 caras[3] = 1;
             }
         }
         
         //Superior y+1
-        chunk = getChunk(x, y + 1, z);
+        chunk = getChunk(x, y + BloqueChunkUtiles.TAMANO_BLOQUE, z);
         if (chunk == null){
             caras[4] = 1;
         }else{
-            bloque = getBloque(x, y + 1, z,chunk);
+            bloque = getBloque(x, y + BloqueChunkUtiles.TAMANO_BLOQUE, z,chunk);
             if (bloque != null) {
                 caras[4] = 1;
             }
         }
         
         //inferior y-1
-        chunk = getChunk(x, y - 1, z);
+        chunk = getChunk(x, y - BloqueChunkUtiles.TAMANO_BLOQUE, z);
         if (chunk == null){
             caras[5] = 1;
         }else{
-            bloque = getBloque(x, y - 1, z,chunk);
+            bloque = getBloque(x, y - BloqueChunkUtiles.TAMANO_BLOQUE, z,chunk);
             if (bloque != null) {
                 caras[5] = 1;
             }
@@ -242,7 +242,7 @@ public class BloqueChunks {
         int maxbucle = BloqueChunkUtiles.MAX_ALTURA_BLOQUES / BloqueChunkUtiles.TAMANO_CHUNK;
         
         for (int i=(maxbucle - 1);i>=0;i--){
-            int a = i * BloqueChunkUtiles.TAMANO_CHUNK;
+            int a = i * BloqueChunkUtiles.TAMANO_CHUNK * BloqueChunkUtiles.TAMANO_BLOQUE;
             
             BloqueChunk chunk = getChunk(x, a, z);
             if (chunk != null){

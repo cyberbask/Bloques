@@ -1,6 +1,7 @@
 package cliente;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.renderer.RenderManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +13,7 @@ import utiles.AppUtiles;
  */
 public class MainCliente extends SimpleApplication {
     StateJuego stateJuego;
+    private BulletAppState bulletAppState;
             
     /**
      *
@@ -25,6 +27,7 @@ public class MainCliente extends SimpleApplication {
         
         app.start();
     }
+    
 
     /**
      *
@@ -33,12 +36,19 @@ public class MainCliente extends SimpleApplication {
     public void simpleInitApp() {     
         Logger.getLogger("").setLevel(Level.WARNING);
         
+        //Fisicas
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
+        
+        //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
+        
         //Seteamos la "Applicacion State" principal del juego
         stateJuego = new StateJuego();
         stateManager.attach(stateJuego);
         
         //setamos la velocidad estandar de la flycam
-        flyCam.setMoveSpeed(30f);       
+        //flyCam.setMoveSpeed(5f);       
+        flyCam.setMoveSpeed(60f);       
     }
 
     /**

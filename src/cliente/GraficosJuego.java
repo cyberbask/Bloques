@@ -14,6 +14,9 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -33,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import jme3tools.optimize.GeometryBatchFactory;
+import personaje.Personaje;
 
 /**
  *
@@ -67,8 +71,14 @@ public class GraficosJuego {
      */
     protected BloqueGeneraTerreno bloqueGeneraTerreno;
     
+    //Personaje
+    public Personaje personaje;
+    
     //variable para controlar si posicionamos la camara
-    Boolean posicionarCamara = true;
+    //o activamos el personaje
+    int posicionarCamara = 0;  
+    int bloqueConMasAltura; //ñapa para posiconar al personaje
+    Boolean terrenoInicialCargado = false;
     
     /**
      * Constructor
@@ -88,6 +98,8 @@ public class GraficosJuego {
         
         bloques = new GeneraBloqueJuego(app);
         
+        personaje = new Personaje(app);
+           
         //Luces basicas
         setUpLight();
     }
@@ -113,6 +125,8 @@ public class GraficosJuego {
      */
     @SuppressWarnings("SleepWhileInLoop")
     public void updateaRootNode() throws InterruptedException, ExecutionException{
+        //TODO - los calculos de bloques vecinos y similares quizan deberian hacerse antes.
+        
         //sacamos el array de chunks a updatar
         Map updatear = app.enqueue(new Callable<Map<Integer,BloqueChunks>>() {
             public Map<Integer,BloqueChunks> call() throws Exception {
@@ -156,7 +170,7 @@ public class GraficosJuego {
                                         bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
                                         
                                         //coordenadas reales del cubo, no las del chunk
-                                        final int[] coordenadas = BloqueChunkUtiles.calculaCoordenadasBloqueAPartirDeChunk(claveActualAllChunks, x, y, z);
+                                        final int[] coordenadas = BloqueChunkUtiles.calculaCoordenadasBloqueAPartirDeChunk(claveActualAllChunks, x * BloqueChunkUtiles.TAMANO_BLOQUE, y  * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE);
 
                                         //le quitamos las caras que no se ven
                                         int contaCarasQuitadas = 0;
@@ -189,7 +203,16 @@ public class GraficosJuego {
 
                             app.enqueue(new Callable() {
                                 public Object call() throws Exception {
+                                    CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape((Node) optimizado);
+                                    RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
+                                    optimizado.addControl(bloquesMostrarControl);
+                                    
+                                    physics.getPhysicsSpace().add(optimizado);
+                                    
                                     rootNode.attachChild(optimizado);
+                                    
+                                    terrenoInicialCargado = true;
+                                    
                                     return null;
                                 }
                             });
@@ -215,8 +238,14 @@ public class GraficosJuego {
     /**
      * Esta funcion se llamara en el update del AppState
      */
-    public void generarTerreno(){        
+    public void update(float tpf){        
         bloqueGeneraTerreno.generaTerreno();
+        
+        if (posicionarCamara == 1 && terrenoInicialCargado){
+            //Añadimos el personaje
+            personaje.generaPersonaje(10,bloqueConMasAltura,10);
+            posicionarCamara = 2;
+        }
         
         try{
             if(future == null && !generandoGraficos){
@@ -228,15 +257,19 @@ public class GraficosJuego {
                     generandoGraficos = false;
                     future = null;
                     
-                    if (posicionarCamara){
-                        int bloqueConMasAltura = bloqueGeneraTerreno.chunks.getBloqueConMasAltura(10, 10);
-                        if (bloqueConMasAltura > 0){
-                            cam.setLocation(new Vector3f(10, bloqueConMasAltura + 4, 10));
+                    if (posicionarCamara == 0){
+                        bloqueConMasAltura = bloqueGeneraTerreno.chunks.getBloqueConMasAltura(10, 10);
+                        
+                        if (bloqueConMasAltura > 0){           
+                            /** /
+                            bloqueConMasAltura = bloqueConMasAltura + 10;
+                            cam.setLocation(new Vector3f(10, bloqueConMasAltura, 10));
                             cam.setRotation(new Quaternion().fromAngleAxis(90*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
                             cam.update();
                             cam.setRotation(new Quaternion().fromAngleAxis(60*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
                             cam.update();
-                            posicionarCamara = false;
+                            /**/
+                            posicionarCamara = 1;
                         }
                     }
                 }
@@ -249,6 +282,8 @@ public class GraficosJuego {
         catch(Exception e){ 
 
         }
+        
+        personaje.update(tpf);
     }
     
     /**

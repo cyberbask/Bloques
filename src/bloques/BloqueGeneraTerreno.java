@@ -24,7 +24,7 @@ public class BloqueGeneraTerreno{
     /**
      *
      */
-    protected SimpleApplication app;
+    private SimpleApplication app;
     
     ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
     Future future = null;
@@ -36,6 +36,10 @@ public class BloqueGeneraTerreno{
     public BloqueChunks chunks = null;
     Map<Integer,BloqueChunks> updates=new HashMap<Integer, BloqueChunks>();
     int contadorUpdates = 0;
+    
+    //tamaño del mundo a generar
+    //int totalTamano = 192;
+    int totalTamano = 32;
     
     /**
      *
@@ -54,7 +58,7 @@ public class BloqueGeneraTerreno{
         HillHeightMap heightmap = null;
         HillHeightMap.NORMALIZE_RANGE = 100; // optional
         try {
-            heightmap = new HillHeightMap(257, 1000, 40, 50, result[0]); // byte 3 is a random seed
+            heightmap = new HillHeightMap(totalTamano + 1, 1000, 200, 250, result[0]); // byte 3 is a random seed
         } catch (Exception ex) {
 
         }
@@ -83,7 +87,6 @@ public class BloqueGeneraTerreno{
         int x;
         int z;
         
-        int totalTamano = 256;
         int variacion = 0;
         
         for (x = 0;x<totalTamano;x++){
@@ -112,10 +115,10 @@ public class BloqueGeneraTerreno{
                             variacion = 0;
                         }
     
-                        chunks.setBloque(x, a, z, new BloqueChunkDatos(tipoTerreno));
+                        chunks.setBloque(x * BloqueChunkUtiles.TAMANO_BLOQUE, a * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE, new BloqueChunkDatos(tipoTerreno));
                         
                     }else{
-                        chunks.setBloque(x, a, z, null);
+                        chunks.setBloque(x * BloqueChunkUtiles.TAMANO_BLOQUE, a * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE, null);
                     }
                     
                 }
