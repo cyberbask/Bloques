@@ -41,9 +41,9 @@ public class Personaje {
     public void generaPersonaje(int posIniX, int posIniY, int posIniZ){
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(4f, 15.8f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
-        player.setJumpSpeed(60);
-        player.setFallSpeed(2500);
-        player.setGravity(200);
+        player.setJumpSpeed(65);
+        player.setFallSpeed(3000);
+        player.setGravity(230);
         player.setPhysicsLocation(new Vector3f(posIniX, posIniY, posIniZ));
 
         //Añadimos el personaje al espacio de fisicas

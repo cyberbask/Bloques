@@ -19,6 +19,7 @@ public class AppUtiles {
      * @return Aplicacion general con los settings configurados
      */
     public static MainCliente initSettings(MainCliente app){
+        /** /
         app.setShowSettings(false);
         
         AppSettings settings = new AppSettings(true);
@@ -30,6 +31,7 @@ public class AppUtiles {
         settings.put("Samples", 0);
 
         app.setSettings(settings);
+        /**/
         
         return app;
     }  

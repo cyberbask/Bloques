@@ -278,7 +278,7 @@ public class GraficosJuego {
                     future = null;
                     
                     if (posicionarCamara == 0){
-                        bloqueConMasAltura = bloqueGeneraTerreno.chunks.getBloqueConMasAltura(10, 10);
+                        bloqueConMasAltura = bloqueGeneraTerreno.chunks.getBloqueConMasAltura(20, 20);
                         
                         if (bloqueConMasAltura > 0){           
                             /**/

@@ -9,6 +9,7 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -58,8 +59,6 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         this.viewPort     = this.app.getViewPort();
         this.physics      = this.stateManager.getState(BulletAppState.class);
         
-        setupKeys();
-        
         StateJuegoGui juegoGui = new StateJuegoGui(app);
         juegoGui.initPuntoMira();
         
@@ -91,6 +90,11 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     @Override
     public void update(float tpf) {
         graficos.update(tpf);
+        
+        //cuando el personaje esta en su sitio se activan las teclas
+        if (graficos.posicionarCamara == 2 && graficos.terrenoInicialCargado){
+            setupKeys();
+        }
     }
  
     

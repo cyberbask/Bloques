@@ -49,7 +49,6 @@ public class MainCliente extends SimpleApplication {
         //setamos la velocidad estandar de la flycam
         flyCam.setMoveSpeed(5f);       
         flyCam.setRotationSpeed(5f);
-        //flyCam.setMoveSpeed(60f);   
     }
 
     /**
