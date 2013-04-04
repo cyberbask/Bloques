@@ -3,6 +3,7 @@
  */
 package personaje;
 
+import bloques.BloqueChunkUtiles;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -38,11 +39,11 @@ public class Personaje {
     }
     
     public void generaPersonaje(int posIniX, int posIniY, int posIniZ){
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1f, 1.8f, 1);
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(4f, 15.8f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
-        player.setJumpSpeed(12);
-        player.setFallSpeed(100);
-        player.setGravity(50);
+        player.setJumpSpeed(60);
+        player.setFallSpeed(2500);
+        player.setGravity(200);
         player.setPhysicsLocation(new Vector3f(posIniX, posIniY, posIniZ));
 
         //Añadimos el personaje al espacio de fisicas
@@ -52,11 +53,11 @@ public class Personaje {
     }
     
     public void update(float tpf){  
-        /** /
+        /**/
         if (iniciado){
-            Vector3f camDir = cam.getDirection().clone().multLocal(0.10f);
+            Vector3f camDir = cam.getDirection().clone().multLocal(0.10f * BloqueChunkUtiles.TAMANO_BLOQUE);
             camDir.setY(0f); //evita despegarse del chan :-D
-            Vector3f camLeft = cam.getLeft().clone().multLocal(0.05f);
+            Vector3f camLeft = cam.getLeft().clone().multLocal(0.05f * BloqueChunkUtiles.TAMANO_BLOQUE);
             walkDirection.set(0, 0, 0);
             if (left)  { 
                 walkDirection.addLocal(camLeft); 

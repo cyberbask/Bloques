@@ -12,8 +12,10 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
@@ -66,9 +68,6 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         
         //esta linea impide que la ejecucion se pare aunque se pierda el foco
         app.setPauseOnLostFocus(false);
-        
-        //cambiamos el color del fondo
-        viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
     }
  
     @Override
@@ -103,15 +102,17 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-        inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_V));
+        inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
-        inputManager.addListener(this, "Jump");
         inputManager.addListener(this, "VSync");
+        inputManager.addListener(this, "VSync");
+        
+        inputManager.addListener(analogListener, "Jump");
     }
 
     public void onAction(String name, boolean isPressed, float tpf) {
@@ -129,9 +130,18 @@ public class StateJuego extends AbstractAppState implements ActionListener{
             Appsett.put("VSync", vsync);
             this.app.getContext().restart();
         } else if (name.equals("Jump")) {
-            graficos.personaje.player.jump();
+            //graficos.personaje.player.jump();
         }
     }
+    
+    private AnalogListener analogListener = new AnalogListener() {
+      public void onAnalog(String name, float value, float tpf) {
+        if (name.equals("Jump")) {
+            System.out.println("vale");
+        }
+            graficos.personaje.player.jump();
+        }
+    };
     
     /**
      *

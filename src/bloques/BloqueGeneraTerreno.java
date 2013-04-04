@@ -39,7 +39,7 @@ public class BloqueGeneraTerreno{
     
     //tamaño del mundo a generar
     //int totalTamano = 192;
-    int totalTamano = 32;
+    int totalTamano = 192;
     
     /**
      *
@@ -58,7 +58,7 @@ public class BloqueGeneraTerreno{
         HillHeightMap heightmap = null;
         HillHeightMap.NORMALIZE_RANGE = 100; // optional
         try {
-            heightmap = new HillHeightMap(totalTamano + 1, 1000, 200, 250, result[0]); // byte 3 is a random seed
+            heightmap = new HillHeightMap(totalTamano + 1, 100, 90, 100, result[0]); // byte 3 is a random seed
         } catch (Exception ex) {
 
         }
@@ -75,6 +75,10 @@ public class BloqueGeneraTerreno{
      */
     @SuppressWarnings("SleepWhileInLoop")
     public void generaTerrenoInicialPosiciones() throws InterruptedException, ExecutionException{
+        //en este caso mantenemos las x y z sin multiplicar por el tamaño de bloque
+        //ya que el generador de terrenos sigue con sus coordenadas normales
+        //solo lo multiplicamos cuando pasamos por nuestras funciones
+        
         HillHeightMap heightmap = generateTerrainconReturn();
         
         int y = 0;
@@ -125,13 +129,18 @@ public class BloqueGeneraTerreno{
                 
                 //TODO esto deberia ir guardado en algun sitio, y luego cargarlo desde ahi
                 if (x >= ultimoGrupoChunkX && (z / (BloqueChunkUtiles.TAMANO_CHUNK - 1)) > ultimoGrupoChunkZ){
-                    System.out.println("chunkear x"+x+"z"+z);
-                    final BloqueChunks grupoChunks = chunks.getGrupoChunks(x, z);
+                    //System.out.println("chunkear x"+x+"z"+z);
+                    final BloqueChunks grupoChunks = chunks.getGrupoChunks(x * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE);
+                    
+                    if (x >= 60){
+                        int yo = 0;
+                        
+                    }
                     
                     app.enqueue(new Callable() {
                         public Object call() throws Exception {
                             updates.put(contadorUpdates, grupoChunks);
-                            System.out.println("chunkeado");
+                            //System.out.println("chunkeado");
                             contadorUpdates++;
                             return null;
                         }

@@ -24,6 +24,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.FogFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
@@ -58,6 +60,10 @@ public class GraficosJuego {
      *
      */
     protected boolean generandoGraficos = false;
+    
+    //Niebla
+    FilterPostProcessor fogPPS;
+    FogFilter fog;
     
     //graficos
     Map<Integer,BloqueChunks> updates=new HashMap<Integer, BloqueChunks>();
@@ -100,8 +106,15 @@ public class GraficosJuego {
         
         personaje = new Personaje(app);
            
+        //cambiamos el color del fondo
+        //viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
+        viewPort.setBackgroundColor(ColorRGBA.Blue);
+        
         //Luces basicas
         setUpLight();
+        
+        //Niebla
+        setUpFog();
     }
     
     private void setUpLight() {
@@ -112,10 +125,17 @@ public class GraficosJuego {
 
         DirectionalLight dl = new DirectionalLight();
         dl.setColor(ColorRGBA.White.mult(0.5f));
-        dl.setDirection(new Vector3f(1,0,-1).normalizeLocal());
+        dl.setDirection(new Vector3f(10,0,-1).normalizeLocal());
         //dl.setDirection(new Vector3f(50f, -50f, -50f).normalizeLocal());
         //dl.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
         rootNode.addLight(dl);
+    }
+    
+    private void setUpFog(){
+        fogPPS=new FilterPostProcessor(assetManager);
+        fog = new FogFilter(ColorRGBA.White, 1.25f, 6000f);
+        fogPPS.addFilter(fog);
+        viewPort.addProcessor(fogPPS);
     }
     
     /**
@@ -156,7 +176,7 @@ public class GraficosJuego {
 
                         Node bloquesMostrar = new Node(claveActualAllChunks);
 
-                        System.out.println("chunk "+claveActualAllChunks);
+                        //System.out.println("chunk "+claveActualAllChunks);
 
                         int mostrar = 0;
 
@@ -196,7 +216,7 @@ public class GraficosJuego {
                             }
                         }
 
-                        System.out.println("chunk "+claveActualAllChunks+" Terminado");
+                        //System.out.println("chunk "+claveActualAllChunks+" Terminado");
 
                         if (mostrar == 1){
                             final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrar);
@@ -261,8 +281,8 @@ public class GraficosJuego {
                         bloqueConMasAltura = bloqueGeneraTerreno.chunks.getBloqueConMasAltura(10, 10);
                         
                         if (bloqueConMasAltura > 0){           
-                            /** /
-                            bloqueConMasAltura = bloqueConMasAltura + 10;
+                            /**/
+                            bloqueConMasAltura = bloqueConMasAltura + (10 * BloqueChunkUtiles.TAMANO_BLOQUE * 2);
                             cam.setLocation(new Vector3f(10, bloqueConMasAltura, 10));
                             cam.setRotation(new Quaternion().fromAngleAxis(90*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
                             cam.update();

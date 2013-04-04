@@ -9,7 +9,7 @@ package bloques;
  * @author cyberbask
  */
 public class BloqueChunkUtiles {
-    public static final int TAMANO_BLOQUE = 2; //16x16x16
+    public static final int TAMANO_BLOQUE = 8;
     /**
      *
      */
@@ -100,9 +100,9 @@ public class BloqueChunkUtiles {
     public static int[] calculaCoordenadasBloqueAPartirDeChunk(int chunkX, int chunkY, int chunkZ, int x, int y, int z){
         int nuevasCoordenadas[] = new int[3];
  
-        nuevasCoordenadas[0] = (chunkX / TAMANO_BLOQUE) * TAMANO_CHUNK;
-        nuevasCoordenadas[1] = (chunkY / TAMANO_BLOQUE) * TAMANO_CHUNK;
-        nuevasCoordenadas[2] = (chunkZ / TAMANO_BLOQUE) * TAMANO_CHUNK;
+        nuevasCoordenadas[0] = (chunkX * TAMANO_BLOQUE) * TAMANO_CHUNK;
+        nuevasCoordenadas[1] = (chunkY * TAMANO_BLOQUE) * TAMANO_CHUNK;
+        nuevasCoordenadas[2] = (chunkZ * TAMANO_BLOQUE) * TAMANO_CHUNK;
         
         if (nuevasCoordenadas[0] < 0){
             nuevasCoordenadas[0] = nuevasCoordenadas[0] + TAMANO_CHUNK;

@@ -119,6 +119,9 @@ public class BloqueChunks {
         int maxbucle = BloqueChunkUtiles.MAX_ALTURA_BLOQUES / BloqueChunkUtiles.TAMANO_CHUNK;
         
         BloqueChunks grupoChunks = new BloqueChunks();
+        if (x >= 60){
+            int casi = 1;
+        }
         
         for (int i=0;i<maxbucle;i++){
             int y = i * BloqueChunkUtiles.TAMANO_CHUNK * BloqueChunkUtiles.TAMANO_BLOQUE;
