@@ -39,7 +39,7 @@ public class BloqueGeneraTerreno{
     
     //tamaño del mundo a generar
     //int totalTamano = 192;
-    int totalTamano = 192;
+    int totalTamano = 256;
     
     /**
      *

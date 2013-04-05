@@ -33,6 +33,14 @@ public class AppUtiles {
         app.setSettings(settings);
         /**/
         
+        /**/
+        app.setShowSettings(true);
+        AppSettings settings = new AppSettings(false);
+        settings.put("Title", "Bloques");
+        settings.setSettingsDialogImage("Interface/splashscreen.png");
+        app.setSettings(settings);
+        /**/
+        
         return app;
     }  
     
