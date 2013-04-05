@@ -23,14 +23,36 @@ public class Personaje {
     private BulletAppState      physics;
     private Camera       cam;
     
+    /**
+     *
+     */
     public CharacterControl player;
     private Vector3f walkDirection = new Vector3f();
-    public boolean left = false, right = false, up = false, down = false;
+    /**
+     *
+     */
+    public boolean left = false,
+    /**
+     *
+     */
+    right = false,
+    /**
+     *
+     */
+    up = false,
+    /**
+     *
+     */
+    down = false;
     
     private Boolean iniciado = false;
     
     
     
+    /**
+     *
+     * @param app
+     */
     public Personaje(Application app){
         this.app = (SimpleApplication) app;
         this.stateManager = this.app.getStateManager();
@@ -38,6 +60,12 @@ public class Personaje {
         this.cam          = this.app.getCamera();
     }
     
+    /**
+     *
+     * @param posIniX
+     * @param posIniY
+     * @param posIniZ
+     */
     public void generaPersonaje(int posIniX, int posIniY, int posIniZ){
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(4f, 15.8f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
@@ -52,6 +80,10 @@ public class Personaje {
         iniciado = true;
     }
     
+    /**
+     *
+     * @param tpf
+     */
     public void update(float tpf){  
         /**/
         if (iniciado){

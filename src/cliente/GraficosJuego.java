@@ -78,6 +78,9 @@ public class GraficosJuego {
     protected BloqueGeneraTerreno bloqueGeneraTerreno;
     
     //Personaje
+    /**
+     *
+     */
     public Personaje personaje;
     
     //variable para controlar si posicionamos la camara
@@ -257,6 +260,7 @@ public class GraficosJuego {
     
     /**
      * Esta funcion se llamara en el update del AppState
+     * @param tpf 
      */
     public void update(float tpf){        
         bloqueGeneraTerreno.generaTerreno();

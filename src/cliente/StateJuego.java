@@ -93,6 +93,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         
         //cuando el personaje esta en su sitio se activan las teclas
         if (graficos.posicionarCamara == 2 && graficos.terrenoInicialCargado){
+            graficos.posicionarCamara = 3;
             setupKeys();
         }
     }
@@ -140,10 +141,10 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     
     private AnalogListener analogListener = new AnalogListener() {
       public void onAnalog(String name, float value, float tpf) {
-        if (name.equals("Jump")) {
-            System.out.println("vale");
-        }
-            graficos.personaje.player.jump();
+            if (name.equals("Jump")) {
+                graficos.personaje.player.jump();
+            }
+            
         }
     };
     

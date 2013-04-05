@@ -9,6 +9,9 @@ package bloques;
  * @author cyberbask
  */
 public class BloqueChunkUtiles {
+    /**
+     *
+     */
     public static final int TAMANO_BLOQUE = 8;
     /**
      *
