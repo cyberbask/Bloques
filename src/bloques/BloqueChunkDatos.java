@@ -12,13 +12,14 @@ public class BloqueChunkDatos {
      * Nombre o Tipo del Bloque
      */
     protected String nomBloque;
+    
+    protected int[] caras;
 
     /**
      * Constructor
      * @param nomBloque
      */
-    public BloqueChunkDatos(String nomBloque){
-        setNomBloque(nomBloque);
+    public BloqueChunkDatos(){
     }
     
     /**
@@ -36,4 +37,20 @@ public class BloqueChunkDatos {
     public void setNomBloque(String nomBloque) {
         this.nomBloque = nomBloque;
     } 
+    
+    public int[] getCaras() {
+        return caras;
+    }
+
+    public void setCaras(int[] caras) {
+        this.caras = caras;
+    }
+    
+    public int getCara(int cara) {
+        return caras[cara];
+    }
+
+    public void setCara(int cara, int valor) {
+        this.caras[cara] = valor;
+    }
 }

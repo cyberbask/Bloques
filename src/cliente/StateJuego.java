@@ -3,24 +3,26 @@
  */
 package cliente;
 
+import bloques.BloqueChunks;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.math.ColorRGBA;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import utiles.AppUtiles;
+import utiles.Colision;
 
 /**
  *
@@ -41,6 +43,9 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     //Graficos
     GraficosJuego graficos;
     
+    //colision
+    protected Colision colision;
+    
  
     /**
      *
@@ -59,11 +64,11 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         this.viewPort     = this.app.getViewPort();
         this.physics      = this.stateManager.getState(BulletAppState.class);
         
-        StateJuegoGui juegoGui = new StateJuegoGui(app);
-        juegoGui.initPuntoMira();
-        
         //manejo de graficos
         graficos = new GraficosJuego(app);
+        
+        //colisiones
+        colision = new Colision(app);
         
         //esta linea impide que la ejecucion se pare aunque se pierda el foco
         app.setPauseOnLostFocus(false);
@@ -109,13 +114,14 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_V));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("MouseLeftButton", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
         inputManager.addListener(this, "VSync");
-        inputManager.addListener(this, "VSync");
+        inputManager.addListener(this, "MouseLeftButton");
         
         inputManager.addListener(analogListener, "Jump");
     }
@@ -134,8 +140,21 @@ public class StateJuego extends AbstractAppState implements ActionListener{
             AppSettings Appsett = AppUtiles.getSettings(app);
             Appsett.put("VSync", vsync);
             this.app.getContext().restart();
-        } else if (name.equals("Jump")) {
-            //graficos.personaje.player.jump();
+        } else if (name.equals("MouseLeftButton") && !isPressed) {
+            //miramos si hay colision
+            int[] coordenadasColision = colision.getCoordenadasColision();
+            if (coordenadasColision != null){
+                //en este caso, y por ahora, se destruye el bloque
+                Boolean destruyeBloque = graficos.chunks.destruyeBloque(coordenadasColision[0], coordenadasColision[1], coordenadasColision[2]);
+                if (destruyeBloque){
+                    //metemos el chunk en el update
+                    BloqueChunks updateaChunks = new BloqueChunks();
+                    updateaChunks.setChunk(coordenadasColision[0], coordenadasColision[1], coordenadasColision[2], graficos.chunks.getChunk(coordenadasColision[0], coordenadasColision[1], coordenadasColision[2]));
+                    graficos.updateChunk.put(graficos.contadorUpdatesChunk, updateaChunks);
+                    graficos.contadorUpdatesChunk++;
+                }
+                System.out.println("Detecta2: "+coordenadasColision[0]+"-"+coordenadasColision[1]+"-"+coordenadasColision[2]);
+            }
         }
     }
     

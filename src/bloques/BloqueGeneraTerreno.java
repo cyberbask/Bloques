@@ -5,12 +5,9 @@ package bloques;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
+import com.jme3.system.Timer;
 import com.jme3.terrain.heightmap.HillHeightMap;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -33,13 +30,16 @@ public class BloqueGeneraTerreno{
     /**
      *
      */
-    public BloqueChunks chunks = null;
-    Map<Integer,BloqueChunks> updates=new HashMap<Integer, BloqueChunks>();
+    protected BloqueChunks chunks = null;
     int contadorUpdates = 0;
+    
+    public Boolean generandoTerreno = false;
+    public int porcentajeGenerado = 0;
     
     //tamaño del mundo a generar
     //int totalTamano = 192;
-    int totalTamano = 256;
+    //int totalTamano = 400;
+    public int totalTamano = 128;
     
     /**
      *
@@ -85,9 +85,6 @@ public class BloqueGeneraTerreno{
         int minY = BloqueChunkUtiles.MIN_ALTURA_BLOQUES;
         int maxY = BloqueChunkUtiles.MAX_ALTURA_BLOQUES;
         
-        int ultimoGrupoChunkX = (BloqueChunkUtiles.TAMANO_CHUNK - 1);
-        int ultimoGrupoChunkZ = 0;
-        
         int x;
         int z;
         
@@ -118,63 +115,27 @@ public class BloqueGeneraTerreno{
                             tipoTerreno = "Arena";
                             variacion = 0;
                         }
-    
-                        chunks.setBloque(x * BloqueChunkUtiles.TAMANO_BLOQUE, a * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE, new BloqueChunkDatos(tipoTerreno));
+                        
+                        BloqueChunkDatos bloqueChunkDatos = new BloqueChunkDatos();
+                        bloqueChunkDatos.setNomBloque(tipoTerreno);
+                        chunks.setBloque(x * BloqueChunkUtiles.TAMANO_BLOQUE, a * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE,bloqueChunkDatos);
                         
                     }else{
                         chunks.setBloque(x * BloqueChunkUtiles.TAMANO_BLOQUE, a * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE, null);
                     }
                     
                 }
-                
-                //TODO esto deberia ir guardado en algun sitio, y luego cargarlo desde ahi
-                if (x >= ultimoGrupoChunkX && (z / (BloqueChunkUtiles.TAMANO_CHUNK - 1)) > ultimoGrupoChunkZ){
-                    //System.out.println("chunkear x"+x+"z"+z);
-                    final BloqueChunks grupoChunks = chunks.getGrupoChunks(x * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE);
-                    
-                    if (x >= 60){
-                        int yo = 0;
-                        
-                    }
-                    
-                    app.enqueue(new Callable() {
-                        public Object call() throws Exception {
-                            updates.put(contadorUpdates, grupoChunks);
-                            //System.out.println("chunkeado");
-                            contadorUpdates++;
-                            return null;
-                        }
-                    });
-                    
-                    if ((z / (BloqueChunkUtiles.TAMANO_CHUNK - 1)) > ultimoGrupoChunkZ){
-                        ultimoGrupoChunkZ++;
-                    }
-                    
-                    /*int contaBucles = 0;
-                    
-                    int cuentaClaves;
-                    
-                    do {
-                        Thread.sleep(1000);
-                        contaBucles += 1;
-
-                        cuentaClaves = app.enqueue(new Callable<Integer>() {
-                            public Integer call() throws Exception {
-                                Integer[] keys = (Integer[])( updates.keySet().toArray( new Integer[updates.size()] ) );
-                                return keys.length;
-                            }
-                        }).get();
-                    } while(cuentaClaves > 0 && contaBucles < 5);*/
-                    
-                    //Thread.sleep(10);
+            }
+            
+            //porcentage generado
+            final int xx = x;
+            app.enqueue(new Callable() {
+                public Object call() throws Exception {
+                    porcentajeGenerado =  (xx * 100) / totalTamano;
+                    return null;
                 }
-            }
+            });
             
-            ultimoGrupoChunkZ = 0;
-            
-            if (x >= ultimoGrupoChunkX){
-                ultimoGrupoChunkX = ultimoGrupoChunkX + (BloqueChunkUtiles.TAMANO_CHUNK - 1);
-            }
         }
         
          
@@ -183,7 +144,13 @@ public class BloqueGeneraTerreno{
     // A self-contained time-intensive task:
     private Callable<Boolean> generaTerrenoInicialHilo = new Callable<Boolean>(){
         public Boolean call() throws Exception {
+            Timer timer = app.getTimer();
+            float totalInicio = timer.getTimeInSeconds();
+            
             generaTerrenoInicialPosiciones();
+            
+            float totalFin = timer.getTimeInSeconds();
+            System.out.println("Generar Terreno "+(totalFin-totalInicio));
             
             return false;
         }
@@ -194,58 +161,24 @@ public class BloqueGeneraTerreno{
      */
     public void generaTerreno(){
         try{
-            if(future == null && chunks == null){
+            if(future == null && chunks == null && !generandoTerreno){
+                generandoTerreno = true;
                 chunks = new BloqueChunks();
                 future = executor.submit(generaTerrenoInicialHilo);
             }
             else if(future != null){
                 if(future.isDone()){
+                    generandoTerreno = false;
                     future = null;
                 }
                 else if(future.isCancelled()){
+                    
                     future = null;
                 }
             }
         } 
         catch(Exception e){ 
 
-        }
-    }
-    
-    /**
-     *
-     * @return
-     */
-    public Map<Integer,BloqueChunks> getUpdates(){
-        return updates;
-    }
-    
-    /**
-     *
-     * @param vaciarUpdate
-     * @return
-     */
-    public Map<Integer,BloqueChunks> getUpdates(Boolean vaciarUpdate){
-        if (vaciarUpdate){
-            Map<Integer,BloqueChunks> updatesCopia = new HashMap<Integer, BloqueChunks>();
-
-            Boolean hayDatos = false;
-            
-            SortedSet<Integer> keys = new TreeSet<Integer>(updates.keySet());
-            for (Integer key : keys) { 
-                updatesCopia.put(key,updates.get(key));
-                updates.remove(key);
-                hayDatos = true;
-                break;
-            }
-            
-            if (hayDatos){
-                return updatesCopia;
-            }else{
-               return null;
-            }
-        }else{
-            return getUpdates();
         }
     }
     
@@ -263,6 +196,10 @@ public class BloqueGeneraTerreno{
      */
     public void setChunks(BloqueChunks chunks) {
         this.chunks = chunks;
+    }
+    
+    public void vaciaChunks(){
+        chunks = null;
     }
     
     /**

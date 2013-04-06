@@ -1,6 +1,7 @@
 package cliente;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.renderer.RenderManager;
 import java.util.logging.Level;
@@ -42,6 +43,11 @@ public class MainCliente extends SimpleApplication {
         
         //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         
+        //capturas de pantalla
+        ScreenshotAppState screenShotState = new ScreenshotAppState();
+        screenShotState.setFilePath("");
+        this.stateManager.attach(screenShotState);
+        
         //Seteamos la "Applicacion State" principal del juego
         stateJuego = new StateJuego();
         stateManager.attach(stateJuego);
@@ -49,6 +55,12 @@ public class MainCliente extends SimpleApplication {
         //setamos la velocidad estandar de la flycam
         flyCam.setMoveSpeed(5f);       
         flyCam.setRotationSpeed(5f);
+
+        //setemoa la distancia de dibujado de la camara
+        cam.setFrustumFar(4000f);
+        //float aspect = (float)cam.getWidth() / (float)cam.getHeight();
+        //cam.setFrustumPerspective( 60f, aspect, 0.1f, cam.getFrustumFar() );
+        cam.update();
     }
 
     /**

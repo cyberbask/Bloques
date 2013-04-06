@@ -4,6 +4,8 @@
  */
 package bloques;
 
+import com.jme3.math.Vector3f;
+
 /**
  *
  * @author cyberbask
@@ -12,7 +14,7 @@ public class BloqueChunkUtiles {
     /**
      *
      */
-    public static final int TAMANO_BLOQUE = 8;
+    public static final int TAMANO_BLOQUE = 6;
     /**
      *
      */
@@ -179,5 +181,29 @@ public class BloqueChunkUtiles {
      */
     public static String generarNombreChunk(int[] coordenadas){
         return String.valueOf(coordenadas[0])+"__"+String.valueOf(coordenadas[1])+"__"+String.valueOf(coordenadas[2]);
+    }
+    
+    public static int[] redondeaCoordenadasContacto(Vector3f coordenadas){
+        int[] devolver = new int[3];
+        
+        if (coordenadas.x - Math.floor(coordenadas.x) >= 0.5) {
+            devolver[0] = (int) Math.ceil(coordenadas.x);
+        }else{
+            devolver[0] = (int) Math.floor(coordenadas.x);
+        }
+        
+        if (coordenadas.y - Math.floor(coordenadas.y) >= 0.5) {
+            devolver[1] = (int) Math.ceil(coordenadas.y);
+        }else{
+            devolver[1] = (int) Math.floor(coordenadas.y);
+        }
+        
+        if (coordenadas.z - Math.floor(coordenadas.z) >= 0.5) {
+            devolver[2] = (int) Math.ceil(coordenadas.z);
+        }else{
+            devolver[2] = (int) Math.floor(coordenadas.z);
+        }
+
+        return devolver;
     }
 }

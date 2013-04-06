@@ -55,13 +55,10 @@ public class BloqueChunks {
         //si es nuevo creamos un nuevo chunk y le asignamos el bloque
         if (chunk == null){ 
             chunk = new BloqueChunk(); 
+            setChunk(x, y, z, chunk);
         }
       
         chunk.setDatosBloque(BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z), datos);
-            
-        setChunk(x, y, z, chunk);
-        
-        
     }
     
     /**
@@ -119,9 +116,6 @@ public class BloqueChunks {
         int maxbucle = BloqueChunkUtiles.MAX_ALTURA_BLOQUES / BloqueChunkUtiles.TAMANO_CHUNK;
         
         BloqueChunks grupoChunks = new BloqueChunks();
-        if (x >= 60){
-            int casi = 1;
-        }
         
         for (int i=0;i<maxbucle;i++){
             int y = i * BloqueChunkUtiles.TAMANO_CHUNK * BloqueChunkUtiles.TAMANO_BLOQUE;
@@ -262,6 +256,22 @@ public class BloqueChunks {
         }
         
         return devolverAltura;
+    }
+    
+    public Boolean destruyeBloque(int x, int y, int z){
+        BloqueChunk chunk = getChunk(x, y, z);
+        
+        if (chunk != null){
+            int[] calculaCoordenadasBloqueDentroDeChunk = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z);
+        
+            System.out.println("destruye: "+calculaCoordenadasBloqueDentroDeChunk[0]+"-"+calculaCoordenadasBloqueDentroDeChunk[1]+"-"+calculaCoordenadasBloqueDentroDeChunk[2]);
+            
+            chunk.setDatosBloque(calculaCoordenadasBloqueDentroDeChunk, null);
+            
+            return true;
+        }
+        
+        return false;
     }
             
 }

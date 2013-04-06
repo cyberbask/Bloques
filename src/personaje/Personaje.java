@@ -67,11 +67,11 @@ public class Personaje {
      * @param posIniZ
      */
     public void generaPersonaje(int posIniX, int posIniY, int posIniZ){
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(4f, 15.8f, 1);
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(2f, 12.8f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
-        player.setJumpSpeed(65);
-        player.setFallSpeed(3000);
-        player.setGravity(230);
+        player.setJumpSpeed(50);
+        player.setFallSpeed(4500);
+        player.setGravity(180);
         player.setPhysicsLocation(new Vector3f(posIniX, posIniY, posIniZ));
 
         //Añadimos el personaje al espacio de fisicas
@@ -91,9 +91,7 @@ public class Personaje {
             camDir.setY(0f); //evita despegarse del chan :-D
             Vector3f camLeft = cam.getLeft().clone().multLocal(0.05f * BloqueChunkUtiles.TAMANO_BLOQUE);
             walkDirection.set(0, 0, 0);
-            if (left)  { 
-                walkDirection.addLocal(camLeft); 
-            }
+            if (left)  { walkDirection.addLocal(camLeft); }
             if (right) { walkDirection.addLocal(camLeft.negate()); }
             if (up)    { walkDirection.addLocal(camDir); }
             if (down)  { walkDirection.addLocal(camDir.negate()); }
