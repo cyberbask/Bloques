@@ -183,6 +183,22 @@ public class BloqueChunkUtiles {
         return String.valueOf(coordenadas[0])+"__"+String.valueOf(coordenadas[1])+"__"+String.valueOf(coordenadas[2]);
     }
     
+    public static int averiguaCoordenadasContacto(Vector3f coordenadas){
+        if (coordenadas.x - Math.floor(coordenadas.x) == 0.0) {
+            return 1;
+        }
+        
+        if (coordenadas.y - Math.floor(coordenadas.y) == 0.0) {
+            return 2;
+        }
+        
+        if (coordenadas.z - Math.floor(coordenadas.z) == 0.0) {
+            return 3;
+        }
+        
+        return 0;
+    }
+    
     public static int[] redondeaCoordenadasContacto(Vector3f coordenadas){
         int[] devolver = new int[3];
         

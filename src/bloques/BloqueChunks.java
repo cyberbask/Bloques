@@ -137,95 +137,116 @@ public class BloqueChunks {
         return chunks;
     }
     
-    /**
-     *
-     * @param x
-     * @param y
-     * @param z
-     * @return
-     */
-    public int[] getBloquesVecinos(int x, int y, int z){
-        int caras[] = new int[6];
+    public Boolean getBloqueVecino(int x, int y, int z){
+        BloqueChunk chunk = getChunk(x, y, z);
+        if (chunk == null){
+            return true;
+        }else{
+            BloqueChunkDatos bloque = getBloque(x, y, z, chunk);
+            if (bloque != null) {
+                return false;
+            }
+        }
         
+        return false;
+    }
+    
+    public int[][] getBloquesVecinos(int x, int y, int z){
+        //la ultima posicion del array, la 3 nos dice si es de un chunk vecino
+        int bloques[][] = new int[6][4]; 
+        
+        //inicializamos
         for(int i=0;i<6;i++) {
-            caras[i] = 0;
+            bloques[i] = null;
         }
         
         BloqueChunkDatos bloque;
         BloqueChunk chunk;
+        String nombreChunkOriginal = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(x, y, z));
+        
+        int xVeci = x;
+        int yVeci = y;
+        int zVeci = z;
+        int posicion;
         
         //tenemos que sacar los bloques alrededor al proporcionado
-        //TODO  Por ahora si el chunk vecino no existe directamente no se muestra la cara
+        for(int i=0;i<6;i++) {
+            posicion = i;
+            
+            switch(i){
+                case 0:
+                  //frontal z+1
+                    xVeci = x; yVeci = y; zVeci = z + BloqueChunkUtiles.TAMANO_BLOQUE;  
+                break;
+                case 1:
+                    //lateral derecha x+1
+                    xVeci = x + BloqueChunkUtiles.TAMANO_BLOQUE; yVeci = y; zVeci = z;  
+                break;
+                case 2:
+                    //trasera z-1
+                    xVeci = x; yVeci = y; zVeci = z - BloqueChunkUtiles.TAMANO_BLOQUE;  
+                break;
+                case 3:
+                    //lateral izquierda x-1
+                    xVeci = x - BloqueChunkUtiles.TAMANO_BLOQUE; yVeci = y; zVeci = z;  
+                break;
+                case 4:
+                    //Superior y+1
+                    xVeci = x; yVeci = y + BloqueChunkUtiles.TAMANO_BLOQUE; zVeci = z;  
+                break;
+                case 5:
+                    //inferior y-1
+                    xVeci = x; yVeci = y - BloqueChunkUtiles.TAMANO_BLOQUE; zVeci = z;  
+                break;
+            }
+            
+            chunk = getChunk(xVeci, yVeci, zVeci);
+            if (chunk == null){
+                //TODO por ahora si no hay chunk vecino, se marca para que no se muestre la cara
+                bloques[posicion] = new int[4];
+                //bloques[posicion][3] = 2; //sin chunk vecino
+            }else{
+                bloque = getBloque(xVeci, yVeci, zVeci, chunk);
+                if (bloque != null) {
+                    bloques[posicion] = new int[4];
+                    bloques[posicion][0] = xVeci;
+                    bloques[posicion][1] = yVeci;
+                    bloques[posicion][2] = zVeci;
+
+                    String nombreChunkVecino = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(xVeci, yVeci, zVeci));
+
+                    if (nombreChunkVecino.equals(nombreChunkOriginal)){
+                        bloques[posicion][3] = 0;  
+                    }else{
+                        bloques[posicion][3] = 1; //chunk vecino
+                    }
+                }
+            }
+        }
+        
+        return bloques;
+    }  
+    
+    public int[] getCarasAPartirDeBloquesVecinos(int[][] bloques){
+        int caras[] = new int[6];
+        
+        for(int i=0;i<6;i++) {
+            caras[i] = 1;
+        }
+        
+        //TODO  Por ahora si el chunk o bloque vecino no existe directamente no se muestra la cara
         //      con esto evitamos que salgan las caras de los bordes del mundo
         
-        //frontal z+1
-        chunk = getChunk(x, y, z + BloqueChunkUtiles.TAMANO_BLOQUE);
-        if (chunk == null){
-            caras[0] = 1;
-        }else{
-            bloque = getBloque(x, y, z + BloqueChunkUtiles.TAMANO_BLOQUE,chunk);
-            if (bloque != null) {
-                caras[0] = 1;
-            }
-        }
-        
-        //lateral derecha x+1
-        chunk = getChunk(x + BloqueChunkUtiles.TAMANO_BLOQUE, y, z);
-        if (chunk == null){
-            caras[1] = 1;
-        }else{
-            bloque = getBloque(x + BloqueChunkUtiles.TAMANO_BLOQUE, y, z,chunk);
-            if (bloque != null) {
-                caras[1] = 1;
-            }
-        }
-        
-        //trasera z-1
-        chunk = getChunk(x, y, z - BloqueChunkUtiles.TAMANO_BLOQUE);
-        if (chunk == null){
-            caras[2] = 1;
-        }else{
-            bloque = getBloque(x, y, z - BloqueChunkUtiles.TAMANO_BLOQUE,chunk);
-            if (bloque != null) {
-                caras[2] = 1;
-            }
-        }
-        
-        //lateral izquierda x-1
-        chunk = getChunk(x - BloqueChunkUtiles.TAMANO_BLOQUE, y, z);
-        if (chunk == null){
-            caras[3] = 1;
-        }else{
-            bloque = getBloque(x - BloqueChunkUtiles.TAMANO_BLOQUE, y, z,chunk);
-            if (bloque != null) {
-                caras[3] = 1;
-            }
-        }
-        
-        //Superior y+1
-        chunk = getChunk(x, y + BloqueChunkUtiles.TAMANO_BLOQUE, z);
-        if (chunk == null){
-            caras[4] = 1;
-        }else{
-            bloque = getBloque(x, y + BloqueChunkUtiles.TAMANO_BLOQUE, z,chunk);
-            if (bloque != null) {
-                caras[4] = 1;
-            }
-        }
-        
-        //inferior y-1
-        chunk = getChunk(x, y - BloqueChunkUtiles.TAMANO_BLOQUE, z);
-        if (chunk == null){
-            caras[5] = 1;
-        }else{
-            bloque = getBloque(x, y - BloqueChunkUtiles.TAMANO_BLOQUE, z,chunk);
-            if (bloque != null) {
-                caras[5] = 1;
+        for(int i=0;i<6;i++) {
+            if (bloques[i] != null){ //si hay bloque
+                caras[i] = 0;
+            }else{
+                caras[i] = 1;
             }
         }
         
         return caras;
-    }    
+    }
     
     /**
      *
@@ -264,9 +285,28 @@ public class BloqueChunks {
         if (chunk != null){
             int[] calculaCoordenadasBloqueDentroDeChunk = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z);
         
-            System.out.println("destruye: "+calculaCoordenadasBloqueDentroDeChunk[0]+"-"+calculaCoordenadasBloqueDentroDeChunk[1]+"-"+calculaCoordenadasBloqueDentroDeChunk[2]);
+            //System.out.println("destruye: "+calculaCoordenadasBloqueDentroDeChunk[0]+"-"+calculaCoordenadasBloqueDentroDeChunk[1]+"-"+calculaCoordenadasBloqueDentroDeChunk[2]);
             
             chunk.setDatosBloque(calculaCoordenadasBloqueDentroDeChunk, null);
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public Boolean colocaBloque(int x, int y, int z, String nomBloque){
+        BloqueChunk chunk = getChunk(x, y, z);
+        
+        if (chunk != null){
+            int[] calculaCoordenadasBloqueDentroDeChunk = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z);
+        
+            System.out.println("coloca: "+calculaCoordenadasBloqueDentroDeChunk[0]+"-"+calculaCoordenadasBloqueDentroDeChunk[1]+"-"+calculaCoordenadasBloqueDentroDeChunk[2]);
+            
+            BloqueChunkDatos bloqueChunkDatos = new BloqueChunkDatos();
+            bloqueChunkDatos.setNomBloque(nomBloque);
+            
+            chunk.setDatosBloque(calculaCoordenadasBloqueDentroDeChunk, bloqueChunkDatos);
             
             return true;
         }

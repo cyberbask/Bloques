@@ -40,7 +40,6 @@ public class MainCliente extends SimpleApplication {
         //Fisicas
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
-        
         //bulletAppState.getPhysicsSpace().enableDebug(assetManager);
         
         //capturas de pantalla

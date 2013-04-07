@@ -17,12 +17,10 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import utiles.AppUtiles;
-import utiles.Colision;
 
 /**
  *
@@ -42,9 +40,6 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     
     //Graficos
     GraficosJuego graficos;
-    
-    //colision
-    protected Colision colision;
     
  
     /**
@@ -66,9 +61,6 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         
         //manejo de graficos
         graficos = new GraficosJuego(app);
-        
-        //colisiones
-        colision = new Colision(app);
         
         //esta linea impide que la ejecucion se pare aunque se pierda el foco
         app.setPauseOnLostFocus(false);
@@ -97,7 +89,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         graficos.update(tpf);
         
         //cuando el personaje esta en su sitio se activan las teclas
-        if (graficos.posicionarCamara == 2 && graficos.terrenoInicialCargado){
+        if (graficos.posicionarCamara == 2){
             graficos.posicionarCamara = 3;
             setupKeys();
         }
@@ -115,6 +107,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_V));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("MouseLeftButton", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        inputManager.addMapping("MouseRightButton", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
@@ -122,6 +115,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         inputManager.addListener(this, "Down");
         inputManager.addListener(this, "VSync");
         inputManager.addListener(this, "MouseLeftButton");
+        inputManager.addListener(this, "MouseRightButton");
         
         inputManager.addListener(analogListener, "Jump");
     }
@@ -141,20 +135,9 @@ public class StateJuego extends AbstractAppState implements ActionListener{
             Appsett.put("VSync", vsync);
             this.app.getContext().restart();
         } else if (name.equals("MouseLeftButton") && !isPressed) {
-            //miramos si hay colision
-            int[] coordenadasColision = colision.getCoordenadasColision();
-            if (coordenadasColision != null){
-                //en este caso, y por ahora, se destruye el bloque
-                Boolean destruyeBloque = graficos.chunks.destruyeBloque(coordenadasColision[0], coordenadasColision[1], coordenadasColision[2]);
-                if (destruyeBloque){
-                    //metemos el chunk en el update
-                    BloqueChunks updateaChunks = new BloqueChunks();
-                    updateaChunks.setChunk(coordenadasColision[0], coordenadasColision[1], coordenadasColision[2], graficos.chunks.getChunk(coordenadasColision[0], coordenadasColision[1], coordenadasColision[2]));
-                    graficos.updateChunk.put(graficos.contadorUpdatesChunk, updateaChunks);
-                    graficos.contadorUpdatesChunk++;
-                }
-                System.out.println("Detecta2: "+coordenadasColision[0]+"-"+coordenadasColision[1]+"-"+coordenadasColision[2]);
-            }
+            graficos.generaColision("destruir");
+        } else if (name.equals("MouseRightButton") && !isPressed) {
+            graficos.generaColision("colocar");
         }
     }
     
@@ -163,7 +146,6 @@ public class StateJuego extends AbstractAppState implements ActionListener{
             if (name.equals("Jump")) {
                 graficos.personaje.player.jump();
             }
-            
         }
     };
     
