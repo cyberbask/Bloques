@@ -4,6 +4,7 @@
 package personaje;
 
 import bloques.BloqueChunkUtiles;
+import bloques.BloqueChunks;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -15,6 +16,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import utiles.Colision;
 
 /**
  *
@@ -55,9 +57,7 @@ public class Personaje {
      *
      */
     protected float correcionAlturaPlayer = 4.5f;
-    
-    
-    
+  
     /**
      *
      * @param app
@@ -76,7 +76,7 @@ public class Personaje {
      * @param posIniY
      * @param posIniZ
      */
-    public void generaPersonaje(int posIniX, int posIniY, int posIniZ){
+    public void generaPersonaje(float posIniX, float posIniY, float posIniZ){
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(2f, 6f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
         player.setJumpSpeed(50);
@@ -129,8 +129,9 @@ public class Personaje {
     /**
      *
      * @param tpf
+     * @param chunks  
      */
-    public void update(float tpf){  
+    public void update(float tpf, BloqueChunks chunks){  
         /**/
         if (iniciado){
             Vector3f camDir = cam.getDirection().clone().multLocal(0.10f * BloqueChunkUtiles.TAMANO_BLOQUE);
@@ -142,10 +143,21 @@ public class Personaje {
             if (up)    { walkDirection.addLocal(camDir); }
             if (down)  { walkDirection.addLocal(camDir.negate()); }
             player.setWalkDirection(walkDirection);
-            
+
             Vector3f physicsLocation = player.getPhysicsLocation();
+            
+            
+            //vamos a comprobar que no estemos dentro de un bloque
+            Boolean dentroBloquePlayer = Colision.calculaDentroBloquePlayer(physicsLocation,chunks);
+            
+            if (dentroBloquePlayer){
+                physics.getPhysicsSpace().remove(player);
+                physicsLocation.y = physicsLocation.y + BloqueChunkUtiles.TAMANO_BLOQUE +0.9f;
+                generaPersonaje(physicsLocation.x,physicsLocation.y,physicsLocation.z);
+            }
+            
             physicsLocation.y = physicsLocation.y + correcionAlturaPlayer;
-            //physicsLocation = physicsLocation.multLocal(-0.001f,0, 0);
+            
             cam.setLocation(physicsLocation);
         }
         /**/

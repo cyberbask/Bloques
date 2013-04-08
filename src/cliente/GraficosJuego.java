@@ -134,6 +134,7 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                                         if (tipoUpdate == 1){
                                             int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas[0],coordenadas[1],coordenadas[2]);
                                             carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
+                                            datosBloque.setCaras(carasbloquesVecinos);
                                         }else{
                                             carasbloquesVecinos = datosBloque.getCaras();
                                         }
@@ -143,10 +144,6 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                                                 bloqueClonado.detachChildNamed("Cara-"+h); 
                                                 contaCarasQuitadas++;
                                             }
-                                        }
-
-                                        if (tipoUpdate == 1){
-                                            datosBloque.setCaras(carasbloquesVecinos);
                                         }
 
                                         if (contaCarasQuitadas < 6){
@@ -300,7 +297,7 @@ public class GraficosJuego extends GraficosJuegosSetUp{
             }
             
             //actualizamos la posicion del personaje
-            personaje.update(tpf);
+            personaje.update(tpf,chunks);
         }
         
         //la primera vez que se entra aqui se genera el terreno
@@ -443,12 +440,19 @@ public class GraficosJuego extends GraficosJuegosSetUp{
             }
 
             if (bloqueAccionado){
+                Map<String,Integer> chunksAUpdatar=new HashMap<String,Integer>();      
+                String nombreChunk;
+                
+                //recargamos el chunk donde esta el bloque de la colision
+                nombreChunk = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(coordUsar[0], coordUsar[1], coordUsar[2]));
+                if (chunksAUpdatar.get(nombreChunk) == null){
+                    chunksAUpdatar.put(nombreChunk,1);
+                }
+                
                 if (accion.equals("colocar")){
                     //calculamos sus caras
                     chunks.setCarasVecinas(coordUsar[0], coordUsar[1], coordUsar[2]);
                 }
-
-                Map<String,Integer> chunksAUpdatar=new HashMap<String,Integer>();
 
                 int[][] bloquesVecinos = chunks.getBloquesVecinos(coordUsar[0], coordUsar[1], coordUsar[2]);
                 for(int i=0;i<6;i++) {
@@ -456,8 +460,7 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                         //calculamos sus caras
                         chunks.setCarasVecinas(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]);
 
-                        String nombreChunk = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]));
-
+                        nombreChunk = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]));
                         if (chunksAUpdatar.get(nombreChunk) == null){
                             chunksAUpdatar.put(nombreChunk,1);
                         }  

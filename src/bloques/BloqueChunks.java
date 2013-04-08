@@ -84,6 +84,23 @@ public class BloqueChunks {
      * @param z
      * @return
      */
+    public BloqueChunkDatos getBloque(int x, int y, int z){  
+        BloqueChunk chunk = getChunk(x, y, z);
+        
+        if (chunk != null){ 
+            return chunk.getDatosBloque(BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z));
+        }
+            
+        return null;
+    }
+    
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public BloqueChunkDatos getBloquePorCoordenadas(int x, int y, int z){  
         BloqueChunk chunk = getChunk(x, y, z);
         return getBloque(x, y, z,chunk);

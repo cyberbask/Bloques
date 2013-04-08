@@ -3,6 +3,7 @@
  */
 package utiles;
 
+import bloques.BloqueChunkDatos;
 import bloques.BloqueChunkUtiles;
 import bloques.BloqueChunks;
 import com.jme3.app.Application;
@@ -52,7 +53,6 @@ public class Colision {
     /**
      *
      * @param chunks
-     * @param posPlayer
      */
     public void getCoordenadasColision(BloqueChunks chunks){
         // 1. Reset results list.
@@ -138,7 +138,13 @@ public class Colision {
         }
     }
     
-    public Boolean calculaColisionPlayer(int[] coordBloque, Vector3f coordPlayer){
+    /**
+     *
+     * @param coordBloque
+     * @param coordPlayer
+     * @return
+     */
+    public static Boolean calculaColisionPlayer(int[] coordBloque, Vector3f coordPlayer){
         int[] dentroChunkBloque = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(coordBloque[0], coordBloque[1], coordBloque[2]);
         
         int[] dentroChunkPlayer = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk((int) coordPlayer.x, (int)coordPlayer.y, (int)coordPlayer.z);
@@ -147,6 +153,22 @@ public class Colision {
                 &&dentroChunkBloque[1] == dentroChunkPlayer[1]
                 &&dentroChunkBloque[2] == dentroChunkPlayer[2]){
             
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     *
+     * @param coordPlayer
+     * @param chunks
+     * @return
+     */
+    public static Boolean calculaDentroBloquePlayer(Vector3f coordPlayer, BloqueChunks chunks){
+        BloqueChunkDatos bloque = chunks.getBloque((int)coordPlayer.x, (int)coordPlayer.y, (int)coordPlayer.z);
+        
+        if (bloque != null){
             return true;
         }
         
