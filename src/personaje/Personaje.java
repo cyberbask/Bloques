@@ -72,7 +72,7 @@ public class Personaje {
      * @param posIniZ
      */
     public void generaPersonaje(int posIniX, int posIniY, int posIniZ){
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(2f, 11.8f, 1);
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(2f, 6f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
         player.setJumpSpeed(50);
         player.setFallSpeed(4500);
@@ -121,6 +121,7 @@ public class Personaje {
             player.setWalkDirection(walkDirection);
             
             Vector3f physicsLocation = player.getPhysicsLocation();
+            physicsLocation.y = physicsLocation.y + 4.5f;
             //physicsLocation = physicsLocation.multLocal(-0.001f,0, 0);
             cam.setLocation(physicsLocation);
         }

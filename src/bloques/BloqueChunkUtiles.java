@@ -202,7 +202,11 @@ public class BloqueChunkUtiles {
     public static int[] redondeaCoordenadasContacto(Vector3f coordenadas){
         int[] devolver = new int[3];
         
-        if (coordenadas.x - Math.floor(coordenadas.x) >= 0.5) {
+        devolver[0] = (int) coordenadas.x;
+        devolver[1] = (int) coordenadas.y;
+        devolver[2] = (int) coordenadas.z;
+
+        /*if (coordenadas.x - Math.floor(coordenadas.x) >= 0.5) {
             devolver[0] = (int) Math.ceil(coordenadas.x);
         }else{
             devolver[0] = (int) Math.floor(coordenadas.x);
@@ -218,7 +222,7 @@ public class BloqueChunkUtiles {
             devolver[2] = (int) Math.ceil(coordenadas.z);
         }else{
             devolver[2] = (int) Math.floor(coordenadas.z);
-        }
+        }*/
 
         return devolver;
     }

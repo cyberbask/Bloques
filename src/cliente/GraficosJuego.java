@@ -161,18 +161,18 @@ public class GraficosJuego extends GraficosJuegosSetUp{
 
                             app.enqueue(new Callable() {
                                 public Object call() throws Exception {
+                                    CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape((Node) optimizado);
+                                    RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
+                                    optimizado.addControl(bloquesMostrarControl);
+                                    
+                                    physics.getPhysicsSpace().add(optimizado);
+                                    
                                     //quitamos el chunk anterior y sus fisicas si hace falta
                                     if (tipoUpdateFinal == 2){
                                         Spatial child = rootNode.getChild("Chunk: "+claveActualAllChunksFinal);
                                         physics.getPhysicsSpace().remove(child.getControl(0)) ; 
                                         rootNode.detachChildNamed("Chunk: "+claveActualAllChunksFinal);
                                     }
-                                    
-                                    CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape((Node) optimizado);
-                                    RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
-                                    optimizado.addControl(bloquesMostrarControl);
-                                    
-                                    physics.getPhysicsSpace().add(optimizado);
                                     
                                     rootNode.attachChild(optimizado);
                                     
@@ -307,7 +307,7 @@ public class GraficosJuego extends GraficosJuegosSetUp{
         
         if (posicionarCamara == 1 && terrenoInicialGenerado){
             //Añadimos el personaje
-            personaje.generaPersonaje(20,bloqueConMasAltura+60,20);
+            personaje.generaPersonaje(20,bloqueConMasAltura+100,20);
             posicionarCamara = 2;
         }
     }
@@ -370,6 +370,8 @@ public class GraficosJuego extends GraficosJuegosSetUp{
     }
     
     public void generaColision(String accion){
+        //TODO esta peli entera deberia ir en la clase de colisiones
+        
         Timer timer = app.getTimer();
         float totalInicio = timer.getTimeInSeconds();
         

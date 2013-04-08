@@ -58,41 +58,41 @@ public class Colision {
             
             Vector3f vecComprobar = contactPoint.clone();
             
-            Boolean bloqueVecino1 = null;
-            Boolean bloqueVecino2 = null;
+            Boolean bloqueVecino1 = false;
+            Boolean bloqueVecino2 = false;
             int[] redondeaCoordenadas1 = null;
             int[] redondeaCoordenadas2 = null;
             float resta = BloqueChunkUtiles.TAMANO_BLOQUE / 2;
             
             switch(ejeComprobar){
                 case 1: //x
-                    vecComprobar.x = vecComprobar.x + 0.6f;
+                    vecComprobar.x = vecComprobar.x + 0.5f;
                     redondeaCoordenadas1 = BloqueChunkUtiles.redondeaCoordenadasContacto(vecComprobar);
                     bloqueVecino1 = chunks.getBloqueVecino(redondeaCoordenadas1[0], redondeaCoordenadas1[1], redondeaCoordenadas1[2]);
-                    vecComprobar.x = vecComprobar.x - resta;
+                    vecComprobar.x = vecComprobar.x - 1f;
                     redondeaCoordenadas2 = BloqueChunkUtiles.redondeaCoordenadasContacto(vecComprobar);
                     bloqueVecino2 = chunks.getBloqueVecino(redondeaCoordenadas2[0], redondeaCoordenadas2[1], redondeaCoordenadas2[2]);
                 break;
                 case 2: //y
-                    vecComprobar.y = vecComprobar.y + 0.6f;
+                    vecComprobar.y = vecComprobar.y + 0.5f;
                     redondeaCoordenadas1 = BloqueChunkUtiles.redondeaCoordenadasContacto(vecComprobar);
                     bloqueVecino1 = chunks.getBloqueVecino(redondeaCoordenadas1[0], redondeaCoordenadas1[1], redondeaCoordenadas1[2]);
-                    vecComprobar.y = vecComprobar.y - resta;
+                    vecComprobar.y = vecComprobar.y - 1f;
                     redondeaCoordenadas2 = BloqueChunkUtiles.redondeaCoordenadasContacto(vecComprobar);
                     bloqueVecino2 = chunks.getBloqueVecino(redondeaCoordenadas2[0], redondeaCoordenadas2[1], redondeaCoordenadas2[2]);
                 break;
                 case 3: //z
-                    vecComprobar.z = vecComprobar.z + 0.6f;
+                    vecComprobar.z = vecComprobar.z + 0.5f;
                     redondeaCoordenadas1 = BloqueChunkUtiles.redondeaCoordenadasContacto(vecComprobar);
                     bloqueVecino1 = chunks.getBloqueVecino(redondeaCoordenadas1[0], redondeaCoordenadas1[1], redondeaCoordenadas1[2]);
-                    vecComprobar.z = vecComprobar.z - resta;
+                    vecComprobar.z = vecComprobar.z - 1f;
                     redondeaCoordenadas2 = BloqueChunkUtiles.redondeaCoordenadasContacto(vecComprobar);
                     bloqueVecino2 = chunks.getBloqueVecino(redondeaCoordenadas2[0], redondeaCoordenadas2[1], redondeaCoordenadas2[2]);
                 break;
             }
             
-            if (bloqueVecino1 != null || bloqueVecino2 != null){
-                if(bloqueVecino1 != null){
+            if (bloqueVecino1 || bloqueVecino2){
+                if(bloqueVecino1){
                     coorUltCol = redondeaCoordenadas1;
                     coorUltColBloque = redondeaCoordenadas1;
                     coorUltColBloqueVecino = redondeaCoordenadas2;
@@ -101,11 +101,15 @@ public class Colision {
                     coorUltColBloque = redondeaCoordenadas2;
                     coorUltColBloqueVecino = redondeaCoordenadas1; 
                 }                    
+                System.out.println("Detecta Final: "+coorUltCol[0]+"-"+coorUltCol[1]+"-"+coorUltCol[2]);
             }else{
                 coorUltCol = null;
                 coorUltColBloque = null;
                 coorUltColBloqueVecino = null;   
+                System.out.println("Detecta null");
             }
+            
+            
             
             int yo = 0;
  

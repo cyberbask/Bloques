@@ -140,11 +140,11 @@ public class BloqueChunks {
     public Boolean getBloqueVecino(int x, int y, int z){
         BloqueChunk chunk = getChunk(x, y, z);
         if (chunk == null){
-            return true;
+            return false;
         }else{
             BloqueChunkDatos bloque = getBloque(x, y, z, chunk);
             if (bloque != null) {
-                return false;
+                return true;
             }
         }
         
