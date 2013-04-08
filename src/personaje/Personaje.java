@@ -51,6 +51,11 @@ public class Personaje {
     
     private Boolean iniciado = false;
     
+    /**
+     *
+     */
+    protected float correcionAlturaPlayer = 4.5f;
+    
     
     
     /**
@@ -85,6 +90,11 @@ public class Personaje {
         iniciado = true;
     }
     
+    /**
+     *
+     * @param bloqueConMasAltura
+     * @return
+     */
     public int posicionarCamara(int bloqueConMasAltura){
         if (bloqueConMasAltura > 0){ 
             String nombreChunk = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(20, bloqueConMasAltura , 20));
@@ -105,6 +115,19 @@ public class Personaje {
     
     /**
      *
+     * @return
+     */
+    public Vector3f getPosicionPlayer(){
+        Vector3f location = cam.getLocation();
+        location.y = location.y - correcionAlturaPlayer;
+        
+        System.out.println("Player: "+location.x+"-"+location.y+"-"+location.z);
+        
+        return location;
+    }
+    
+    /**
+     *
      * @param tpf
      */
     public void update(float tpf){  
@@ -121,11 +144,10 @@ public class Personaje {
             player.setWalkDirection(walkDirection);
             
             Vector3f physicsLocation = player.getPhysicsLocation();
-            physicsLocation.y = physicsLocation.y + 4.5f;
+            physicsLocation.y = physicsLocation.y + correcionAlturaPlayer;
             //physicsLocation = physicsLocation.multLocal(-0.001f,0, 0);
             cam.setLocation(physicsLocation);
         }
         /**/
-        
     }
 }

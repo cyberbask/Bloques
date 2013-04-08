@@ -55,6 +55,10 @@ public class StateJuegoGui {
         guiNode.attachChild(ch);
     }
     
+    /**
+     *
+     * @param txt
+     */
     protected void textoEnPantalla(String txt){
         if (textoEnPantalla != null){
             guiNode.detachChild(textoEnPantalla);

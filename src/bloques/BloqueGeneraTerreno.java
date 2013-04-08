@@ -33,13 +33,22 @@ public class BloqueGeneraTerreno{
     protected BloqueChunks chunks = null;
     int contadorUpdates = 0;
     
+    /**
+     *
+     */
     public Boolean generandoTerreno = false;
+    /**
+     *
+     */
     public int porcentajeGenerado = 0;
     
     //tamaño del mundo a generar
     //int totalTamano = 192;
     //int totalTamano = 400;
-    public int totalTamano = 128;
+    /**
+     *
+     */
+    public int totalTamano = 190;
     
     /**
      *
@@ -198,6 +207,9 @@ public class BloqueGeneraTerreno{
         this.chunks = chunks;
     }
     
+    /**
+     *
+     */
     public void vaciaChunks(){
         chunks = null;
     }

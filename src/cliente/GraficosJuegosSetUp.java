@@ -32,17 +32,50 @@ import utiles.Colision;
  * @author cyberbask
  */
 public class GraficosJuegosSetUp {
+    /**
+     *
+     */
     protected ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
+    /**
+     *
+     */
     protected Future future = null;
+    /**
+     *
+     */
     protected Future futureChunkUrgentes = null;
     
+    /**
+     *
+     */
     protected SimpleApplication app;
+    /**
+     *
+     */
     protected Node              rootNode;
+    /**
+     *
+     */
     protected AssetManager      assetManager;
+    /**
+     *
+     */
     protected AppStateManager   stateManager;
+    /**
+     *
+     */
     protected InputManager      inputManager;
+    /**
+     *
+     */
     protected ViewPort          viewPort;
+    /**
+     *
+     */
     protected BulletAppState    physics;
+    /**
+     *
+     */
     protected Camera       cam;
     
     /**
@@ -62,8 +95,15 @@ public class GraficosJuegosSetUp {
     StateJuegoGui juegoGui;
    
     //colision
+    /**
+     *
+     */
     public Colision colision;
     
+    /**
+     *
+     * @param app
+     */
     public GraficosJuegosSetUp(Application app){
         this.app = (SimpleApplication) app;
         this.rootNode     = this.app.getRootNode();
@@ -84,8 +124,8 @@ public class GraficosJuegosSetUp {
         juegoGui.initPuntoMira();
            
         //cambiamos el color del fondo
-        //viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
-        viewPort.setBackgroundColor(ColorRGBA.Blue);
+        viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
+        //viewPort.setBackgroundColor(ColorRGBA.Blue);
         
         //colisiones
         colision = new Colision(app);
@@ -146,7 +186,7 @@ public class GraficosJuegosSetUp {
     
     private void setUpFog(){
         FilterPostProcessor fogPPS=new FilterPostProcessor(assetManager);
-        FogFilter fog = new FogFilter(ColorRGBA.White, 1f, 2000f);
+        FogFilter fog = new FogFilter(ColorRGBA.White, 0.6f, 1000f);
         fogPPS.addFilter(fog);
         viewPort.addProcessor(fogPPS);
     }

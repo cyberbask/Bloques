@@ -137,6 +137,13 @@ public class BloqueChunks {
         return chunks;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public Boolean getBloqueVecino(int x, int y, int z){
         BloqueChunk chunk = getChunk(x, y, z);
         if (chunk == null){
@@ -151,6 +158,13 @@ public class BloqueChunks {
         return false;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public int[][] getBloquesVecinos(int x, int y, int z){
         //la ultima posicion del array, la 3 nos dice si es de un chunk vecino
         int bloques[][] = new int[6][4]; 
@@ -227,6 +241,11 @@ public class BloqueChunks {
         return bloques;
     }  
     
+    /**
+     *
+     * @param bloques
+     * @return
+     */
     public int[] getCarasAPartirDeBloquesVecinos(int[][] bloques){
         int caras[] = new int[6];
         
@@ -279,6 +298,13 @@ public class BloqueChunks {
         return devolverAltura;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
     public Boolean destruyeBloque(int x, int y, int z){
         BloqueChunk chunk = getChunk(x, y, z);
         
@@ -295,6 +321,14 @@ public class BloqueChunks {
         return false;
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @param nomBloque
+     * @return
+     */
     public Boolean colocaBloque(int x, int y, int z, String nomBloque){
         BloqueChunk chunk = getChunk(x, y, z);
         
@@ -312,6 +346,22 @@ public class BloqueChunks {
         }
         
         return false;
+    }
+    
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     */
+    public void setCarasVecinas(int x, int y, int z){
+        int[][] bloquesVecinosDelBloqueVecino = getBloquesVecinos(x, y, z);
+        int[] carasbloquesVecinos = getCarasAPartirDeBloquesVecinos(bloquesVecinosDelBloqueVecino);
+
+        //guardamos sus caras
+        BloqueChunk chunk = getChunk(x, y, z);
+        BloqueChunkDatos datosBloque = chunk.getDatosBloque(BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z));
+        datosBloque.setCaras(carasbloquesVecinos);
     }
             
 }

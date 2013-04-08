@@ -70,9 +70,7 @@ public class GeneraBloqueJuego {
      * @param tipo 
      * @return
      */
-    public Node makeBloque(int tamano,String tipo) {
-        //TODO Pasar datos de bloques adyacentes para no generar las caras que no se van a usar
-        
+    public Node makeBloque(int tamano,String tipo) {        
         Node bloque = new Node("bloque");
         BloqueGenericosDatos bloquesDatos = bloquesGenericos.getBloqueTipo(tipo);
         
@@ -179,7 +177,7 @@ public class GeneraBloqueJuego {
             Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
             //mat1.setTexture("ColorMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura())); 
             mat1.setTexture("DiffuseMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
-            mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
+            //mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
             
             //luces
             mat1.setBoolean("UseMaterialColors", true);

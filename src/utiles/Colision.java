@@ -25,10 +25,23 @@ public class Colision {
     private AssetManager      assetManager;
     private Camera       cam;
     
+    /**
+     *
+     */
     public int[] coorUltCol;
+    /**
+     *
+     */
     public int[] coorUltColBloque;
+    /**
+     *
+     */
     public int[] coorUltColBloqueVecino;
     
+    /**
+     *
+     * @param app
+     */
     public Colision(Application app){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
@@ -36,6 +49,11 @@ public class Colision {
         this.rootNode     = this.app.getRootNode();
     }
     
+    /**
+     *
+     * @param chunks
+     * @param posPlayer
+     */
     public void getCoordenadasColision(BloqueChunks chunks){
         // 1. Reset results list.
         CollisionResults results = new CollisionResults();
@@ -91,7 +109,7 @@ public class Colision {
                 break;
             }
             
-            if (bloqueVecino1 || bloqueVecino2){
+            if (bloqueVecino1 && !bloqueVecino2 || bloqueVecino2 && !bloqueVecino1){
                 if(bloqueVecino1){
                     coorUltCol = redondeaCoordenadas1;
                     coorUltColBloque = redondeaCoordenadas1;
@@ -118,6 +136,21 @@ public class Colision {
             coorUltColBloque = null;
             coorUltColBloqueVecino = null;
         }
+    }
+    
+    public Boolean calculaColisionPlayer(int[] coordBloque, Vector3f coordPlayer){
+        int[] dentroChunkBloque = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(coordBloque[0], coordBloque[1], coordBloque[2]);
+        
+        int[] dentroChunkPlayer = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk((int) coordPlayer.x, (int)coordPlayer.y, (int)coordPlayer.z);
+        
+        if (dentroChunkBloque[0] == dentroChunkPlayer[0]
+                &&dentroChunkBloque[1] == dentroChunkPlayer[1]
+                &&dentroChunkBloque[2] == dentroChunkPlayer[2]){
+            
+            return true;
+        }
+        
+        return false;
     }
     
 }

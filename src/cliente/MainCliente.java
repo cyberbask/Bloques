@@ -68,7 +68,7 @@ public class MainCliente extends SimpleApplication {
      */
     @Override
     public void simpleUpdate(float tpf) {
-        //TODO: add update code
+        
     }
 
     /**
@@ -77,7 +77,7 @@ public class MainCliente extends SimpleApplication {
      */
     @Override
     public void simpleRender(RenderManager rm) {
-        //TODO: add render code
+        
     }
     
     @Override

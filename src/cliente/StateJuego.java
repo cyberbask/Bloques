@@ -135,9 +135,9 @@ public class StateJuego extends AbstractAppState implements ActionListener{
             Appsett.put("VSync", vsync);
             this.app.getContext().restart();
         } else if (name.equals("MouseLeftButton") && !isPressed) {
-            graficos.generaColision("destruir");
+            graficos.accionBloque("destruir");
         } else if (name.equals("MouseRightButton") && !isPressed) {
-            graficos.generaColision("colocar");
+            graficos.accionBloque("colocar");
         }
     }
     

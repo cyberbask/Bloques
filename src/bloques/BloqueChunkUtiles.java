@@ -94,6 +94,32 @@ public class BloqueChunkUtiles {
     
     /**
      *
+     * @param nomChunk
+     * @return
+     */
+    public static int[] calculaCoordenadasChunkAPartirDeNombreChunk(String nomChunk){
+        int nuevasCoordenadas[] = new int[3];
+        
+        String[] tokens = nomChunk.split("__");
+        
+        nuevasCoordenadas[0] = (Integer.valueOf(tokens[0]) * TAMANO_BLOQUE) * TAMANO_CHUNK;
+        nuevasCoordenadas[1] = (Integer.valueOf(tokens[1]) * TAMANO_BLOQUE) * TAMANO_CHUNK;
+        nuevasCoordenadas[2] = (Integer.valueOf(tokens[2]) * TAMANO_BLOQUE) * TAMANO_CHUNK;
+        if (nuevasCoordenadas[0] < 0){
+            nuevasCoordenadas[0] = nuevasCoordenadas[0] + TAMANO_CHUNK;
+        }
+        if (nuevasCoordenadas[1] < 0){
+            nuevasCoordenadas[1] = nuevasCoordenadas[1] + TAMANO_CHUNK;
+        }
+        if (nuevasCoordenadas[2] < 0){
+            nuevasCoordenadas[2] = nuevasCoordenadas[2] + TAMANO_CHUNK;
+        }
+        
+        return nuevasCoordenadas;
+    }
+    
+    /**
+     *
      * @param chunkX
      * @param chunkY
      * @param chunkZ
@@ -137,22 +163,7 @@ public class BloqueChunkUtiles {
      * @return
      */
     public static int[] calculaCoordenadasBloqueAPartirDeChunk(String nomChunk, int x, int y, int z){
-        int nuevasCoordenadas[] = new int[3];
-        
-        String[] tokens = nomChunk.split("__");
- 
-        nuevasCoordenadas[0] = (Integer.valueOf(tokens[0]) * TAMANO_BLOQUE) * TAMANO_CHUNK;
-        nuevasCoordenadas[1] = (Integer.valueOf(tokens[1]) * TAMANO_BLOQUE) * TAMANO_CHUNK;
-        nuevasCoordenadas[2] = (Integer.valueOf(tokens[2]) * TAMANO_BLOQUE) * TAMANO_CHUNK;
-        if (nuevasCoordenadas[0] < 0){
-            nuevasCoordenadas[0] = nuevasCoordenadas[0] + TAMANO_CHUNK;
-        }
-        if (nuevasCoordenadas[1] < 0){
-            nuevasCoordenadas[1] = nuevasCoordenadas[1] + TAMANO_CHUNK;
-        }
-        if (nuevasCoordenadas[2] < 0){
-            nuevasCoordenadas[2] = nuevasCoordenadas[2] + TAMANO_CHUNK;
-        }
+        int nuevasCoordenadas[] = BloqueChunkUtiles.calculaCoordenadasChunkAPartirDeNombreChunk(nomChunk);
         
         int nuevasCoordenadasBloque[] = new int[3];
         
@@ -183,6 +194,11 @@ public class BloqueChunkUtiles {
         return String.valueOf(coordenadas[0])+"__"+String.valueOf(coordenadas[1])+"__"+String.valueOf(coordenadas[2]);
     }
     
+    /**
+     *
+     * @param coordenadas
+     * @return
+     */
     public static int averiguaCoordenadasContacto(Vector3f coordenadas){
         if (coordenadas.x - Math.floor(coordenadas.x) == 0.0) {
             return 1;
@@ -199,6 +215,11 @@ public class BloqueChunkUtiles {
         return 0;
     }
     
+    /**
+     *
+     * @param coordenadas
+     * @return
+     */
     public static int[] redondeaCoordenadasContacto(Vector3f coordenadas){
         int[] devolver = new int[3];
         

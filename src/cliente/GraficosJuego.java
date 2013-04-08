@@ -12,6 +12,7 @@ import com.jme3.app.Application;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.Timer;
@@ -37,11 +38,23 @@ public class GraficosJuego extends GraficosJuegosSetUp{
     BloqueChunks chunks;
     
     //aqui meteremos los updates del terreno nuevo que van sin prisa
+    /**
+     *
+     */
     public Map<Integer,BloqueChunks> updates=new HashMap<Integer, BloqueChunks>();
+    /**
+     *
+     */
     public int contadorUpdates = 0;
     
     //aqui meteremos los updates urgentes de cambios en los chunks, nuevos bloques ...
-    public Map<Integer,BloqueChunks> updateChunkUrgentes=new HashMap<Integer, BloqueChunks>();
+    /**
+     *
+     */
+    public Map<Integer,String> updateChunkUrgentes=new HashMap<Integer, String>();
+    /**
+     *
+     */
     public int contadorUpdatesChunkUrgentes = 0;
 
     
@@ -49,7 +62,6 @@ public class GraficosJuego extends GraficosJuegosSetUp{
     //o activamos el personaje
     int posicionarCamara = 0;  
     int bloqueConMasAltura; //ñapa para posiconar al personaje
-    Boolean terrenoInicialGenerado = false;
     
     //primera carga
     Boolean primeraCarga = true;
@@ -66,11 +78,13 @@ public class GraficosJuego extends GraficosJuegosSetUp{
     
     /**
      *
+     * @param updatear 
+     * @param tipoUpdate con esta variable controlamos los urgentes de los que no lo son
      * @throws InterruptedException
      * @throws ExecutionException
      */
     @SuppressWarnings("SleepWhileInLoop")
-    public void updateaRootNode(Map<Integer,BloqueChunks> updatear, int tipoUpdate) throws InterruptedException, ExecutionException{
+    public void updateaChunks(Map<Integer,BloqueChunks> updatear, int tipoUpdate) throws InterruptedException, ExecutionException{
         Timer timer = app.getTimer();
         float totalInicio = timer.getTimeInSeconds();
 
@@ -110,7 +124,6 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                                     if (datosBloque != null){
                                         Node bloqueClonado;
                                         bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
-                                        bloqueClonado.setName("Chunk:::"+claveActualAllChunks);
                                         
                                         //coordenadas reales del cubo, no las del chunk
                                         final int[] coordenadas = BloqueChunkUtiles.calculaCoordenadasBloqueAPartirDeChunk(claveActualAllChunks, x * BloqueChunkUtiles.TAMANO_BLOQUE, y  * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE);
@@ -132,7 +145,9 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                                             }
                                         }
 
-                                        datosBloque.setCaras(carasbloquesVecinos);
+                                        if (tipoUpdate == 1){
+                                            datosBloque.setCaras(carasbloquesVecinos);
+                                        }
 
                                         if (contaCarasQuitadas < 6){
                                             bloqueClonado.move(coordenadas[0],coordenadas[1],coordenadas[2] + BloqueChunkUtiles.TAMANO_BLOQUE);
@@ -160,27 +175,25 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                             final String claveActualAllChunksFinal = claveActualAllChunks;
 
                             app.enqueue(new Callable() {
-                                public Object call() throws Exception {
+                                public Object call() throws Exception {          
                                     CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape((Node) optimizado);
                                     RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
                                     optimizado.addControl(bloquesMostrarControl);
-                                    
+                            
                                     physics.getPhysicsSpace().add(optimizado);
+                                                                        
+                                    rootNode.attachChild(optimizado);
                                     
                                     //quitamos el chunk anterior y sus fisicas si hace falta
                                     if (tipoUpdateFinal == 2){
                                         Spatial child = rootNode.getChild("Chunk: "+claveActualAllChunksFinal);
                                         physics.getPhysicsSpace().remove(child.getControl(0)) ; 
-                                        rootNode.detachChildNamed("Chunk: "+claveActualAllChunksFinal);
+                                        rootNode.detachChild(child);
                                     }
-                                    
-                                    rootNode.attachChild(optimizado);
                                     
                                     //TangentBinormalGenerator.generate(optimizado);
                                     //optimizado.setShadowMode(ShadowMode.CastAndReceive);
-                                    
-                                    terrenoInicialGenerado = true;
-                                    
+                                                                        
                                     return null;
                                 }
                             });
@@ -206,7 +219,10 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                 }
             }).get();
             
-            updateaRootNode(updatear,1); //1 es para los updates lentos del terreno
+            if (updatear != null){
+                updateaChunks(updatear,1); //1 es para los updates lentos del terreno
+            }
+            
             return false;
         }
     };
@@ -219,8 +235,11 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                     return getUpdatesUrgentes(true);
                 }
             }).get();
-             
-            updateaRootNode(updatear, 2); //2 es para los rapidos, destruir bloques por ejemplo
+            
+            if (updatear != null){
+                updateaChunks(updatear, 2); //2 es para los rapidos, destruir bloques por ejemplo
+            }
+            
             return false;
         }
     };
@@ -273,6 +292,14 @@ public class GraficosJuego extends GraficosJuegosSetUp{
 
             }
             
+            
+            if (posicionarCamara == 1){
+                //Añadimos el personaje
+                personaje.generaPersonaje(20,bloqueConMasAltura+100,20);
+                posicionarCamara = 2;
+            }
+            
+            //actualizamos la posicion del personaje
             personaje.update(tpf);
         }
         
@@ -304,14 +331,14 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                 primeraCarga = false;   
             }
         }
-        
-        if (posicionarCamara == 1 && terrenoInicialGenerado){
-            //Añadimos el personaje
-            personaje.generaPersonaje(20,bloqueConMasAltura+100,20);
-            posicionarCamara = 2;
-        }
+
     }
     
+    /**
+     *
+     * @param vaciarUpdate
+     * @return
+     */
     public Map<Integer,BloqueChunks> getUpdates(Boolean vaciarUpdate){
         if (vaciarUpdate){
             if (updates == null){
@@ -341,6 +368,11 @@ public class GraficosJuego extends GraficosJuegosSetUp{
         }
     }
     
+    /**
+     *
+     * @param vaciarUpdate
+     * @return
+     */
     public Map<Integer,BloqueChunks> getUpdatesUrgentes(Boolean vaciarUpdate){
         if (vaciarUpdate){
             if (updateChunkUrgentes == null){
@@ -348,17 +380,26 @@ public class GraficosJuego extends GraficosJuegosSetUp{
             }
             
             Map<Integer,BloqueChunks> updatesCopia = new HashMap<Integer, BloqueChunks>();
+            
+            BloqueChunks chunksCopia = new BloqueChunks();
 
             Boolean hayDatos = false;
             
             SortedSet<Integer> keys = new TreeSet<Integer>(updateChunkUrgentes.keySet());
             for (Integer key : keys) { 
-                updatesCopia.put(key,updateChunkUrgentes.get(key));
+                int[] calculaCoordenadasChunkAPartirDeNombreChunk = BloqueChunkUtiles.calculaCoordenadasChunkAPartirDeNombreChunk(updateChunkUrgentes.get(key));
+                
+                chunksCopia.setChunk(calculaCoordenadasChunkAPartirDeNombreChunk[0], calculaCoordenadasChunkAPartirDeNombreChunk[1], calculaCoordenadasChunkAPartirDeNombreChunk[2], 
+                           chunks.getChunk(calculaCoordenadasChunkAPartirDeNombreChunk[0], calculaCoordenadasChunkAPartirDeNombreChunk[1], calculaCoordenadasChunkAPartirDeNombreChunk[2]));                
+                
                 updateChunkUrgentes.remove(key);
                 hayDatos = true;
             }
             
             if (hayDatos){
+                updatesCopia.put(contadorUpdatesChunkUrgentes,chunksCopia);
+                contadorUpdatesChunkUrgentes++;
+                
                 return updatesCopia;
             }else{
                return null;
@@ -369,75 +410,70 @@ public class GraficosJuego extends GraficosJuegosSetUp{
         }
     }
     
-    public void generaColision(String accion){
-        //TODO esta peli entera deberia ir en la clase de colisiones
-        
+    /**
+     *
+     * @param accion
+     */
+    public void accionBloque(String accion){
+        //esto se usa para controlar si se estan actualizando chunks
+        //y en principio evitar que se pisen
         Timer timer = app.getTimer();
         float totalInicio = timer.getTimeInSeconds();
-        
+
         colision.getCoordenadasColision(chunks);
-        
+        Vector3f posicionPlayer = personaje.getPosicionPlayer();
+
         float totalFin = timer.getTimeInSeconds();
         //System.out.println("Tiempo coordenadas colision"+(totalFin-totalInicio));
-        
+
         if (colision.coorUltCol != null){
             Boolean bloqueAccionado = false;
-            
+
             int[] coordUsar = null;
-            
+
             if (accion.equals("destruir")){
                 coordUsar = colision.coorUltCol;
                 bloqueAccionado = chunks.destruyeBloque(coordUsar[0], coordUsar[1], coordUsar[2]);
             }else if(accion.equals("colocar")){
+                //tenemos que comprobar si no estamos en el mismo lugar que el bloque a colocar
                 coordUsar = colision.coorUltColBloqueVecino;
-                bloqueAccionado = chunks.colocaBloque(coordUsar[0], coordUsar[1], coordUsar[2],"Roca");
+                if (!colision.calculaColisionPlayer(coordUsar, posicionPlayer)){
+                    bloqueAccionado = chunks.colocaBloque(coordUsar[0], coordUsar[1], coordUsar[2],"Roca");
+                }
             }
-            
+
             if (bloqueAccionado){
                 if (accion.equals("colocar")){
                     //calculamos sus caras
-                    int[][] bloquesVecinosDelBloqueVecino = chunks.getBloquesVecinos(coordUsar[0], coordUsar[1], coordUsar[2]);
-                    int[] carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinosDelBloqueVecino);
-
-                    //guardamos sus caras
-                    BloqueChunk chunk = chunks.getChunk(coordUsar[0], coordUsar[1], coordUsar[2]);
-                    BloqueChunkDatos datosBloque = chunk.getDatosBloque(BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(coordUsar[0], coordUsar[1], coordUsar[2]));
-                    datosBloque.setCaras(carasbloquesVecinos);
+                    chunks.setCarasVecinas(coordUsar[0], coordUsar[1], coordUsar[2]);
                 }
-                
+
                 Map<String,Integer> chunksAUpdatar=new HashMap<String,Integer>();
-                
+
                 int[][] bloquesVecinos = chunks.getBloquesVecinos(coordUsar[0], coordUsar[1], coordUsar[2]);
                 for(int i=0;i<6;i++) {
                     if (bloquesVecinos[i] != null){ //si hay bloque vecino
                         //calculamos sus caras
-                        int[][] bloquesVecinosDelBloqueVecino = chunks.getBloquesVecinos(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]);
-                        int[] carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinosDelBloqueVecino);
-                        
-                        //guardamos sus caras
-                        BloqueChunk chunk = chunks.getChunk(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]);
-                        BloqueChunkDatos datosBloque = chunk.getDatosBloque(BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]));
-                        datosBloque.setCaras(carasbloquesVecinos);
-                        
+                        chunks.setCarasVecinas(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]);
+
                         String nombreChunk = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]));
-                        
+
                         if (chunksAUpdatar.get(nombreChunk) == null){
                             chunksAUpdatar.put(nombreChunk,1);
-                            
-                            //metemos el chunk en el update
-                            BloqueChunks updateaChunks = new BloqueChunks();
-                            updateaChunks.setChunk(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2], chunks.getChunk(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]));
-                            updateChunkUrgentes.put(contadorUpdatesChunkUrgentes, updateaChunks);
-                            contadorUpdatesChunkUrgentes++;
-                        }
+                        }  
                     }
                 }
-                
-                
+
+                String[] keysChunksUpdatar = (String[])( chunksAUpdatar.keySet().toArray( new String[chunksAUpdatar.size()] ) );
+                if (keysChunksUpdatar.length > 0){
+                    for(int j=0; j<keysChunksUpdatar.length; j++){
+                        String claveActual = keysChunksUpdatar[j];
+                        updateChunkUrgentes.put(contadorUpdatesChunkUrgentes, claveActual);
+                        contadorUpdatesChunkUrgentes++;
+                    }
+                }
             }
         }
-        
-        
     }
     
     /**
