@@ -1,7 +1,7 @@
 /*
  * Clase para manejar un grupo de chunks
  */
-package bloques;
+package bloques.manejo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -235,7 +235,7 @@ public class BloqueChunks {
             if (chunk == null){
                 //TODO por ahora si no hay chunk vecino, se marca para que no se muestre la cara
                 bloques[posicion] = new int[4];
-                //bloques[posicion][3] = 2; //sin chunk vecino
+                bloques[posicion][3] = 2; //sin chunk vecino
             }else{
                 bloque = getBloque(xVeci, yVeci, zVeci, chunk);
                 if (bloque != null) {
@@ -378,7 +378,9 @@ public class BloqueChunks {
         //guardamos sus caras
         BloqueChunk chunk = getChunk(x, y, z);
         BloqueChunkDatos datosBloque = chunk.getDatosBloque(BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z));
-        datosBloque.setCaras(carasbloquesVecinos);
+        if (datosBloque != null){
+            datosBloque.setCaras(carasbloquesVecinos);
+        }
     }
             
 }

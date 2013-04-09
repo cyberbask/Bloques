@@ -1,7 +1,7 @@
 /*
  * Datos basicos y por defecto de los bloques
  */
-package bloques;
+package bloques.manejo;
 
 import java.util.HashMap;
 import java.util.Map;

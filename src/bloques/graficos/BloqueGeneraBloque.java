@@ -1,11 +1,11 @@
 /*
  * Clase para generar un bloque mediante triangulos, sus caras, las texturas de cada cara ...
  */
-package cliente;
+package bloques.graficos;
 
-import bloques.BloqueChunkUtiles;
-import bloques.BloqueGenericos;
-import bloques.BloqueGenericosDatos;
+import bloques.manejo.BloqueChunkUtiles;
+import bloques.manejo.BloqueGenericos;
+import bloques.manejo.BloqueGenericosDatos;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
@@ -28,7 +28,7 @@ import java.util.Map;
  * 
  * @author mcarballo
  */
-public class GeneraBloqueJuego {
+public class BloqueGeneraBloque {
     /**
      *
      */
@@ -41,7 +41,7 @@ public class GeneraBloqueJuego {
     /**
      *
      */
-    public TextureAtlasJuego atlas;
+    public BloqueTextureAtlas atlas;
     /**
      *
      */
@@ -54,11 +54,11 @@ public class GeneraBloqueJuego {
      *
      * @param app
      */
-    public GeneraBloqueJuego(Application app){
+    public BloqueGeneraBloque(Application app){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         
-        atlas = new TextureAtlasJuego(app);
+        atlas = new BloqueTextureAtlas(app);
         atlas.setTexturesInAtlas();
         
         bloquesGenericos = new BloqueGenericos();

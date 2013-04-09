@@ -1,7 +1,7 @@
 /*
  * Clase para manejar los datos del chunk
  */
-package bloques;
+package bloques.manejo;
 
 /**
  *

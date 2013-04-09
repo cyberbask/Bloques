@@ -1,7 +1,7 @@
 /*
  * Aqui se generaran los chunks y el terreno en general
  */
-package bloques;
+package bloques.manejo;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -48,7 +48,7 @@ public class BloqueGeneraTerreno{
     /**
      *
      */
-    public int totalTamano = 190;
+    public int totalTamano = 32;
     
     /**
      *
@@ -100,16 +100,9 @@ public class BloqueGeneraTerreno{
         int variacion = 0;
         
         for (x = 0;x<totalTamano;x++){
-            for (z = 0;z<totalTamano;z++){
-                int originalY = y;
-                
+            for (z = 0;z<totalTamano;z++){                
                 y = (int) heightmap.getScaledHeightAtPoint(x,z);
-                
-                if (y == 0){
-                    y = originalY;
-                }
-                
-                
+ 
                 for (int a=maxY; a>=minY; a--){ 
                     //if (a == y){ //sin relleno                   
                     if (a <= y){

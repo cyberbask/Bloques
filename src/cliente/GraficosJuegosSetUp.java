@@ -4,7 +4,8 @@
  */
 package cliente;
 
-import bloques.BloqueGeneraTerreno;
+import bloques.graficos.BloqueGeneraBloque;
+import bloques.manejo.BloqueGeneraTerreno;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -84,7 +85,7 @@ public class GraficosJuegosSetUp {
     protected BloqueGeneraTerreno bloqueGeneraTerreno;
     
     //clase para manejo de bloques
-    GeneraBloqueJuego bloques;
+    BloqueGeneraBloque bloques;
     
     //Personaje
     /**
@@ -116,7 +117,7 @@ public class GraficosJuegosSetUp {
         
         bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
         
-        bloques = new GeneraBloqueJuego(app);
+        bloques = new BloqueGeneraBloque(app);
         
         personaje = new Personaje(app);
         

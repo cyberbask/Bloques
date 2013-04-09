@@ -3,7 +3,7 @@
  */
 package cliente;
 
-import bloques.BloqueChunks;
+import bloques.manejo.BloqueChunks;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;

@@ -1,7 +1,7 @@
 /*
  * Manejo de un Chunk de Bloques
  */
-package bloques;
+package bloques.manejo;
 
 /**
  *
@@ -38,7 +38,7 @@ public class BloqueChunk {
      * @return
      */
     public BloqueChunkDatos getDatosBloque(int x, int y, int z){
-            return bloquesDatos[x][y][z];
+        return bloquesDatos[x][y][z];
     }
     
     /**

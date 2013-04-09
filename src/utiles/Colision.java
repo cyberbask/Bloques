@@ -3,9 +3,9 @@
  */
 package utiles;
 
-import bloques.BloqueChunkDatos;
-import bloques.BloqueChunkUtiles;
-import bloques.BloqueChunks;
+import bloques.manejo.BloqueChunkDatos;
+import bloques.manejo.BloqueChunkUtiles;
+import bloques.manejo.BloqueChunks;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
@@ -126,11 +126,6 @@ public class Colision {
                 coorUltColBloqueVecino = null;   
                 System.out.println("Detecta null");
             }
-            
-            
-            
-            int yo = 0;
- 
         }else{
             coorUltCol = null;
             coorUltColBloque = null;
@@ -148,6 +143,17 @@ public class Colision {
         int[] dentroChunkBloque = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(coordBloque[0], coordBloque[1], coordBloque[2]);
         
         int[] dentroChunkPlayer = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk((int) coordPlayer.x, (int)coordPlayer.y, (int)coordPlayer.z);
+        
+        if (dentroChunkBloque[0] == dentroChunkPlayer[0]
+                &&dentroChunkBloque[1] == dentroChunkPlayer[1]
+                &&dentroChunkBloque[2] == dentroChunkPlayer[2]){
+            
+            return true;
+        }
+        
+        //comprobamos tambien que no este en el bloque superior que seria el de la camara
+        
+        dentroChunkPlayer = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk((int) coordPlayer.x, (int)coordPlayer.y+BloqueChunkUtiles.TAMANO_BLOQUE, (int)coordPlayer.z);
         
         if (dentroChunkBloque[0] == dentroChunkPlayer[0]
                 &&dentroChunkBloque[1] == dentroChunkPlayer[1]

@@ -1,7 +1,7 @@
 /*
  * Datos de los bloques, setter/getter, etc..
  */
-package bloques;
+package bloques.manejo;
 
 /**
  *

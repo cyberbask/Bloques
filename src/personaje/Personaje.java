@@ -3,8 +3,8 @@
  */
 package personaje;
 
-import bloques.BloqueChunkUtiles;
-import bloques.BloqueChunks;
+import bloques.manejo.BloqueChunkUtiles;
+import bloques.manejo.BloqueChunks;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -146,13 +146,19 @@ public class Personaje {
 
             Vector3f physicsLocation = player.getPhysicsLocation();
             
-            
+            //TODO - Por ahora solo suponemos que falla la "y"
             //vamos a comprobar que no estemos dentro de un bloque
-            Boolean dentroBloquePlayer = Colision.calculaDentroBloquePlayer(physicsLocation,chunks);
+            Vector3f playerLocation = physicsLocation.clone();
+            //Apaño - le restamos lo que supuestamente estamos separados del bloque cuando estamos bien asentados
+            playerLocation.y = playerLocation.y - (BloqueChunkUtiles.TAMANO_BLOQUE - 1.99f); 
+            
+            Boolean dentroBloquePlayer = Colision.calculaDentroBloquePlayer(playerLocation,chunks);
             
             if (dentroBloquePlayer){
                 physics.getPhysicsSpace().remove(player);
-                physicsLocation.y = physicsLocation.y + BloqueChunkUtiles.TAMANO_BLOQUE +0.9f;
+                
+                //le sumamos algo a la altura para reposicionar al personaje
+                physicsLocation.y = physicsLocation.y + (BloqueChunkUtiles.TAMANO_BLOQUE - 1.99f);
                 generaPersonaje(physicsLocation.x,physicsLocation.y,physicsLocation.z);
             }
             

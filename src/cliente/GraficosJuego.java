@@ -4,10 +4,10 @@
  */
 package cliente;
 
-import bloques.BloqueChunk;
-import bloques.BloqueChunkDatos;
-import bloques.BloqueChunkUtiles;
-import bloques.BloqueChunks;
+import bloques.manejo.BloqueChunk;
+import bloques.manejo.BloqueChunkDatos;
+import bloques.manejo.BloqueChunkUtiles;
+import bloques.manejo.BloqueChunks;
 import com.jme3.app.Application;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import jme3tools.optimize.GeometryBatchFactory;
+import utiles.Colision;
 
 /**
  *
@@ -163,7 +164,7 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                         
                         float fin = timer.getTimeInSeconds();
                         
-                        //System.out.println("Tiempo chunk "+claveActualAllChunks+" "+(fin-inicio));
+                        System.out.println("Tiempo chunk "+claveActualAllChunks+" "+(fin-inicio));
                         //System.out.println("chunk "+claveActualAllChunks+" Terminado");
 
                         if (mostrar == 1){
@@ -412,6 +413,8 @@ public class GraficosJuego extends GraficosJuegosSetUp{
      * @param accion
      */
     public void accionBloque(String accion){
+        //TODO Sacar la mayoria de esta clase a otra - Refactorizar
+        
         //esto se usa para controlar si se estan actualizando chunks
         //y en principio evitar que se pisen
         Timer timer = app.getTimer();
@@ -434,7 +437,7 @@ public class GraficosJuego extends GraficosJuegosSetUp{
             }else if(accion.equals("colocar")){
                 //tenemos que comprobar si no estamos en el mismo lugar que el bloque a colocar
                 coordUsar = colision.coorUltColBloqueVecino;
-                if (!colision.calculaColisionPlayer(coordUsar, posicionPlayer)){
+                if (!Colision.calculaColisionPlayer(coordUsar, posicionPlayer)){
                     bloqueAccionado = chunks.colocaBloque(coordUsar[0], coordUsar[1], coordUsar[2],"Roca");
                 }
             }
