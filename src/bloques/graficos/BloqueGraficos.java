@@ -457,16 +457,16 @@ public class BloqueGraficos{
      * @param accion
      * @param nomBloque
      * @param coordUsar
-     * @param posicionPlayer
+     * @param posicionColisision 
      */
-    public void accionBloque(String accion, String nomBloque, int[] coordUsar, Vector3f posicionPlayer){
+    public void accionBloque(String accion, String nomBloque, int[] coordUsar, Vector3f posicionColisision){
         Boolean bloqueAccionado = false;
         
         if (accion.equals("destruir")){
             bloqueAccionado = chunks.destruyeBloque(coordUsar[0], coordUsar[1], coordUsar[2]);
         }else if(accion.equals("colocar")){
-            //tenemos que comprobar si el player no estamos en el mismo lugar que el bloque a colocar
-            if (posicionPlayer != null && !Colision.calculaColisionPlayer(coordUsar, posicionPlayer)){
+            //tenemos que comprobar si la posicion de colision(normalmente el player) no esta en el mismo lugar que el bloque a colocar
+            if (posicionColisision != null && !Colision.calculaColisionPlayer(coordUsar, posicionColisision)){
                 bloqueAccionado = chunks.colocaBloque(coordUsar[0], coordUsar[1], coordUsar[2], nomBloque);
             }
         }
