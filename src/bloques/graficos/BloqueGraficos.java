@@ -2,17 +2,25 @@
  * Clase para manejar los graficos del juego principal, generar chunks,
  * mostrarlos, quitarlos ...
  */
-package cliente;
+package bloques.graficos;
 
 import bloques.manejo.BloqueChunk;
 import bloques.manejo.BloqueChunkDatos;
 import bloques.manejo.BloqueChunkUtiles;
 import bloques.manejo.BloqueChunks;
+import bloques.manejo.BloqueGeneraTerreno;
 import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.input.InputManager;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.Timer;
@@ -22,6 +30,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import jme3tools.optimize.GeometryBatchFactory;
 import utiles.Colision;
 
@@ -29,14 +39,65 @@ import utiles.Colision;
  *
  * @author mcarballo
  */
-public class GraficosJuego extends GraficosJuegosSetUp{
+public class BloqueGraficos{
     /**
      *
      */
-    protected boolean generandoGraficos = false;
+    protected SimpleApplication app;
+    /**
+     *
+     */
+    protected Node              rootNode;
+    /**
+     *
+     */
+    protected AssetManager      assetManager;
+    /**
+     *
+     */
+    protected AppStateManager   stateManager;
+    /**
+     *
+     */
+    protected InputManager      inputManager;
+    /**
+     *
+     */
+    protected ViewPort          viewPort;
+    /**
+     *
+     */
+    protected BulletAppState    physics;
+    /**
+     *
+     */
+    protected Camera       cam;
+    /**
+     *
+     */
+    protected ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
+    /**
+     *
+     */
+    protected Future future = null;
+    /**
+     *
+     */
+    protected Future futureChunkUrgentes = null;
     
+    /**
+     * Objeto que contiene todo el procesado de posiciones y bloques
+     */
+    public BloqueGeneraTerreno bloqueGeneraTerreno;
+    
+    //clase para manejo de bloques
+    BloqueGeneraBloque bloques;
+        
     //graficos
-    BloqueChunks chunks;
+    /**
+     *
+     */
+    public BloqueChunks chunks;
     
     //aqui meteremos los updates del terreno nuevo que van sin prisa
     /**
@@ -59,22 +120,53 @@ public class GraficosJuego extends GraficosJuegosSetUp{
     public int contadorUpdatesChunkUrgentes = 0;
 
     
-    //variable para controlar si posicionamos la camara
-    //o activamos el personaje
-    int posicionarCamara = 0;  
-    int bloqueConMasAltura; //ñapa para posiconar al personaje
-    
-    //primera carga
-    Boolean primeraCarga = true;
-    
     /**
      * Constructor
      * @param app
      */
-    public GraficosJuego(Application app){
-        super(app);
+    public BloqueGraficos(Application app){
+        this.app = (SimpleApplication) app;
+        this.rootNode     = this.app.getRootNode();
+        this.assetManager = this.app.getAssetManager();
+        this.stateManager = this.app.getStateManager();
+        this.inputManager = this.app.getInputManager();
+        this.viewPort     = this.app.getViewPort();
+        this.physics      = this.stateManager.getState(BulletAppState.class);
+        this.cam          = this.app.getCamera();
+        
+        bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
+        
+        bloques = new BloqueGeneraBloque(app);
         
         chunks = null;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public Boolean generaTerrenoInicial(){
+        bloqueGeneraTerreno.generaTerreno();
+            
+        //ya termino de generar el terreno
+        if (!bloqueGeneraTerreno.generandoTerreno){
+            chunks = bloqueGeneraTerreno.getChunks();
+            
+            //tenemos que pasar a updates estos chunks
+            for (int x = 0;x<bloqueGeneraTerreno.totalTamano;x = x + BloqueChunkUtiles.TAMANO_CHUNK){
+                for (int z = 0;z<bloqueGeneraTerreno.totalTamano;z = z + BloqueChunkUtiles.TAMANO_CHUNK){
+                    BloqueChunks grupoChunks = chunks.getGrupoChunks(x * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE);
+                    updates.put(contadorUpdates,grupoChunks);
+                    contadorUpdates++;
+                }
+            }
+
+            bloqueGeneraTerreno.vaciaChunks();
+            
+            return true;
+        }
+        
+        return false;
     }
     
     /**
@@ -248,88 +340,40 @@ public class GraficosJuego extends GraficosJuegosSetUp{
      */
     public void update(float tpf){  
         //las siguientes veces que se hace update se actualizan los chunks
-        if (!primeraCarga){
-            try{
-                if(future == null && !generandoGraficos){
-                    generandoGraficos = true;
-                    future = executor.submit(procesaGraficosUpdates);
+       try{
+            if(future == null){
+                future = executor.submit(procesaGraficosUpdates);
+            }
+            else if(future != null){
+                if(future.isDone()){
+                    future = null;
                 }
-                else if(future != null){
-                    if (posicionarCamara == 0){
-                        posicionarCamara = personaje.posicionarCamara(bloqueConMasAltura);
-                    }
-                    if(future.isDone()){
-                        generandoGraficos = false;
-                        future = null;
-                    }
-                    else if(future.isCancelled()){
-                        generandoGraficos = false;
-                        future = null;
-                    }
+                else if(future.isCancelled()){
+                    future = null;
                 }
-            } 
-            catch(Exception e){ 
+            }
+        } 
+        catch(Exception e){ 
 
-            }
-            
-            //updatemos los chunks urgentes
-            try{
-                if(futureChunkUrgentes == null){
-                    futureChunkUrgentes = executor.submit(procesaGraficosUpdatesUrgentes);
-                }
-                else if(futureChunkUrgentes != null){
-                    if(futureChunkUrgentes.isDone()){
-                        futureChunkUrgentes = null;
-                    }
-                    else if(futureChunkUrgentes.isCancelled()){
-                        futureChunkUrgentes = null;
-                    }
-                }
-            } 
-            catch(Exception e){ 
-
-            }
-            
-            
-            if (posicionarCamara == 1){
-                //Añadimos el personaje
-                personaje.generaPersonaje(20,bloqueConMasAltura+100,20);
-                posicionarCamara = 2;
-            }
-            
-            //actualizamos la posicion del personaje
-            personaje.update(tpf,chunks);
-        }
-        
-        //la primera vez que se entra aqui se genera el terreno
-        if (primeraCarga){
-            juegoGui.textoEnPantalla("... Generando Terreno por primera vez ("+bloqueGeneraTerreno.porcentajeGenerado+"%)... ");
-            
-            bloqueGeneraTerreno.generaTerreno();
-            
-            //ya termino de generar el terreno
-            if (!bloqueGeneraTerreno.generandoTerreno){
-                juegoGui.textoEnPantalla("");
-                
-                chunks = bloqueGeneraTerreno.getChunks();
-                             
-                bloqueConMasAltura = chunks.getBloqueConMasAltura(20, 20);
-                
-                //tenemos que pasar a updates estos chunks
-                for (int x = 0;x<bloqueGeneraTerreno.totalTamano;x = x + BloqueChunkUtiles.TAMANO_CHUNK){
-                    for (int z = 0;z<bloqueGeneraTerreno.totalTamano;z = z + BloqueChunkUtiles.TAMANO_CHUNK){
-                        BloqueChunks grupoChunks = chunks.getGrupoChunks(x * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE);
-                        updates.put(contadorUpdates,grupoChunks);
-                        contadorUpdates++;
-                    }
-                }
-                
-                bloqueGeneraTerreno.vaciaChunks();
-                        
-                primeraCarga = false;   
-            }
         }
 
+        //updatemos los chunks urgentes
+        try{
+            if(futureChunkUrgentes == null){
+                futureChunkUrgentes = executor.submit(procesaGraficosUpdatesUrgentes);
+            }
+            else if(futureChunkUrgentes != null){
+                if(futureChunkUrgentes.isDone()){
+                    futureChunkUrgentes = null;
+                }
+                else if(futureChunkUrgentes.isCancelled()){
+                    futureChunkUrgentes = null;
+                }
+            }
+        } 
+        catch(Exception e){ 
+
+        }
     }
     
     /**
@@ -363,7 +407,7 @@ public class GraficosJuego extends GraficosJuegosSetUp{
         }else{
             //quiza se use mas adelante
             return null;
-        }
+        }  
     }
     
     /**
@@ -411,38 +455,23 @@ public class GraficosJuego extends GraficosJuegosSetUp{
     /**
      *
      * @param accion
+     * @param nomBloque
+     * @param coordUsar
+     * @param posicionPlayer
      */
-    public void accionBloque(String accion){
-        //TODO Sacar la mayoria de esta clase a otra - Refactorizar
+    public void accionBloque(String accion, String nomBloque, int[] coordUsar, Vector3f posicionPlayer){
+        Boolean bloqueAccionado = false;
         
-        //esto se usa para controlar si se estan actualizando chunks
-        //y en principio evitar que se pisen
-        Timer timer = app.getTimer();
-        float totalInicio = timer.getTimeInSeconds();
-
-        colision.getCoordenadasColision(chunks);
-        Vector3f posicionPlayer = personaje.getPosicionPlayer();
-
-        float totalFin = timer.getTimeInSeconds();
-        //System.out.println("Tiempo coordenadas colision"+(totalFin-totalInicio));
-
-        if (colision.coorUltCol != null){
-            Boolean bloqueAccionado = false;
-
-            int[] coordUsar = null;
-
-            if (accion.equals("destruir")){
-                coordUsar = colision.coorUltCol;
-                bloqueAccionado = chunks.destruyeBloque(coordUsar[0], coordUsar[1], coordUsar[2]);
-            }else if(accion.equals("colocar")){
-                //tenemos que comprobar si no estamos en el mismo lugar que el bloque a colocar
-                coordUsar = colision.coorUltColBloqueVecino;
-                if (!Colision.calculaColisionPlayer(coordUsar, posicionPlayer)){
-                    bloqueAccionado = chunks.colocaBloque(coordUsar[0], coordUsar[1], coordUsar[2],"Roca");
-                }
+        if (accion.equals("destruir")){
+            bloqueAccionado = chunks.destruyeBloque(coordUsar[0], coordUsar[1], coordUsar[2]);
+        }else if(accion.equals("colocar")){
+            //tenemos que comprobar si el player no estamos en el mismo lugar que el bloque a colocar
+            if (posicionPlayer != null && !Colision.calculaColisionPlayer(coordUsar, posicionPlayer)){
+                bloqueAccionado = chunks.colocaBloque(coordUsar[0], coordUsar[1], coordUsar[2], nomBloque);
             }
-
-            if (bloqueAccionado){
+        }
+        
+        if (bloqueAccionado){
                 Map<String,Integer> chunksAUpdatar=new HashMap<String,Integer>();      
                 String nombreChunk;
                 
@@ -479,7 +508,6 @@ public class GraficosJuego extends GraficosJuegosSetUp{
                     }
                 }
             }
-        }
     }
     
     /**

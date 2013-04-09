@@ -3,7 +3,6 @@
  */
 package cliente;
 
-import bloques.manejo.BloqueChunks;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -26,7 +25,7 @@ import utiles.AppUtiles;
  *
  * @author mcarballo
  */
-public class StateJuego extends AbstractAppState implements ActionListener{
+public class JuegoState extends AbstractAppState implements ActionListener{
     private SimpleApplication app;
     private Node              rootNode;
     private AssetManager      assetManager;
@@ -39,7 +38,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
     private boolean vsync = true;
     
     //Graficos
-    GraficosJuego graficos;
+    JuegoGraficos graficos;
     
  
     /**
@@ -60,7 +59,7 @@ public class StateJuego extends AbstractAppState implements ActionListener{
         this.physics      = this.stateManager.getState(BulletAppState.class);
         
         //manejo de graficos
-        graficos = new GraficosJuego(app);
+        graficos = new JuegoGraficos(app);
         
         //esta linea impide que la ejecucion se pare aunque se pierda el foco
         app.setPauseOnLostFocus(false);

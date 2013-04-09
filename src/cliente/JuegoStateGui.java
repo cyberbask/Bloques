@@ -16,7 +16,7 @@ import utiles.AppUtiles;
  *
  * @author mcarballo
  */
-public class StateJuegoGui {
+public class JuegoStateGui {
     private SimpleApplication app;
     private AssetManager      assetManager;
     private BitmapFont guiFont;
@@ -27,7 +27,7 @@ public class StateJuegoGui {
      *
      * @param app
      */
-    public StateJuegoGui(Application app){
+    public JuegoStateGui(Application app){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         
@@ -40,7 +40,7 @@ public class StateJuegoGui {
     /**
      * Posiciona el punto de mira en la pantalla
      */
-    protected void initPuntoMira() {
+    public void initPuntoMira() {
         AppSettings settings = AppUtiles.getSettings(app);
 
         //Por ahora comentamos esta linea ya que machaca las estadisticas laterales
@@ -59,7 +59,7 @@ public class StateJuegoGui {
      *
      * @param txt
      */
-    protected void textoEnPantalla(String txt){
+    public void textoEnPantalla(String txt){
         if (textoEnPantalla != null){
             guiNode.detachChild(textoEnPantalla);
         }

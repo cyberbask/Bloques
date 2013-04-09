@@ -13,7 +13,7 @@ import utiles.AppUtiles;
  * @author normenhansen
  */
 public class MainCliente extends SimpleApplication {
-    StateJuego stateJuego;
+    JuegoState stateJuego;
     private BulletAppState bulletAppState;
             
     /**
@@ -48,7 +48,7 @@ public class MainCliente extends SimpleApplication {
         this.stateManager.attach(screenShotState);
         
         //Seteamos la "Applicacion State" principal del juego
-        stateJuego = new StateJuego();
+        stateJuego = new JuegoState();
         stateManager.attach(stateJuego);
         
         //setamos la velocidad estandar de la flycam

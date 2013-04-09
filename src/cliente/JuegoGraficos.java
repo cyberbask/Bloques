@@ -4,8 +4,7 @@
  */
 package cliente;
 
-import bloques.graficos.BloqueGeneraBloque;
-import bloques.manejo.BloqueGeneraTerreno;
+import bloques.graficos.BloqueGraficos;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -22,9 +21,8 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+import com.jme3.system.Timer;
 import com.jme3.util.SkyFactory;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import personaje.Personaje;
 import utiles.Colision;
 
@@ -32,20 +30,7 @@ import utiles.Colision;
  *
  * @author cyberbask
  */
-public class GraficosJuegosSetUp {
-    /**
-     *
-     */
-    protected ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
-    /**
-     *
-     */
-    protected Future future = null;
-    /**
-     *
-     */
-    protected Future futureChunkUrgentes = null;
-    
+public class JuegoGraficos {    
     /**
      *
      */
@@ -79,13 +64,7 @@ public class GraficosJuegosSetUp {
      */
     protected Camera       cam;
     
-    /**
-     * Objeto que contiene todo el procesado de posiciones y bloques
-     */
-    protected BloqueGeneraTerreno bloqueGeneraTerreno;
     
-    //clase para manejo de bloques
-    BloqueGeneraBloque bloques;
     
     //Personaje
     /**
@@ -93,7 +72,7 @@ public class GraficosJuegosSetUp {
      */
     public Personaje personaje;
     
-    StateJuegoGui juegoGui;
+    JuegoStateGui juegoGui;
    
     //colision
     /**
@@ -101,11 +80,21 @@ public class GraficosJuegosSetUp {
      */
     public Colision colision;
     
+    BloqueGraficos bloqueGraficos;
+    
+    //variable para controlar si posicionamos la camara
+    //o activamos el personaje
+    int posicionarCamara = 0;  
+    int bloqueConMasAltura; //ñapa para posiconar al personaje
+    
+    //primera carga
+    Boolean primeraCarga = true;
+    
     /**
      *
      * @param app
      */
-    public GraficosJuegosSetUp(Application app){
+    public JuegoGraficos(Application app){
         this.app = (SimpleApplication) app;
         this.rootNode     = this.app.getRootNode();
         this.assetManager = this.app.getAssetManager();
@@ -115,13 +104,12 @@ public class GraficosJuegosSetUp {
         this.physics      = this.stateManager.getState(BulletAppState.class);
         this.cam          = this.app.getCamera();
         
-        bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
         
-        bloques = new BloqueGeneraBloque(app);
+        bloqueGraficos = new BloqueGraficos(this.app);
         
         personaje = new Personaje(app);
         
-        juegoGui = new StateJuegoGui(app);
+        juegoGui = new JuegoStateGui(app);
         juegoGui.initPuntoMira();
            
         //cambiamos el color del fondo
@@ -194,6 +182,76 @@ public class GraficosJuegosSetUp {
     
     private void setUpSky(){
         rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/skybox_blue_sphere.jpg", true));
+    }
+    
+    /**
+    *
+    * @param accion
+    */
+    public void accionBloque(String accion){        
+        //esto se usa para controlar si se estan actualizando chunks
+        //y en principio evitar que se pisen
+        Timer timer = app.getTimer();
+        float totalInicio = timer.getTimeInSeconds();
+
+        colision.getCoordenadasColision(bloqueGraficos.chunks);
+        Vector3f posicionPlayer = personaje.getPosicionPlayer();
+
+        float totalFin = timer.getTimeInSeconds();
+        //System.out.println("Tiempo coordenadas colision"+(totalFin-totalInicio));
+
+        if (colision.coorUltCol != null){
+            int[] coordUsar = null;
+
+            if (accion.equals("destruir")){
+                coordUsar = colision.coorUltCol;
+            }else if(accion.equals("colocar")){
+                coordUsar = colision.coorUltColBloqueVecino;
+            }
+
+            bloqueGraficos.accionBloque(accion,"Roca",coordUsar,posicionPlayer);           
+        }
+    }
+    
+    /**
+     *
+     * @param tpf
+     */
+    public void update(float tpf){              
+        //la primera vez que se entra aqui se genera el terreno
+        if (primeraCarga){
+            juegoGui.textoEnPantalla("... Generando Terreno por primera vez ("+bloqueGraficos.bloqueGeneraTerreno.porcentajeGenerado+"%)... ");
+            
+            if (bloqueGraficos.generaTerrenoInicial()){
+                juegoGui.textoEnPantalla("");
+                bloqueConMasAltura = bloqueGraficos.chunks.getBloqueConMasAltura(20, 20);
+                primeraCarga = false;   
+            }
+        }
+        
+        if (!primeraCarga){
+            //actualizamos los chunks
+            bloqueGraficos.update(tpf);
+            
+            if (posicionarCamara == 1){
+                //Añadimos el personaje
+                personaje.generaPersonaje(20,bloqueConMasAltura+100,20);
+                posicionarCamara = 2;
+            }
+            
+            if (posicionarCamara == 0){
+                posicionarCamara = personaje.posicionarCamara(bloqueConMasAltura);
+            }
+            
+            //actualizamos la posicion del personaje
+            personaje.update(tpf,bloqueGraficos.chunks);            
+        }
+    }
+    /**
+     *
+     */
+    public void destroy() {
+        bloqueGraficos.destroy();
     }
     
 }
