@@ -21,6 +21,7 @@ import com.jme3.input.InputManager;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.Timer;
@@ -120,6 +121,8 @@ public class BloqueGraficos{
     public int contadorUpdatesChunkUrgentes = 0;
 
     
+    Node terreno;
+    
     /**
      * Constructor
      * @param app
@@ -139,6 +142,12 @@ public class BloqueGraficos{
         bloques = new BloqueGeneraBloque(app);
         
         chunks = null;
+        
+        terreno = new Node("terreno");
+        
+        terreno.setShadowMode(ShadowMode.CastAndReceive);
+        
+        rootNode.attachChild(terreno);
     }
     
     /**
@@ -272,13 +281,13 @@ public class BloqueGraficos{
                             
                                     physics.getPhysicsSpace().add(optimizado);
                                                                         
-                                    rootNode.attachChild(optimizado);
+                                    terreno.attachChild(optimizado);
                                     
                                     //quitamos el chunk anterior y sus fisicas si hace falta
                                     if (tipoUpdateFinal == 2){
-                                        Spatial child = rootNode.getChild("Chunk: "+claveActualAllChunksFinal);
+                                        Spatial child = terreno.getChild("Chunk: "+claveActualAllChunksFinal);
                                         physics.getPhysicsSpace().remove(child.getControl(0)) ; 
-                                        rootNode.detachChild(child);
+                                        terreno.detachChild(child);
                                     }
                                     
                                     //TangentBinormalGenerator.generate(optimizado);

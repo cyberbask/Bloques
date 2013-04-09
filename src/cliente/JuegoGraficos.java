@@ -21,6 +21,8 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+import com.jme3.shadow.PssmShadowRenderer;
+import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 import com.jme3.system.Timer;
 import com.jme3.util.SkyFactory;
 import personaje.Personaje;
@@ -156,12 +158,12 @@ public class JuegoGraficos {
         viewPort.addProcessor(bsr);
         /**/
         
-        /** /
-        PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, 512, 1);
-        pssmRenderer.setDirection(new Vector3f(-.5f, -1f, -.5f).normalizeLocal()); // light direction
+        /**/
+        PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
+        pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
         pssmRenderer.setShadowIntensity(0.2f);
-        pssmRenderer.setEdgesThickness(100);
-        pssmRenderer.setFilterMode(FilterMode.Bilinear);
+        pssmRenderer.setEdgesThickness(1);
+        //pssmRenderer.setFilterMode(FilterMode.Bilinear);
         viewPort.addProcessor(pssmRenderer);
         /**/
         

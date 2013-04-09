@@ -110,7 +110,7 @@ public class BloqueGeneraBloque {
             texCoord[3] = new Vector2f(tamanoTile + x + sumapixel4,1 + y + sumapixel2);
 
             //NORMALES - para la iluminacion
-            float[] normals = new float[]{0,0,tamano, 0,0,tamano, 0,0,tamano, 0,0,tamano};
+            float[] normals = new float[]{0,0,1, 0,0,1, 0,0,1, 0,0,1};
             
             //INDICES -  Indices de los vertices, en que orden se construyen
             int [] indexes = {2,0,1,1,3,2};
@@ -121,6 +121,7 @@ public class BloqueGeneraBloque {
             m.setBuffer(VertexBuffer.Type.Index, 3, BufferUtils.createIntBuffer(indexes));
             m.setBuffer(VertexBuffer.Type.Normal, 3, BufferUtils.createFloatBuffer(normals));
             m.updateBound();
+            m.setStatic();
 
             //Geometry cara = new Geometry("Cara-"+String.valueOf(i)+"-Bloque-x-y", m);   
             Geometry cara = new Geometry("Cara-"+String.valueOf(i), m);   
