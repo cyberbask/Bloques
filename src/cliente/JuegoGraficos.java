@@ -142,7 +142,7 @@ public class JuegoGraficos {
         rootNode.addLight(al);
 
         DirectionalLight dl = new DirectionalLight();
-        dl.setColor(ColorRGBA.White.mult(0.5f));
+        dl.setColor(ColorRGBA.White.mult(0.8f));
         dl.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
         //dl.setDirection(new Vector3f(50f, -50f, -50f).normalizeLocal());
         //dl.setDirection(new Vector3f(-5f,-5f,-5f).normalizeLocal());
@@ -161,9 +161,9 @@ public class JuegoGraficos {
         /**/
         PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
         pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
-        pssmRenderer.setShadowIntensity(0.2f);
+        pssmRenderer.setShadowIntensity(0.035f);
         pssmRenderer.setEdgesThickness(1);
-        //pssmRenderer.setFilterMode(FilterMode.Bilinear);
+        pssmRenderer.setFilterMode(FilterMode.Bilinear);
         viewPort.addProcessor(pssmRenderer);
         /**/
         

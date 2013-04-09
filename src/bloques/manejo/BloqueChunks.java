@@ -234,8 +234,8 @@ public class BloqueChunks {
             chunk = getChunk(xVeci, yVeci, zVeci);
             if (chunk == null){
                 //TODO por ahora si no hay chunk vecino, se marca para que no se muestre la cara
-                bloques[posicion] = new int[4];
-                bloques[posicion][3] = 2; //sin chunk vecino
+                //bloques[posicion] = new int[4];
+                //bloques[posicion][3] = 2; //sin chunk vecino
             }else{
                 bloque = getBloque(xVeci, yVeci, zVeci, chunk);
                 if (bloque != null) {
@@ -377,9 +377,11 @@ public class BloqueChunks {
 
         //guardamos sus caras
         BloqueChunk chunk = getChunk(x, y, z);
-        BloqueChunkDatos datosBloque = chunk.getDatosBloque(BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z));
-        if (datosBloque != null){
-            datosBloque.setCaras(carasbloquesVecinos);
+        if (chunk != null){
+            BloqueChunkDatos datosBloque = chunk.getDatosBloque(BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z));
+            if (datosBloque != null){
+                datosBloque.setCaras(carasbloquesVecinos);
+            }
         }
     }
             

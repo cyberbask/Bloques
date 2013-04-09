@@ -233,13 +233,13 @@ public class BloqueGraficos{
                                         //le quitamos las caras que no se ven
                                         int[] carasbloquesVecinos ;
                                         int contaCarasQuitadas = 0;
-                                        if (tipoUpdate == 1){
+                                        // if (tipoUpdate == 1){
                                             int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas[0],coordenadas[1],coordenadas[2]);
                                             carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
-                                            datosBloque.setCaras(carasbloquesVecinos);
-                                        }else{
+                                           // datosBloque.setCaras(carasbloquesVecinos);
+                                        /*}else{
                                             carasbloquesVecinos = datosBloque.getCaras();
-                                        }
+                                        }*/
                                         
                                         for(int h = 0;h<6;h++){
                                             if (carasbloquesVecinos[h] == 0){ //si no hay cara

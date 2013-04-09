@@ -150,7 +150,7 @@ public class Personaje {
             //vamos a comprobar que no estemos dentro de un bloque
             Vector3f playerLocation = physicsLocation.clone();
             //Apaño - le restamos lo que supuestamente estamos separados del bloque cuando estamos bien asentados
-            playerLocation.y = playerLocation.y - (BloqueChunkUtiles.TAMANO_BLOQUE - 1.99f); 
+            playerLocation.y = playerLocation.y - (BloqueChunkUtiles.TAMANO_BLOQUE - 1f); 
             
             Boolean dentroBloquePlayer = Colision.calculaDentroBloquePlayer(playerLocation,chunks);
             
@@ -158,10 +158,10 @@ public class Personaje {
                 physics.getPhysicsSpace().remove(player);
                 
                 //le sumamos algo a la altura para reposicionar al personaje
-                physicsLocation.y = physicsLocation.y + (BloqueChunkUtiles.TAMANO_BLOQUE - 1.99f);
+                physicsLocation.y = physicsLocation.y + (BloqueChunkUtiles.TAMANO_BLOQUE);
                 generaPersonaje(physicsLocation.x,physicsLocation.y,physicsLocation.z);
             }
-            
+
             physicsLocation.y = physicsLocation.y + correcionAlturaPlayer;
             
             cam.setLocation(physicsLocation);
