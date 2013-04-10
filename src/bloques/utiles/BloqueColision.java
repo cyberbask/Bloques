@@ -1,7 +1,7 @@
 /*
  * Clase para calcular las colisiones e intersecciones
  */
-package utiles;
+package bloques.utiles;
 
 import bloques.manejo.BloqueChunkDatos;
 import bloques.manejo.BloqueChunkUtiles;
@@ -20,7 +20,7 @@ import com.jme3.scene.Node;
  *
  * @author cyberbask
  */
-public class Colision {
+public class BloqueColision {
     private SimpleApplication app;
     private Node              rootNode;
     private AssetManager      assetManager;
@@ -43,7 +43,7 @@ public class Colision {
      *
      * @param app
      */
-    public Colision(Application app){
+    public BloqueColision(Application app){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         this.cam          = this.app.getCamera();
@@ -135,13 +135,13 @@ public class Colision {
     /**
      *
      * @param coordBloque
-     * @param coordPlayer
+     * @param coordObjeto
      * @return
      */
-    public static Boolean calculaColisionPlayer(int[] coordBloque, Vector3f coordPlayer){
+    public static Boolean calculaColisionObjeto(int[] coordBloque, Vector3f coordObjeto){
         int[] dentroChunkBloque = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(coordBloque[0], coordBloque[1], coordBloque[2]);
         
-        int[] dentroChunkPlayer = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk((int) coordPlayer.x, (int)coordPlayer.y, (int)coordPlayer.z);
+        int[] dentroChunkPlayer = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk((int) coordObjeto.x, (int)coordObjeto.y, (int)coordObjeto.z);
         
         if (dentroChunkBloque[0] == dentroChunkPlayer[0]
                 &&dentroChunkBloque[1] == dentroChunkPlayer[1]
@@ -150,9 +150,9 @@ public class Colision {
             return true;
         }
         
-        //comprobamos tambien que no este en el bloque superior que seria el de la camara
+        //comprobamos tambien que no este en el bloque superior que seria el de la camara en principio
         
-        dentroChunkPlayer = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk((int) coordPlayer.x, (int)coordPlayer.y+BloqueChunkUtiles.TAMANO_BLOQUE, (int)coordPlayer.z);
+        dentroChunkPlayer = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk((int) coordObjeto.x, (int)coordObjeto.y+BloqueChunkUtiles.TAMANO_BLOQUE, (int)coordObjeto.z);
         
         if (dentroChunkBloque[0] == dentroChunkPlayer[0]
                 &&dentroChunkBloque[1] == dentroChunkPlayer[1]
@@ -166,12 +166,12 @@ public class Colision {
     
     /**
      *
-     * @param coordPlayer
+     * @param coordObjeto
      * @param chunks
      * @return
      */
-    public static Boolean calculaDentroBloquePlayer(Vector3f coordPlayer, BloqueChunks chunks){
-        BloqueChunkDatos bloque = chunks.getBloque((int)coordPlayer.x, (int)coordPlayer.y, (int)coordPlayer.z);
+    public static Boolean calculaDentroBloqueObjeto(Vector3f coordObjeto, BloqueChunks chunks){
+        BloqueChunkDatos bloque = chunks.getBloque((int)coordObjeto.x, (int)coordObjeto.y, (int)coordObjeto.z);
         
         if (bloque != null){
             return true;

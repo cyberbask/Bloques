@@ -199,16 +199,24 @@ public class BloqueChunkUtiles {
      * @param coordenadas
      * @return
      */
-    public static int averiguaCoordenadasContacto(Vector3f coordenadas){
-        if (coordenadas.x - Math.floor(coordenadas.x) == 0.0) {
+    public static int averiguaCoordenadasContacto(Vector3f coordenadas){       
+        float calculo = 0.0001f;
+        
+        if (coordenadas.x - Math.floor(coordenadas.x) <= calculo && coordenadas.x - Math.floor(coordenadas.x) >= 0f) {
+            return 1;
+        }else if(coordenadas.x - Math.ceil(coordenadas.x) >= -calculo && coordenadas.x - Math.ceil(coordenadas.x) <= 0f){
             return 1;
         }
         
-        if (coordenadas.y - Math.floor(coordenadas.y) == 0.0) {
+        if (coordenadas.y - Math.floor(coordenadas.y) <= calculo && coordenadas.y - Math.floor(coordenadas.y) >= 0f) {
+            return 2;
+        }else if(coordenadas.y - Math.ceil(coordenadas.y) >= -calculo && coordenadas.y - Math.ceil(coordenadas.y) <= 0f){
             return 2;
         }
         
-        if (coordenadas.z - Math.floor(coordenadas.z) == 0.0) {
+        if (coordenadas.z - Math.floor(coordenadas.z) <= calculo && coordenadas.z - Math.floor(coordenadas.z) >= 0f) {
+            return 3;
+        }else if(coordenadas.z - Math.ceil(coordenadas.z) >= -calculo && coordenadas.z - Math.ceil(coordenadas.z) <= 0f){
             return 3;
         }
         
@@ -226,24 +234,6 @@ public class BloqueChunkUtiles {
         devolver[0] = (int) coordenadas.x;
         devolver[1] = (int) coordenadas.y;
         devolver[2] = (int) coordenadas.z;
-
-        /*if (coordenadas.x - Math.floor(coordenadas.x) >= 0.5) {
-            devolver[0] = (int) Math.ceil(coordenadas.x);
-        }else{
-            devolver[0] = (int) Math.floor(coordenadas.x);
-        }
-        
-        if (coordenadas.y - Math.floor(coordenadas.y) >= 0.5) {
-            devolver[1] = (int) Math.ceil(coordenadas.y);
-        }else{
-            devolver[1] = (int) Math.floor(coordenadas.y);
-        }
-        
-        if (coordenadas.z - Math.floor(coordenadas.z) >= 0.5) {
-            devolver[2] = (int) Math.ceil(coordenadas.z);
-        }else{
-            devolver[2] = (int) Math.floor(coordenadas.z);
-        }*/
 
         return devolver;
     }

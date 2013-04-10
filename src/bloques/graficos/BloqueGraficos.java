@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import jme3tools.optimize.GeometryBatchFactory;
-import utiles.Colision;
+import bloques.utiles.BloqueColision;
 
 /**
  *
@@ -119,6 +119,11 @@ public class BloqueGraficos{
      *
      */
     public int contadorUpdatesChunkUrgentes = 0;
+    
+    /**
+     *
+     */
+    public BloqueColision colision;
 
     
     Node terreno;
@@ -138,6 +143,8 @@ public class BloqueGraficos{
         this.cam          = this.app.getCamera();
         
         bloqueGeneraTerreno = new BloqueGeneraTerreno(app);
+        
+        colision = new BloqueColision(app);
         
         bloques = new BloqueGeneraBloque(app);
         
@@ -233,7 +240,7 @@ public class BloqueGraficos{
                                         //le quitamos las caras que no se ven
                                         int[] carasbloquesVecinos ;
                                         int contaCarasQuitadas = 0;
-                                         if (tipoUpdate == 1){
+                                        if (tipoUpdate == 1){
                                             int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas[0],coordenadas[1],coordenadas[2]);
                                             carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
                                             datosBloque.setCaras(carasbloquesVecinos);
@@ -311,7 +318,7 @@ public class BloqueGraficos{
         }
         
         float totalFin = timer.getTimeInSeconds();
-        //System.out.println("Tiempo update"+(totalFin-totalInicio));
+        System.out.println("Tiempo update"+(totalFin-totalInicio));
         
     }
     
@@ -471,26 +478,32 @@ public class BloqueGraficos{
      *
      * @param accion
      * @param nomBloque
-     * @param coordUsar
-     * @param posicionColisision 
+     * @param posicionColision 
      */
-    public void accionBloque(String accion, String nomBloque, int[] coordUsar, Vector3f posicionColisision){
+    public void accionBloque(String accion, String nomBloque, Vector3f posicionColision){
         Boolean bloqueAccionado = false;
         
-        if (accion.equals("destruir")){
-            bloqueAccionado = chunks.destruyeBloque(coordUsar[0], coordUsar[1], coordUsar[2]);
-        }else if(accion.equals("colocar")){
-            //tenemos que comprobar si la posicion de colision(normalmente el player) no esta en el mismo lugar que el bloque a colocar
-            if (posicionColisision != null && !Colision.calculaColisionPlayer(coordUsar, posicionColisision)){
-                bloqueAccionado = chunks.colocaBloque(coordUsar[0], coordUsar[1], coordUsar[2], nomBloque);
+        colision.getCoordenadasColision(chunks);
+
+        if (colision.coorUltCol != null){
+            int[] coordUsar = null;
+
+            if (accion.equals("destruir")){
+                coordUsar = colision.coorUltCol;
+                bloqueAccionado = chunks.destruyeBloque(coordUsar[0], coordUsar[1], coordUsar[2]);
+            }else if(accion.equals("colocar")){
+                coordUsar = colision.coorUltColBloqueVecino;
+                //tenemos que comprobar si la posicion de colision(normalmente el player) no esta en el mismo lugar que el bloque a colocar
+                if (posicionColision != null && !BloqueColision.calculaColisionObjeto(coordUsar, posicionColision)){
+                    bloqueAccionado = chunks.colocaBloque(coordUsar[0], coordUsar[1], coordUsar[2], nomBloque);
+                }
             }
-        }
-        
-        if (bloqueAccionado){
+
+            if (bloqueAccionado){
                 Map<String,Integer> chunksAUpdatar=new HashMap<String,Integer>();      
                 String nombreChunk;
-                
-                
+
+
                 if (accion.equals("colocar")){
                     //calculamos sus caras
                     chunks.setCarasVecinas(coordUsar[0], coordUsar[1], coordUsar[2]);
@@ -514,7 +527,7 @@ public class BloqueGraficos{
                 if (chunksAUpdatar.get(nombreChunk) == null){
                     chunksAUpdatar.put(nombreChunk,1);
                 }
-                
+
                 String[] keysChunksUpdatar = (String[])( chunksAUpdatar.keySet().toArray( new String[chunksAUpdatar.size()] ) );
                 if (keysChunksUpdatar.length > 0){
                     for(int j=0; j<keysChunksUpdatar.length; j++){
@@ -524,6 +537,7 @@ public class BloqueGraficos{
                     }
                 }
             }
+        }
     }
     
     /**

@@ -105,6 +105,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_V));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("Correr", new KeyTrigger(KeyInput.KEY_LSHIFT));
         inputManager.addMapping("MouseLeftButton", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping("MouseRightButton", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         
@@ -115,6 +116,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addListener(this, "VSync");
         inputManager.addListener(this, "MouseLeftButton");
         inputManager.addListener(this, "MouseRightButton");
+        inputManager.addListener(this, "Correr");
         
         inputManager.addListener(analogListener, "Jump");
     }
@@ -133,7 +135,9 @@ public class JuegoState extends AbstractAppState implements ActionListener{
             AppSettings Appsett = AppUtiles.getSettings(app);
             Appsett.put("VSync", vsync);
             this.app.getContext().restart();
-        } else if (name.equals("MouseLeftButton") && !isPressed) {
+        }else if (name.equals("Correr")) {
+           graficos.personaje.correr = isPressed;
+        }else if (name.equals("MouseLeftButton") && !isPressed) {
             graficos.accionBloque("destruir");
         } else if (name.equals("MouseRightButton") && !isPressed) {
             graficos.accionBloque("colocar");

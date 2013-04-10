@@ -23,10 +23,8 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
-import com.jme3.system.Timer;
 import com.jme3.util.SkyFactory;
 import personaje.Personaje;
-import utiles.Colision;
 
 /**
  *
@@ -66,8 +64,6 @@ public class JuegoGraficos {
      */
     protected Camera       cam;
     
-    
-    
     //Personaje
     /**
      *
@@ -75,12 +71,7 @@ public class JuegoGraficos {
     public Personaje personaje;
     
     JuegoStateGui juegoGui;
-   
-    //colision
-    /**
-     *
-     */
-    public Colision colision;
+  
     
     BloqueGraficos bloqueGraficos;
     
@@ -117,9 +108,6 @@ public class JuegoGraficos {
         //cambiamos el color del fondo
         viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
         //viewPort.setBackgroundColor(ColorRGBA.Blue);
-        
-        //colisiones
-        colision = new Colision(app);
         
         //Sombras Basicas
         setUpShadows();
@@ -161,7 +149,7 @@ public class JuegoGraficos {
         /**/
         PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
         pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
-        pssmRenderer.setShadowIntensity(0.040f);
+        pssmRenderer.setShadowIntensity(0.02f);
         pssmRenderer.setEdgesThickness(1);
         pssmRenderer.setFilterMode(FilterMode.Bilinear);
         viewPort.addProcessor(pssmRenderer);
@@ -191,28 +179,9 @@ public class JuegoGraficos {
     * @param accion
     */
     public void accionBloque(String accion){        
-        //esto se usa para controlar si se estan actualizando chunks
-        //y en principio evitar que se pisen
-        Timer timer = app.getTimer();
-        float totalInicio = timer.getTimeInSeconds();
-
-        colision.getCoordenadasColision(bloqueGraficos.chunks);
         Vector3f posicionPlayer = personaje.getPosicionPlayer();
-
-        float totalFin = timer.getTimeInSeconds();
-        //System.out.println("Tiempo coordenadas colision"+(totalFin-totalInicio));
-
-        if (colision.coorUltCol != null){
-            int[] coordUsar = null;
-
-            if (accion.equals("destruir")){
-                coordUsar = colision.coorUltCol;
-            }else if(accion.equals("colocar")){
-                coordUsar = colision.coorUltColBloqueVecino;
-            }
-
-            bloqueGraficos.accionBloque(accion,"Roca",coordUsar,posicionPlayer);           
-        }
+        
+        bloqueGraficos.accionBloque(accion, "Roca", posicionPlayer);
     }
     
     /**
