@@ -161,7 +161,7 @@ public class JuegoGraficos {
         /**/
         PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
         pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
-        pssmRenderer.setShadowIntensity(0.035f);
+        pssmRenderer.setShadowIntensity(0.040f);
         pssmRenderer.setEdgesThickness(1);
         pssmRenderer.setFilterMode(FilterMode.Bilinear);
         viewPort.addProcessor(pssmRenderer);

@@ -80,7 +80,6 @@ public class Colision {
             Boolean bloqueVecino2 = false;
             int[] redondeaCoordenadas1 = null;
             int[] redondeaCoordenadas2 = null;
-            float resta = BloqueChunkUtiles.TAMANO_BLOQUE / 2;
             
             switch(ejeComprobar){
                 case 1: //x
