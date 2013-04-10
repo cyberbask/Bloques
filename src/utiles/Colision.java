@@ -70,7 +70,7 @@ public class Colision {
             
             //closest.getGeometry().getMaterial().getAdditionalRenderState().setWireframe(true);
             
-            System.out.println("Detecta1: "+contactPoint.x+"-"+contactPoint.y+"-"+contactPoint.z);
+            //System.out.println("Detecta1: "+contactPoint.x+"-"+contactPoint.y+"-"+contactPoint.z);
             
             int ejeComprobar = BloqueChunkUtiles.averiguaCoordenadasContacto(contactPoint);
             
@@ -119,12 +119,12 @@ public class Colision {
                     coorUltColBloque = redondeaCoordenadas2;
                     coorUltColBloqueVecino = redondeaCoordenadas1; 
                 }                    
-                System.out.println("Detecta Final: "+coorUltCol[0]+"-"+coorUltCol[1]+"-"+coorUltCol[2]);
+                //System.out.println("Detecta Final: "+coorUltCol[0]+"-"+coorUltCol[1]+"-"+coorUltCol[2]);
             }else{
                 coorUltCol = null;
                 coorUltColBloque = null;
                 coorUltColBloqueVecino = null;   
-                System.out.println("Detecta null");
+                //System.out.println("Detecta null");
             }
         }else{
             coorUltCol = null;

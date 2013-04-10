@@ -121,7 +121,7 @@ public class Personaje {
         Vector3f location = cam.getLocation();
         location.y = location.y - correcionAlturaPlayer;
         
-        System.out.println("Player: "+location.x+"-"+location.y+"-"+location.z);
+        //System.out.println("Player: "+location.x+"-"+location.y+"-"+location.z);
         
         return location;
     }

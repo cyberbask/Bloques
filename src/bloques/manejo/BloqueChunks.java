@@ -337,8 +337,6 @@ public class BloqueChunks {
      * @return
      */
     public Boolean colocaBloque(int x, int y, int z, String nomBloque){
-        System.out.println("CHUNKAR: "+BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(x, y, z)));
-        
         BloqueChunkDatos bloqueChunkDatos = new BloqueChunkDatos();
         bloqueChunkDatos.setNomBloque(nomBloque);
 
