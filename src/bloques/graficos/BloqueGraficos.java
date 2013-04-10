@@ -223,7 +223,7 @@ public class BloqueGraficos{
                                 for(int z = 0;z<tamano;z++){
                                     BloqueChunkDatos datosBloque = chunkActual.getDatosBloque(x, y, z);
 
-                                    if (datosBloque != null){
+                                    if (datosBloque != null){                                        
                                         Node bloqueClonado;
                                         bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
                                         
@@ -233,13 +233,13 @@ public class BloqueGraficos{
                                         //le quitamos las caras que no se ven
                                         int[] carasbloquesVecinos ;
                                         int contaCarasQuitadas = 0;
-                                        // if (tipoUpdate == 1){
+                                         if (tipoUpdate == 1){
                                             int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas[0],coordenadas[1],coordenadas[2]);
                                             carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
-                                           // datosBloque.setCaras(carasbloquesVecinos);
-                                        /*}else{
+                                            datosBloque.setCaras(carasbloquesVecinos);
+                                        }else{
                                             carasbloquesVecinos = datosBloque.getCaras();
-                                        }*/
+                                        }
                                         
                                         for(int h = 0;h<6;h++){
                                             if (carasbloquesVecinos[h] == 0){ //si no hay cara
@@ -268,36 +268,39 @@ public class BloqueGraficos{
                         System.out.println("Tiempo chunk "+claveActualAllChunks+" "+(fin-inicio));
                         //System.out.println("chunk "+claveActualAllChunks+" Terminado");
 
-                        if (mostrar == 1){
-                            final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrar);
-                            final int tipoUpdateFinal = tipoUpdate;
-                            final String claveActualAllChunksFinal = claveActualAllChunks;
+                        final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrar);
+                        final int tipoUpdateFinal = tipoUpdate;
+                        final String claveActualAllChunksFinal = claveActualAllChunks;
+                        final int mostrarFinal = mostrar;
 
-                            app.enqueue(new Callable() {
-                                public Object call() throws Exception {          
+                        app.enqueue(new Callable() {
+                            public Object call() throws Exception {  
+                                if (mostrarFinal == 1){
                                     CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape((Node) optimizado);
                                     RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
                                     optimizado.addControl(bloquesMostrarControl);
-                            
+
                                     physics.getPhysicsSpace().add(optimizado);
-                                                                        
-                                    terreno.attachChild(optimizado);
                                     
-                                    //quitamos el chunk anterior y sus fisicas si hace falta
-                                    if (tipoUpdateFinal == 2){
-                                        Spatial child = terreno.getChild("Chunk: "+claveActualAllChunksFinal);
+                                    terreno.attachChild(optimizado);
+                                }
+
+                                //quitamos el chunk anterior y sus fisicas si hace falta
+                                if (tipoUpdateFinal == 2){
+                                    Spatial child = terreno.getChild("Chunk: "+claveActualAllChunksFinal);
+                                    if (child != null){
                                         physics.getPhysicsSpace().remove(child.getControl(0)) ; 
                                         terreno.detachChild(child);
                                     }
-                                    
-                                    //TangentBinormalGenerator.generate(optimizado);
-                                    //optimizado.setShadowMode(ShadowMode.CastAndReceive);
-                                                                        
-                                    return null;
                                 }
-                            });
 
-                        }
+                                //TangentBinormalGenerator.generate(optimizado);
+                                //optimizado.setShadowMode(ShadowMode.CastAndReceive);
+
+                                return null;
+                            }
+                        });
+
                     }
                 }
                 //Thread.sleep(10);
@@ -484,11 +487,6 @@ public class BloqueGraficos{
                 Map<String,Integer> chunksAUpdatar=new HashMap<String,Integer>();      
                 String nombreChunk;
                 
-                //recargamos el chunk donde esta el bloque de la colision
-                nombreChunk = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(coordUsar[0], coordUsar[1], coordUsar[2]));
-                if (chunksAUpdatar.get(nombreChunk) == null){
-                    chunksAUpdatar.put(nombreChunk,1);
-                }
                 
                 if (accion.equals("colocar")){
                     //calculamos sus caras
@@ -508,6 +506,12 @@ public class BloqueGraficos{
                     }
                 }
 
+                //recargamos el chunk donde esta el bloque de la colision
+                nombreChunk = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(coordUsar[0], coordUsar[1], coordUsar[2]));
+                if (chunksAUpdatar.get(nombreChunk) == null){
+                    chunksAUpdatar.put(nombreChunk,1);
+                }
+                
                 String[] keysChunksUpdatar = (String[])( chunksAUpdatar.keySet().toArray( new String[chunksAUpdatar.size()] ) );
                 if (keysChunksUpdatar.length > 0){
                     for(int j=0; j<keysChunksUpdatar.length; j++){

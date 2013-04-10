@@ -234,8 +234,8 @@ public class BloqueChunks {
             chunk = getChunk(xVeci, yVeci, zVeci);
             if (chunk == null){
                 //TODO por ahora si no hay chunk vecino, se marca para que no se muestre la cara
-                //bloques[posicion] = new int[4];
-                //bloques[posicion][3] = 2; //sin chunk vecino
+                bloques[posicion] = new int[4];
+                bloques[posicion][3] = 2; //sin chunk vecino
             }else{
                 bloque = getBloque(xVeci, yVeci, zVeci, chunk);
                 if (bloque != null) {
@@ -323,19 +323,9 @@ public class BloqueChunks {
      * @return
      */
     public Boolean destruyeBloque(int x, int y, int z){
-        BloqueChunk chunk = getChunk(x, y, z);
-        
-        if (chunk != null){
-            int[] calculaCoordenadasBloqueDentroDeChunk = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z);
-        
-            //System.out.println("destruye: "+calculaCoordenadasBloqueDentroDeChunk[0]+"-"+calculaCoordenadasBloqueDentroDeChunk[1]+"-"+calculaCoordenadasBloqueDentroDeChunk[2]);
+        setBloque(x, y, z,null);
             
-            chunk.setDatosBloque(calculaCoordenadasBloqueDentroDeChunk, null);
-            
-            return true;
-        }
-        
-        return false;
+        return true;
     }
     
     /**
@@ -347,22 +337,15 @@ public class BloqueChunks {
      * @return
      */
     public Boolean colocaBloque(int x, int y, int z, String nomBloque){
-        BloqueChunk chunk = getChunk(x, y, z);
+        System.out.println("CHUNKAR: "+BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(x, y, z)));
         
-        if (chunk != null){
-            int[] calculaCoordenadasBloqueDentroDeChunk = BloqueChunkUtiles.calculaCoordenadasBloqueDentroDeChunk(x, y, z);
-        
-            System.out.println("coloca: "+calculaCoordenadasBloqueDentroDeChunk[0]+"-"+calculaCoordenadasBloqueDentroDeChunk[1]+"-"+calculaCoordenadasBloqueDentroDeChunk[2]);
-            
-            BloqueChunkDatos bloqueChunkDatos = new BloqueChunkDatos();
-            bloqueChunkDatos.setNomBloque(nomBloque);
-            
-            chunk.setDatosBloque(calculaCoordenadasBloqueDentroDeChunk, bloqueChunkDatos);
-            
-            return true;
-        }
-        
-        return false;
+        BloqueChunkDatos bloqueChunkDatos = new BloqueChunkDatos();
+        bloqueChunkDatos.setNomBloque(nomBloque);
+
+
+        setBloque(x, y, z,bloqueChunkDatos);
+
+        return true;
     }
     
     /**

@@ -48,7 +48,7 @@ public class BloqueGeneraTerreno{
     /**
      *
      */
-    public int totalTamano = 16;
+    public int totalTamano = 128;
     
     /**
      *
