@@ -281,8 +281,6 @@ public class BloqueGraficos{
                                     optimizado.addControl(bloquesMostrarControl);
 
                                     physics.getPhysicsSpace().add(optimizado);
-                                    
-                                    terreno.attachChild(optimizado);
                                 }
 
                                 //quitamos el chunk anterior y sus fisicas si hace falta
@@ -292,6 +290,11 @@ public class BloqueGraficos{
                                         physics.getPhysicsSpace().remove(child.getControl(0)) ; 
                                         terreno.detachChild(child);
                                     }
+                                }
+                                
+                                //una vez borrado el chunk anterior metemos el nuevo
+                                if (mostrarFinal == 1){
+                                    terreno.attachChild(optimizado);
                                 }
 
                                 //TangentBinormalGenerator.generate(optimizado);
