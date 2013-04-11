@@ -108,6 +108,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addMapping("Correr", new KeyTrigger(KeyInput.KEY_LSHIFT));
         inputManager.addMapping("MouseLeftButton", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping("MouseRightButton", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+        inputManager.addMapping("MouseCentralButton", new KeyTrigger(KeyInput.KEY_F), new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
         
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
@@ -116,6 +117,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addListener(this, "VSync");
         inputManager.addListener(this, "MouseLeftButton");
         inputManager.addListener(this, "MouseRightButton");
+        inputManager.addListener(this, "MouseCentralButton");
         inputManager.addListener(this, "Correr");
         
         inputManager.addListener(analogListener, "Jump");
@@ -141,6 +143,8 @@ public class JuegoState extends AbstractAppState implements ActionListener{
             graficos.accionBloque("destruir");
         } else if (name.equals("MouseRightButton") && !isPressed) {
             graficos.accionBloque("colocar");
+        }else if (name.equals("MouseCentralButton") && !isPressed) {
+            graficos.accionBloque("clonar");
         }
     }
     

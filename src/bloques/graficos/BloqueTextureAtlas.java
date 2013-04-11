@@ -59,6 +59,13 @@ public class BloqueTextureAtlas extends TextureAtlas{
         setAnchoImagenTextura(image.getWidth()); //esto se hace la primera vez para los calculos posteriores
         
         addTexture(text, "bloques1");
+        
+        //segunda textura
+        textura = new TextureKey("Textures/bloques2.png");
+        textura.setGenerateMips(true);
+        
+        Texture text2 = assetManager.loadTexture(textura);
+        addTexture(text2, "bloques2", text);
     }
     
     /**

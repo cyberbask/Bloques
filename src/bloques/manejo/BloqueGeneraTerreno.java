@@ -51,7 +51,7 @@ public class BloqueGeneraTerreno{
     /**
      *
      */
-    public int totalTamano = 16;
+    public int totalTamano = 400;
     
     /**
      *
@@ -117,8 +117,11 @@ public class BloqueGeneraTerreno{
                         }else if(variacion == 1){
                             tipoTerreno = "Roca";
                             variacion = 2;
-                        }else{
+                        }else if(variacion == 2){
                             tipoTerreno = "Arena";
+                            variacion = 3;
+                        }else{
+                            tipoTerreno = "Hierba";
                             variacion = 0;
                         }
                         
@@ -168,9 +171,9 @@ public class BloqueGeneraTerreno{
     public void generaTerreno(){      
         try{
             if(future == null && chunks == null && !generandoTerreno){
-                BloqueChunks loaded = (BloqueChunks) SaveGame.loadGame("Bloques/terreno/", "allchunks");
+                //BloqueChunks loaded = (BloqueChunks) SaveGame.loadGame("Bloques/terreno/", "allchunks");
                 
-                loaded=null;
+                BloqueChunks loaded=null;
                 
                 if (loaded == null){
                     generandoTerreno = true;
@@ -184,7 +187,7 @@ public class BloqueGeneraTerreno{
                 if(future.isDone()){
                     generandoTerreno = false;
                     future = null;
-                    SaveGame.saveGame("Bloques/terreno/", "allchunks", chunks);
+                    //SaveGame.saveGame("Bloques/terreno/", "allchunks", chunks);
                 }
                 else if(future.isCancelled()){
                     
@@ -193,7 +196,7 @@ public class BloqueGeneraTerreno{
             }
         } 
         catch(Exception e){ 
-
+           e.printStackTrace();
         }
     }
     

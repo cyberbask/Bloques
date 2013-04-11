@@ -113,6 +113,33 @@ public class BloqueGenericos {
                
                return datosBloque;
             }
+            
+            //bloque Hierba
+            if ("Hierba".equals(nomBloque)){
+               datosBloque.setNombreTextura("bloques2");
+               
+               datosBloque.setPosicionTexturasX(0, 4);//frontal
+               datosBloque.setPosicionTexturasY(0, 1);
+               
+               datosBloque.setPosicionTexturasX(1, 4);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 1);
+               
+               datosBloque.setPosicionTexturasX(2, 4);//trasera
+               datosBloque.setPosicionTexturasY(2, 1);
+               
+               datosBloque.setPosicionTexturasX(3, 4);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 1);
+               
+               datosBloque.setPosicionTexturasX(4, 2);//Superior
+               datosBloque.setPosicionTexturasY(4, 10);
+               
+               datosBloque.setPosicionTexturasX(5, 3); //inferior
+               datosBloque.setPosicionTexturasY(5, 1);
+               
+               bloques.put(nomBloque,datosBloque);
+               
+               return datosBloque;
+            }
         }
         
         return null;

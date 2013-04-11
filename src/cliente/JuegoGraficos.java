@@ -183,7 +183,14 @@ public class JuegoGraficos {
     public void accionBloque(String accion){        
         Vector3f posicionPlayer = personaje.getPosicionPlayer();
         
-        bloqueGraficos.accionBloque(accion, "Roca", posicionPlayer);
+        if (!accion.equals("clonar")){
+            bloqueGraficos.accionBloque(accion, personaje.nomBloqueSeleccionado, posicionPlayer);
+        }else{
+            String accionBloqueClonar = bloqueGraficos.accionBloqueClonar();
+            if (accionBloqueClonar != null){
+                personaje.nomBloqueSeleccionado = accionBloqueClonar;
+            }
+        }
     }
     
     /**

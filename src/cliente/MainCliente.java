@@ -44,7 +44,7 @@ public class MainCliente extends SimpleApplication {
         
         //capturas de pantalla
         ScreenshotAppState screenShotState = new ScreenshotAppState();
-        screenShotState.setFilePath("screenshots/");
+        screenShotState.setFilePath("bloques/screenshots/");
         this.stateManager.attach(screenShotState);
         
         //Seteamos la "Applicacion State" principal del juego

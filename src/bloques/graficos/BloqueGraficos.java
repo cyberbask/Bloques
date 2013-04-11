@@ -188,12 +188,9 @@ public class BloqueGraficos{
     /**
      *
      * @param updatear 
-     * @param tipoUpdate con esta variable controlamos los urgentes de los que no lo son
-     * @throws InterruptedException
-     * @throws ExecutionException
      */
     @SuppressWarnings("SleepWhileInLoop")
-    public void updateaChunks(Map<Integer,BloqueChunks> updatear, int tipoUpdate) throws InterruptedException, ExecutionException{
+    public void updateaChunks(Map<Integer,BloqueChunks> updatear){
         Timer timer = app.getTimer();
         float totalInicio = timer.getTimeInSeconds();
 
@@ -213,15 +210,110 @@ public class BloqueGraficos{
                     for(int j=0; j<keysAllChunks.length; j++){
                         String claveActualAllChunks = keysAllChunks[j];
                         
-                        float inicio = timer.getTimeInSeconds();
+                        BloqueChunk chunkActual = allChunks.get(claveActualAllChunks);
+  
+                        int tamano = BloqueChunkUtiles.TAMANO_CHUNK;
+
+                        Node bloquesMostrar = new Node("Chunk: "+claveActualAllChunks);
+                        
+                        int mostrar = 0;
+                        
+                        for(int x = 0;x<tamano;x++){
+                            for(int y = 0;y<tamano;y++){
+                                for(int z = 0;z<tamano;z++){
+                                    BloqueChunkDatos datosBloque = chunkActual.getDatosBloque(x, y, z);
+
+                                    if (datosBloque != null){                                        
+                                        Node bloqueClonado;
+
+                                        bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
+                                        
+                                        //coordenadas reales del cubo, no las del chunk
+                                        final int[] coordenadas = BloqueChunkUtiles.calculaCoordenadasBloqueAPartirDeChunk(claveActualAllChunks, x * BloqueChunkUtiles.TAMANO_BLOQUE, y  * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE);
+
+                                        //le quitamos las caras que no se ven
+                                        int[] carasbloquesVecinos ;
+                                        int contaCarasQuitadas = 0;
+                                        
+                                        int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas[0],coordenadas[1],coordenadas[2]);
+                                        carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
+                                        datosBloque.setCaras(carasbloquesVecinos);
+                                        
+                                        for(int h = 0;h<6;h++){
+                                            if (carasbloquesVecinos[h] == 0){ //si no hay cara
+                                                bloqueClonado.detachChildNamed("Cara-"+h); 
+                                                contaCarasQuitadas++;
+                                            }
+                                        }
+
+                                        if (contaCarasQuitadas < 6){
+                                            bloqueClonado.move(coordenadas[0],coordenadas[1],coordenadas[2] + BloqueChunkUtiles.TAMANO_BLOQUE);
+                                            bloquesMostrar.attachChild(bloqueClonado);
+                                            mostrar = 1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrar);
+                        final int mostrarFinal = mostrar;
+
+                        app.enqueue(new Callable() {
+                            public Object call() throws Exception {  
+                                if (mostrarFinal == 1){
+                                    CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape((Node) optimizado);
+                                    RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
+                                    optimizado.addControl(bloquesMostrarControl);
+
+                                    physics.getPhysicsSpace().add(optimizado);
+                                    terreno.attachChild(optimizado);
+                                }
+                                
+                                return null;
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        
+        float totalFin = timer.getTimeInSeconds();
+        System.out.println("Tiempo update"+(totalFin-totalInicio));
+        
+    }
+    
+    /**
+     *
+     * @param updatear
+     */
+    public void updateaChunksUrgentes(Map<Integer,BloqueChunks> updatear){
+        Timer timer = app.getTimer();
+        float totalInicio = timer.getTimeInSeconds();
+
+        //recorremos el array
+        Integer[] keys = (Integer[])( updatear.keySet().toArray( new Integer[updatear.size()] ) ); 
+        
+        if (keys.length > 0){
+            for(int i=0; i<keys.length; i++){
+                int claveActual = keys[i];
+                
+                BloqueChunks updatando = (BloqueChunks) updatear.get(claveActual);
+                
+                Map<String, Spatial> nodosUpdatar = new HashMap<String, Spatial>();
+                
+                //sacamos todos los chunks a updatar y lo recorremos chunk a chunk
+                Map<String, BloqueChunk> allChunks = updatando.getAllChunks();
+                String[] keysAllChunks = (String[])( allChunks.keySet().toArray( new String[allChunks.size()] ) );
+                if (keysAllChunks.length > 0){
+                    for(int j=0; j<keysAllChunks.length; j++){
+                        String claveActualAllChunks = keysAllChunks[j];
                         
                         BloqueChunk chunkActual = allChunks.get(claveActualAllChunks);
   
                         int tamano = BloqueChunkUtiles.TAMANO_CHUNK;
 
                         Node bloquesMostrar = new Node("Chunk: "+claveActualAllChunks);
-
-                        System.out.println("chunk "+claveActualAllChunks);
 
                         int mostrar = 0;
 
@@ -241,13 +333,8 @@ public class BloqueGraficos{
                                         //le quitamos las caras que no se ven
                                         int[] carasbloquesVecinos ;
                                         int contaCarasQuitadas = 0;
-                                        if (tipoUpdate == 1){
-                                            int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas[0],coordenadas[1],coordenadas[2]);
-                                            carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
-                                            datosBloque.setCaras(carasbloquesVecinos);
-                                        }else{
-                                            carasbloquesVecinos = datosBloque.getCaras();
-                                        }
+                                        
+                                        carasbloquesVecinos = datosBloque.getCaras();
                                         
                                         for(int h = 0;h<6;h++){
                                             if (carasbloquesVecinos[h] == 0){ //si no hay cara
@@ -258,12 +345,7 @@ public class BloqueGraficos{
 
                                         if (contaCarasQuitadas < 6){
                                             bloqueClonado.move(coordenadas[0],coordenadas[1],coordenadas[2] + BloqueChunkUtiles.TAMANO_BLOQUE);
-                                            
-                                            //TangentBinormalGenerator.generate(bloqueClonado);
-                                            //bloqueClonado.setShadowMode(ShadowMode.CastAndReceive);
-                                            
                                             bloquesMostrar.attachChild(bloqueClonado);
-
                                             mostrar = 1;
                                         }
                                     }
@@ -271,50 +353,41 @@ public class BloqueGraficos{
                             }
                         }
                         
-                        float fin = timer.getTimeInSeconds();
-                        
-                        System.out.println("Tiempo chunk "+claveActualAllChunks+" "+(fin-inicio));
-                        //System.out.println("chunk "+claveActualAllChunks+" Terminado");
-
-                        final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrar);
-                        final int tipoUpdateFinal = tipoUpdate;
-                        final String claveActualAllChunksFinal = claveActualAllChunks;
-                        final int mostrarFinal = mostrar;
-
-                        app.enqueue(new Callable() {
-                            public Object call() throws Exception {  
-                                if (mostrarFinal == 1){
-                                    CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape((Node) optimizado);
-                                    RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
-                                    optimizado.addControl(bloquesMostrarControl);
-
-                                    physics.getPhysicsSpace().add(optimizado);
-                                }
-
-                                //quitamos el chunk anterior y sus fisicas si hace falta
-                                if (tipoUpdateFinal == 2){
-                                    Spatial child = terreno.getChild("Chunk: "+claveActualAllChunksFinal);
-                                    if (child != null){
-                                        physics.getPhysicsSpace().remove(child.getControl(0)) ; 
-                                        terreno.detachChild(child);
-                                    }
-                                }
-                                
-                                //una vez borrado el chunk anterior metemos el nuevo
-                                if (mostrarFinal == 1){
-                                    terreno.attachChild(optimizado);
-                                }
-
-                                //TangentBinormalGenerator.generate(optimizado);
-                                //optimizado.setShadowMode(ShadowMode.CastAndReceive);
-
-                                return null;
-                            }
-                        });
-                        int yo = 0;
+                        nodosUpdatar.put(claveActualAllChunks,GeometryBatchFactory.optimize(bloquesMostrar));
                     }
                 }
-                //Thread.sleep(10);
+                
+                final String[] keysNodosUpdatar = (String[])( nodosUpdatar.keySet().toArray( new String[nodosUpdatar.size()] ) );
+                final Map<String, Spatial> nodosUpdatarFinal = nodosUpdatar;
+                
+                if (keysNodosUpdatar.length > 0){
+                    app.enqueue(new Callable() {
+                        public Object call() throws Exception {  
+                            for(int j=0; j<keysNodosUpdatar.length; j++){
+                                Spatial nodoOptimizado = nodosUpdatarFinal.get(keysNodosUpdatar[j]);
+                                
+                                CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape((Node) nodoOptimizado);
+                                RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
+                                nodoOptimizado.addControl(bloquesMostrarControl);
+
+                                physics.getPhysicsSpace().add(nodoOptimizado);
+
+                                //quitamos el chunk anterior y sus fisicas si hace falta
+                                Spatial child = terreno.getChild("Chunk: "+keysNodosUpdatar[j]);
+                                if (child != null){
+                                    physics.getPhysicsSpace().remove(child.getControl(0)) ; 
+                                    terreno.detachChild(child);
+                                }
+                                
+                                terreno.attachChild(nodoOptimizado);
+                            }
+
+                            return null;
+                        }
+                    });
+                    
+                    
+                }
             }
         }
         
@@ -333,7 +406,7 @@ public class BloqueGraficos{
             }).get();
             
             if (updatear != null){
-                updateaChunks(updatear,1); //1 es para los updates lentos del terreno
+                updateaChunks(updatear); //1 es para los updates lentos del terreno
             }
             
             return false;
@@ -350,7 +423,7 @@ public class BloqueGraficos{
             }).get();
             
             if (updatear != null){
-                updateaChunks(updatear, 2); //2 es para los rapidos, destruir bloques por ejemplo
+                updateaChunksUrgentes(updatear); //2 es para los rapidos, destruir bloques por ejemplo
             }
             
             return false;
@@ -539,6 +612,28 @@ public class BloqueGraficos{
                 }
             }
         }
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public String accionBloqueClonar(){
+        colision.getCoordenadasColision(chunks);
+
+        if (colision.coorUltCol != null){
+            int[] coordUsar = colision.coorUltCol;
+            
+            BloqueChunkDatos datosBloque = chunks.getBloque(coordUsar[0], coordUsar[1], coordUsar[2]);
+            if (datosBloque != null){
+                String nomBloqueClonar = datosBloque.getNomBloque();
+                if (datosBloque.getNomBloque() != null){
+                    return nomBloqueClonar;
+                }
+            }
+        }
+        
+        return null;
     }
     
     /**

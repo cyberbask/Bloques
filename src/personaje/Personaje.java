@@ -67,6 +67,11 @@ public class Personaje {
      *
      */
     public Boolean correr = false;
+    
+    /**
+     *
+     */
+    public String nomBloqueSeleccionado = "Roca";
   
     /**
      *
@@ -166,6 +171,7 @@ public class Personaje {
             
             
             
+            //TODO terminar la colisiones
             //Esta peli es para no meterse dentro de un bloque
             /**/
             float correcion = BloqueChunkUtiles.TAMANO_BLOQUE - 1f;
