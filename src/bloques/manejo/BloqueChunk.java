@@ -3,11 +3,18 @@
  */
 package bloques.manejo;
 
+import com.jme3.export.InputCapsule;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.OutputCapsule;
+import com.jme3.export.Savable;
+import java.io.IOException;
+
 /**
  *
  * @author mcarballo
  */
-public class BloqueChunk {
+public class BloqueChunk implements Savable{
     /**
      * Contiene los datos del bloque segun coordenadas
      */
@@ -68,5 +75,53 @@ public class BloqueChunk {
      */
     public void setDatosBloque(int[] coodernadas, BloqueChunkDatos datos){
         bloquesDatos[coodernadas[0]][coodernadas[1]][coodernadas[2]] = datos;
+    }
+
+    /**
+     *
+     * @param ex
+     * @throws IOException
+     */
+    public void write(JmeExporter ex) throws IOException {
+        OutputCapsule capsule = ex.getCapsule(this);
+        
+        int tamano = BloqueChunkUtiles.TAMANO_CHUNK;
+
+        for(int x = 0;x<tamano;x++){
+            for(int y = 0;y<tamano;y++){
+                for(int z = 0;z<tamano;z++){                                        
+                    BloqueChunkDatos datosBloque = getDatosBloque(x, y, z);
+                    
+                    String clave = String.valueOf(x)+"__"+String.valueOf(y)+"__"+String.valueOf(z);
+                    
+                    if (datosBloque != null){
+                        capsule.write(datosBloque, clave , null);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param im
+     * @throws IOException
+     */
+    public void read(JmeImporter im) throws IOException {
+        InputCapsule capsule = im.getCapsule(this);
+        
+        int tamano = BloqueChunkUtiles.TAMANO_CHUNK;
+
+        for(int x = 0;x<tamano;x++){
+            for(int y = 0;y<tamano;y++){
+                for(int z = 0;z<tamano;z++){
+                    String clave = String.valueOf(x)+"__"+String.valueOf(y)+"__"+String.valueOf(z);
+                    
+                    BloqueChunkDatos datosBloque = (BloqueChunkDatos) capsule.readSavable(clave, null);     
+                    
+                    setDatosBloque(x, y, z, datosBloque);
+                }
+            }
+        }
     }
 }

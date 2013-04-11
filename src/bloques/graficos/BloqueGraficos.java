@@ -9,6 +9,7 @@ import bloques.manejo.BloqueChunkDatos;
 import bloques.manejo.BloqueChunkUtiles;
 import bloques.manejo.BloqueChunks;
 import bloques.manejo.BloqueGeneraTerreno;
+import bloques.utiles.BloqueColision;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -34,7 +35,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import jme3tools.optimize.GeometryBatchFactory;
-import bloques.utiles.BloqueColision;
 
 /**
  *
@@ -221,7 +221,7 @@ public class BloqueGraficos{
 
                         Node bloquesMostrar = new Node("Chunk: "+claveActualAllChunks);
 
-                        //System.out.println("chunk "+claveActualAllChunks);
+                        System.out.println("chunk "+claveActualAllChunks);
 
                         int mostrar = 0;
 
@@ -232,6 +232,7 @@ public class BloqueGraficos{
 
                                     if (datosBloque != null){                                        
                                         Node bloqueClonado;
+
                                         bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
                                         
                                         //coordenadas reales del cubo, no las del chunk
@@ -310,7 +311,7 @@ public class BloqueGraficos{
                                 return null;
                             }
                         });
-
+                        int yo = 0;
                     }
                 }
                 //Thread.sleep(10);

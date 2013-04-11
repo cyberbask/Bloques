@@ -5,6 +5,7 @@ package bloques.manejo;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.AssetManager;
 import com.jme3.system.Timer;
 import com.jme3.terrain.heightmap.HillHeightMap;
 import java.util.Random;
@@ -12,6 +13,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import jme3tools.savegame.SaveGame;
 
 /**
  *
@@ -22,6 +24,7 @@ public class BloqueGeneraTerreno{
      *
      */
     private SimpleApplication app;
+    private AssetManager      assetManager;
     
     ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
     Future future = null;
@@ -48,7 +51,7 @@ public class BloqueGeneraTerreno{
     /**
      *
      */
-    public int totalTamano = 190;
+    public int totalTamano = 16;
     
     /**
      *
@@ -56,6 +59,7 @@ public class BloqueGeneraTerreno{
      */
     public BloqueGeneraTerreno(Application app){
         this.app = (SimpleApplication) app;
+        this.assetManager = this.app.getAssetManager();
     }
     
     private HillHeightMap generateTerrainconReturn(){
@@ -161,17 +165,26 @@ public class BloqueGeneraTerreno{
     /**
      *
      */
-    public void generaTerreno(){
+    public void generaTerreno(){      
         try{
             if(future == null && chunks == null && !generandoTerreno){
-                generandoTerreno = true;
-                chunks = new BloqueChunks();
-                future = executor.submit(generaTerrenoInicialHilo);
+                BloqueChunks loaded = (BloqueChunks) SaveGame.loadGame("Bloques/terreno/", "allchunks");
+                
+                loaded=null;
+                
+                if (loaded == null){
+                    generandoTerreno = true;
+                    chunks = new BloqueChunks();
+                    future = executor.submit(generaTerrenoInicialHilo);
+                }else{
+                    chunks = loaded;
+                }
             }
             else if(future != null){
                 if(future.isDone()){
                     generandoTerreno = false;
                     future = null;
+                    SaveGame.saveGame("Bloques/terreno/", "allchunks", chunks);
                 }
                 else if(future.isCancelled()){
                     

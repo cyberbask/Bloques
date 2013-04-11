@@ -3,6 +3,12 @@
  */
 package bloques.manejo;
 
+import com.jme3.export.InputCapsule;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.OutputCapsule;
+import com.jme3.export.Savable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +16,7 @@ import java.util.Map;
  *
  * @author cyberbask
  */
-public class BloqueChunks {
+public class BloqueChunks implements Savable{
     Map<String,BloqueChunk> chunks = new HashMap<String, BloqueChunk>();
     
     /**
@@ -233,7 +239,7 @@ public class BloqueChunks {
             
             chunk = getChunk(xVeci, yVeci, zVeci);
             if (chunk == null){
-                //TODO por ahora si no hay chunk vecino, se marca para que no se muestre la cara
+                //por ahora si no hay chunk vecino, se marca para que no se muestre la cara
                 bloques[posicion] = new int[4];
                 bloques[posicion][3] = 2; //sin chunk vecino
             }else{
@@ -269,9 +275,6 @@ public class BloqueChunks {
         for(int i=0;i<6;i++) {
             caras[i] = 1;
         }
-        
-        //TODO  Por ahora si el chunk o bloque vecino no existe directamente no se muestra la cara
-        //      con esto evitamos que salgan las caras de los bordes del mundo
         
         for(int i=0;i<6;i++) {
             if (bloques[i] != null){ //si hay bloque
@@ -363,6 +366,46 @@ public class BloqueChunks {
             if (datosBloque != null){
                 datosBloque.setCaras(carasbloquesVecinos);
             }
+        }
+    }
+
+    /**
+     *
+     * @param ex
+     * @throws IOException
+     */
+    public void write(JmeExporter ex) throws IOException {
+        OutputCapsule capsule = ex.getCapsule(this);
+                
+        String[] keysAllChunks = (String[])( chunks.keySet().toArray( new String[chunks.size()] ) );
+        
+        if (keysAllChunks.length > 0){
+            capsule.write(keysAllChunks.length, "tamano", 0);
+        
+            for(int j=0; j<keysAllChunks.length; j++){
+                String claveActual = keysAllChunks[j];
+                
+                capsule.write(claveActual, "clave__"+j, new String());
+                
+                capsule.write(chunks.get(claveActual), claveActual, null);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param im
+     * @throws IOException
+     */
+    public void read(JmeImporter im) throws IOException {
+        InputCapsule capsule = im.getCapsule(this);
+        
+        int tamano = capsule.readInt("tamano", 1);
+        
+        for(int j=0; j<tamano; j++){
+            String claveActual = capsule.readString("clave__"+j, "");
+                        
+            chunks.put(claveActual,(BloqueChunk) capsule.readSavable(claveActual,  null));
         }
     }
             

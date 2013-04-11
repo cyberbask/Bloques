@@ -165,7 +165,7 @@ public class BloqueGeneraBloque {
      * @param nomBloque
      * @return
      */
-    public Node getBloqueGenerado(String nomBloque){
+    public Node getBloqueGenerado(String nomBloque){        
         Node bloqueGenerado = bloquesGenerados.get(nomBloque);
         
         if (bloqueGenerado != null){

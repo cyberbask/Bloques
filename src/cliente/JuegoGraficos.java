@@ -119,18 +119,18 @@ public class JuegoGraficos {
         setUpFog();
         
         //Cielo
-        //setUpSky();
+        setUpSky();
        
     }
     
     private void setUpLight() {
         // We add light so we see the scene
         AmbientLight al = new AmbientLight();
-        al.setColor(ColorRGBA.White.mult(0.6f));
+        al.setColor(ColorRGBA.White.mult(0.55f));
         rootNode.addLight(al);
 
         DirectionalLight dl = new DirectionalLight();
-        dl.setColor(ColorRGBA.White.mult(0.8f));
+        dl.setColor(ColorRGBA.White.mult(0.85f));
         dl.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
         //dl.setDirection(new Vector3f(50f, -50f, -50f).normalizeLocal());
         //dl.setDirection(new Vector3f(-5f,-5f,-5f).normalizeLocal());
@@ -146,7 +146,7 @@ public class JuegoGraficos {
         viewPort.addProcessor(bsr);
         /**/
         
-        /**/
+        /** /
         PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
         pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
         pssmRenderer.setShadowIntensity(0.02f);
@@ -165,13 +165,15 @@ public class JuegoGraficos {
     
     private void setUpFog(){
         FilterPostProcessor fogPPS=new FilterPostProcessor(assetManager);
-        FogFilter fog = new FogFilter(ColorRGBA.White, 0.6f, 1000f);
+        FogFilter fog = new FogFilter(ColorRGBA.White, 0.8f, 1200f);
         fogPPS.addFilter(fog);
         viewPort.addProcessor(fogPPS);
     }
     
     private void setUpSky(){
+        /** /
         rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/skybox_blue_sphere.jpg", true));
+        /**/
     }
     
     /**
@@ -191,7 +193,7 @@ public class JuegoGraficos {
     public void update(float tpf){              
         //la primera vez que se entra aqui se genera el terreno
         if (primeraCarga){
-            juegoGui.textoEnPantalla("... Generando Terreno por primera vez ("+bloqueGraficos.bloqueGeneraTerreno.porcentajeGenerado+"%)... ");
+            juegoGui.textoEnPantalla("... Generando Terreno ("+bloqueGraficos.bloqueGeneraTerreno.porcentajeGenerado+"%)... ");
             
             if (bloqueGraficos.generaTerrenoInicial()){
                 juegoGui.textoEnPantalla("");
