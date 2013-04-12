@@ -435,7 +435,7 @@ public class BloqueGraficos{
      * @param tpf 
      */
     public void update(float tpf){  
-        //las siguientes veces que se hace update se actualizan los chunks
+       //las siguientes veces que se hace update se actualizan los chunks
        try{
             if(future == null){
                 future = executor.submit(procesaGraficosUpdates);

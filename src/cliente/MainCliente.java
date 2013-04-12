@@ -53,7 +53,8 @@ public class MainCliente extends SimpleApplication {
         stateManager.attach(stateJuego);
         
         //setamos la velocidad estandar de la flycam
-        flyCam.setMoveSpeed(5f);       
+        //flyCam.setMoveSpeed(5f);       
+        flyCam.setMoveSpeed(60f);       
         flyCam.setRotationSpeed(5f);
 
         //setemoa la distancia de dibujado de la camara

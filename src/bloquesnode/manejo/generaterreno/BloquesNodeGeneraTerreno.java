@@ -4,12 +4,12 @@
 package bloquesnode.manejo.generaterreno;
 
 import bloquesnode.graficos.generabloque.BloquesNodeGeneraBloque;
+import bloquesnode.manejo.chunks.BloquesNodeChunkDatos;
+import bloquesnode.manejo.chunks.BloquesNodeChunks;
 import bloquesnode.manejo.utiles.BloquesNodeUtiles;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.system.Timer;
 import com.jme3.terrain.heightmap.HillHeightMap;
 import java.util.Random;
@@ -36,7 +36,7 @@ public class BloquesNodeGeneraTerreno{
     /**
      *
      */
-    private Node chunks = null;
+    private BloquesNodeChunks chunks = null;
     
     /**
      *
@@ -53,7 +53,6 @@ public class BloquesNodeGeneraTerreno{
      */
     private int totalTamano = BloquesNodeUtiles.TAMANO_GENERA_TERRENO;
     
-    BloquesNodeGeneraBloque bloques;
     
     /**
      *
@@ -62,8 +61,6 @@ public class BloquesNodeGeneraTerreno{
      */
     public BloquesNodeGeneraTerreno(Application app, BloquesNodeGeneraBloque bloques){
         this.app = (SimpleApplication) app;
-        this.bloques = bloques;
-
     }
     
     private HillHeightMap generateTerrainconReturn(){
@@ -104,46 +101,35 @@ public class BloquesNodeGeneraTerreno{
         int minY = BloquesNodeUtiles.MIN_ALTURA_BLOQUES;
         int maxY = BloquesNodeUtiles.MAX_ALTURA_BLOQUES;
         int variacion = 0;
-        Node chunkActual;
         
         for (x = 0;x<totalTamano;x++){
             for (z = 0;z<totalTamano;z++){                
                 y = (int) heightmap.getScaledHeightAtPoint(x,z);
  
-                for (int a=y; a>=minY; a--){ 
-                    String nomChunkActual =  BloquesNodeUtiles.generarNombreChunk(BloquesNodeUtiles.calculaCoordenadasChunk(x * BloquesNodeUtiles.TAMANO_BLOQUE, a * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE));
-                    //System.out.println(nomChunkActual);
-                    
-                    //chunkActual = (Node) chunks.getChild(nomChunkActual);
-                    
-                    /*if (chunkActual == null){
-                        chunkActual = new Node(nomChunkActual);
-                        chunks.attachChild(chunkActual);
-                    }*/
-                    
-                    String tipoTerreno;
-                    if (variacion == 0){
-                        tipoTerreno = "Tierra";
-                        variacion = 1;
-                    }else if(variacion == 1){
-                        tipoTerreno = "Roca";
-                        variacion = 2;
-                    }else if(variacion == 2){
-                        tipoTerreno = "Arena";
-                        variacion = 3;
+                for (int a=maxY; a>=minY; a--){ 
+                    if (a<=y){
+                        String tipoTerreno;
+                        if (variacion == 0){
+                            tipoTerreno = "Tierra";
+                            variacion = 1;
+                        }else if(variacion == 1){
+                            tipoTerreno = "Roca";
+                            variacion = 2;
+                        }else if(variacion == 2){
+                            tipoTerreno = "Arena";
+                            variacion = 3;
+                        }else{
+                            tipoTerreno = "Hierba";
+                            variacion = 0;
+                        }
+
+                        BloquesNodeChunkDatos bloqueDatos = new BloquesNodeChunkDatos();
+                        bloqueDatos.setNomBloque(tipoTerreno);
+
+                        chunks.setBloque(new Vector3f(x * BloquesNodeUtiles.TAMANO_BLOQUE, a * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE), bloqueDatos);
                     }else{
-                        tipoTerreno = "Hierba";
-                        variacion = 0;
+                        chunks.setBloque(new Vector3f(x * BloquesNodeUtiles.TAMANO_BLOQUE, a * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE), null);
                     }
-
-                    String nomBloqueActual =  BloquesNodeUtiles.generarNombreBloque(nomChunkActual, new Vector3f(x * BloquesNodeUtiles.TAMANO_BLOQUE, a * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE));
-
-                    Node bloqueClonado = bloques.getBloqueGenerado(tipoTerreno);
-                    bloqueClonado.setName(nomBloqueActual);
-                    //System.out.println(nomBloqueActual);
-
-                    chunks.attachChild(bloqueClonado);
-                        
                 }
             }
             
@@ -157,8 +143,6 @@ public class BloquesNodeGeneraTerreno{
             });
             
         }
-        
-         
     }
     
     // A self-contained time-intensive task:
@@ -185,11 +169,11 @@ public class BloquesNodeGeneraTerreno{
                 //BloqueChunks loaded = (BloqueChunks) SaveGame.loadGame("Bloques/terreno/", "allchunks");
                 porcentajeGenerado = 0; //ponemos el porcentaje a cero
                 
-                Node loaded=null;
+                BloquesNodeChunks loaded=null;
                 
                 if (loaded == null){
                     generandoTerreno = true;
-                    chunks = new Node("Chunks");
+                    chunks = new BloquesNodeChunks();
                     future = executor.submit(generaTerrenoInicialHilo);
                 }else{
                     chunks = loaded;
@@ -214,7 +198,7 @@ public class BloquesNodeGeneraTerreno{
      *
      * @return
      */
-    public Node getChunks() {
+    public BloquesNodeChunks getChunks() {
         return chunks;
     }
 
@@ -222,7 +206,7 @@ public class BloquesNodeGeneraTerreno{
      *
      * @param chunks
      */
-    public void setChunks(Node chunks) {
+    public void setChunks(BloquesNodeChunks chunks) {
         this.chunks = chunks;
     }
     

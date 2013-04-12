@@ -17,7 +17,15 @@ public class BloquesNodeUtiles {
     /**
      *
      */
-    public static final int TAMANO_CHUNK = 16; //16x16x16
+    public static final int TAMANO_CHUNK_X = 16;
+    /**
+     *
+     */
+    public static final int TAMANO_CHUNK_Y = 64;
+    /**
+     *
+     */
+    public static final int TAMANO_CHUNK_Z = 16;
     /**
      *
      */
@@ -30,7 +38,7 @@ public class BloquesNodeUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 64; 
+    public static final int TAMANO_GENERA_TERRENO = 128; 
     
     
     /**
@@ -64,18 +72,18 @@ public class BloquesNodeUtiles {
     public static Vector3f calculaCoordenadasChunk(int x, int y, int z){
         Vector3f nuevasCoordenadas = new Vector3f();
         
-        nuevasCoordenadas.x = (int) (x / TAMANO_BLOQUE / TAMANO_CHUNK);
-        if (x > -TAMANO_CHUNK && x < 0){
+        nuevasCoordenadas.x = (int) (x / TAMANO_BLOQUE / TAMANO_CHUNK_X);
+        if (x > - TAMANO_CHUNK_X && x < 0){
             nuevasCoordenadas.x = nuevasCoordenadas.x -1;
         
         }
-        nuevasCoordenadas.y = (int) (y / TAMANO_BLOQUE / TAMANO_CHUNK);
-        if (y > -TAMANO_CHUNK && y < 0){
+        nuevasCoordenadas.y = (int) (y / TAMANO_BLOQUE / TAMANO_CHUNK_Y);
+        if (y > - TAMANO_CHUNK_Y && y < 0){
             nuevasCoordenadas.y = nuevasCoordenadas.y -1;
         
         }
-        nuevasCoordenadas.z = (int) (z / TAMANO_BLOQUE / TAMANO_CHUNK);
-        if (z > -TAMANO_CHUNK && z < 0){
+        nuevasCoordenadas.z = (int) (z / TAMANO_BLOQUE / TAMANO_CHUNK_Z);
+        if (z > - TAMANO_CHUNK_Z && z < 0){
             nuevasCoordenadas.z = nuevasCoordenadas.z -1;
         }
         
@@ -88,7 +96,8 @@ public class BloquesNodeUtiles {
      * @return
      */
     public static String generarNombreChunk(Vector3f cood){
-        return "Chunk>>"+String.valueOf((int) cood.x)+"__"+String.valueOf((int) cood.y)+"__"+String.valueOf((int) cood.z);
+        Vector3f nuevasCoord = calculaCoordenadasChunk(cood);
+        return "Chunk>>"+String.valueOf((int) nuevasCoord.x)+"__"+String.valueOf((int) nuevasCoord.y)+"__"+String.valueOf((int) nuevasCoord.z);
     }
     
     /**
@@ -98,6 +107,35 @@ public class BloquesNodeUtiles {
      * @return
      */
     public static String generarNombreBloque(String nomChunk,Vector3f cood){
-        return nomChunk+"..."+"...Bloque>>"+String.valueOf((int) cood.x)+"__"+String.valueOf((int) cood.y)+"__"+String.valueOf((int) cood.z);
+        return nomChunk+",Bloque>>"+String.valueOf((int) cood.x)+"__"+String.valueOf((int) cood.y)+"__"+String.valueOf((int) cood.z);
+    }
+    
+    /**
+     *
+     * @param cood
+     * @return
+     */
+    public static String generarNombreBloque(Vector3f cood){
+        String nomChunk = generarNombreChunk(cood);
+        return nomChunk+",Bloque>>"+String.valueOf((int) cood.x)+"__"+String.valueOf((int) cood.y)+"__"+String.valueOf((int) cood.z);
+    }
+    
+    /**
+     *
+     * @param nomBloque
+     * @return
+     */
+    public static Vector3f devuelveCoordenadasBloque(String nomBloque){
+        Vector3f coord = new Vector3f();
+        
+        String[] split = nomBloque.split(",");
+        split = split[1].split(">>");
+        split = split[1].split("__");
+        
+        coord.x = Integer.valueOf(split[0]);
+        coord.y = Integer.valueOf(split[1]);
+        coord.z = Integer.valueOf(split[2]);
+        
+        return coord;
     }
 }

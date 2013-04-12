@@ -4,6 +4,7 @@
 package bloquesnode.graficos.control;
 
 import bloquesnode.graficos.generabloque.BloquesNodeGeneraBloque;
+import bloquesnode.manejo.chunks.BloquesNodeChunks;
 import bloquesnode.manejo.generaterreno.BloquesNodeGeneraTerreno;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -22,6 +23,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  *
@@ -69,9 +71,18 @@ public class BloquesNodeControlBasic extends AbstractControl implements Savable,
     /**
      *
      */
-    protected Node chunks = new Node("Chunks");
+    protected ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
+
     
-    BloquesNodeGeneraBloque bloques;
+    /**
+     *
+     */
+    protected BloquesNodeChunks chunks = new BloquesNodeChunks();
+    
+    /**
+     *
+     */
+    protected BloquesNodeGeneraBloque bloques;
     
     
     /**
@@ -155,7 +166,8 @@ public class BloquesNodeControlBasic extends AbstractControl implements Savable,
      *
      */
     public void destroy(){
-        
+        executor.shutdown();
+        executor.shutdownNow();
     }
     
 }

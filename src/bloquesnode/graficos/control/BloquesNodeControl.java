@@ -3,6 +3,7 @@
  */
 package bloquesnode.graficos.control;
 
+import bloquesnode.manejo.utiles.BloquesNodeUtiles;
 import com.jme3.app.Application;
 
 /**
@@ -29,14 +30,17 @@ public class BloquesNodeControl extends BloquesNodeControlUpdates{
         if (!bloqueGeneraTerreno.generandoTerreno){           
             chunks = bloqueGeneraTerreno.getChunks();
             
-            /*//tenemos que pasar a updates estos chunks
-            for (int x = 0;x<bloqueGeneraTerreno.totalTamano;x = x + BloqueChunkUtiles.TAMANO_CHUNK){
-                for (int z = 0;z<bloqueGeneraTerreno.totalTamano;z = z + BloqueChunkUtiles.TAMANO_CHUNK){
-                    BloqueChunks grupoChunks = chunks.getGrupoChunks(x * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE);
-                    updates.put(contadorUpdates,grupoChunks);
-                    contadorUpdates++;
+            //tenemos que pasar a updates estos chunks
+            for (int x = 0;x<BloquesNodeUtiles.TAMANO_GENERA_TERRENO;x = x + BloquesNodeUtiles.TAMANO_CHUNK_X){
+                for (int z = 0;z<BloquesNodeUtiles.TAMANO_GENERA_TERRENO;z = z + BloquesNodeUtiles.TAMANO_CHUNK_Z){
+                    String[] grupoChunks = chunks.getGrupoChunksNombres(x * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE);
+                    
+                    for (String s : grupoChunks){
+                        updatesChunk.put(contadorUpdates,s);
+                        contadorUpdates++;
+                    }
                 }
-            }*/
+            }
 
             bloqueGeneraTerreno.vaciaChunks();
             

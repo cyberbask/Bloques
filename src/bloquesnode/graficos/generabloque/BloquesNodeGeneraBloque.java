@@ -3,7 +3,7 @@
  */
 package bloquesnode.graficos.generabloque;
 
-import bloques.manejo.BloqueChunkUtiles;
+import bloquesnode.manejo.utiles.BloquesNodeUtiles;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
@@ -184,7 +184,7 @@ public class BloquesNodeGeneraBloque {
             mat1.setColor("Specular", ColorRGBA.White);
             mat1.setFloat("Shininess", 1f);
 
-            Node bloque = makeBloque(BloqueChunkUtiles.TAMANO_BLOQUE,nomBloque);
+            Node bloque = makeBloque(BloquesNodeUtiles.TAMANO_BLOQUE,nomBloque);
             
             bloque.setMaterial(mat1);
             

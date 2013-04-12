@@ -104,9 +104,6 @@ public class JuegoGraficos {
         this.physics      = this.stateManager.getState(BulletAppState.class);
         this.cam          = this.app.getCamera();
         
-        
-        //bloqueGraficos = new BloqueGraficos(this.app);
-        
         bloquesTerrainControl = new BloquesNodeControl(this.app);
         Node terrainNode = new Node("terrainNode");
         terrainNode.addControl(bloquesTerrainControl);
@@ -218,6 +215,11 @@ public class JuegoGraficos {
                 //bloqueConMasAltura = bloqueGraficos.chunks.getBloqueConMasAltura(20, 20);
                 primeraCarga = false;   
             }  
+        }
+        
+        if (!primeraCarga){
+ 
+            
         }
         /*//la primera vez que se entra aqui se genera el terreno
         if (primeraCarga){
