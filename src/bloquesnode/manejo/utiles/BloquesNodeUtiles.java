@@ -84,15 +84,19 @@ public class BloquesNodeUtiles {
     
     /**
      *
-     * @param x
-     * @param y
-     * @param z
+     * @param cood 
      * @return
      */
     public static String generarNombreChunk(Vector3f cood){
         return "Chunk>>"+String.valueOf((int) cood.x)+"__"+String.valueOf((int) cood.y)+"__"+String.valueOf((int) cood.z);
     }
     
+    /**
+     *
+     * @param nomChunk
+     * @param cood
+     * @return
+     */
     public static String generarNombreBloque(String nomChunk,Vector3f cood){
         return nomChunk+"..."+"...Bloque>>"+String.valueOf((int) cood.x)+"__"+String.valueOf((int) cood.y)+"__"+String.valueOf((int) cood.z);
     }

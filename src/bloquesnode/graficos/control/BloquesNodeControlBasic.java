@@ -1,5 +1,5 @@
 /*
- * Custom Control para manejar el terreno de bloques
+ * Clase con lo que se va a usar en todas las clases que la extienden
  */
 package bloquesnode.graficos.control;
 

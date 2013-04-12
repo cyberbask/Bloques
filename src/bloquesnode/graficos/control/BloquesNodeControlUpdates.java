@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Manejo de los updates de los chunks sobre rootNode
  */
 package bloquesnode.graficos.control;
 

@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Custom control para el manejo de bloques y chunks
  */
 package bloquesnode.graficos.control;
 
@@ -19,6 +18,10 @@ public class BloquesNodeControl extends BloquesNodeControlUpdates{
         super(app);
     }
     
+    /**
+     *
+     * @return
+     */
     public Boolean generaTerrenoInicial(){
         bloqueGeneraTerreno.generaTerreno();
             

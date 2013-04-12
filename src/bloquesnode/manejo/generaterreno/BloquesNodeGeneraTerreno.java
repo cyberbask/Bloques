@@ -24,6 +24,9 @@ import jme3tools.savegame.SaveGame;
  * @author mcarballo
  */
 public class BloquesNodeGeneraTerreno{  
+    /**
+     *
+     */
     protected SimpleApplication app;
     
     private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
@@ -55,6 +58,7 @@ public class BloquesNodeGeneraTerreno{
     /**
      *
      * @param app
+     * @param bloques  
      */
     public BloquesNodeGeneraTerreno(Application app, BloquesNodeGeneraBloque bloques){
         this.app = (SimpleApplication) app;
