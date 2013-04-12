@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cliente;
+package cliente.juego;
 
-import bloques.graficos.BloqueGraficos;
+import bloquesnode.graficos.control.BloquesNodeControl;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -24,7 +24,7 @@ import com.jme3.scene.Node;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 import com.jme3.util.SkyFactory;
-import personaje.Personaje;
+import cliente.personaje.Personaje;
 
 /**
  *
@@ -70,10 +70,17 @@ public class JuegoGraficos {
      */
     public Personaje personaje;
     
-    JuegoStateGui juegoGui;
+    /**
+     *
+     */
+    protected JuegoStateGui juegoGui;
   
     
-    BloqueGraficos bloqueGraficos;
+    //BloqueGraficos bloqueGraficos;
+    /**
+     *
+     */
+    protected BloquesNodeControl bloquesTerrainControl;
     
     //variable para controlar si posicionamos la camara
     //o activamos el personaje
@@ -81,7 +88,7 @@ public class JuegoGraficos {
     int bloqueConMasAltura; //ñapa para posiconar al personaje
     
     //primera carga
-    Boolean primeraCarga = true;
+    private Boolean primeraCarga = true;
     
     /**
      *
@@ -98,7 +105,12 @@ public class JuegoGraficos {
         this.cam          = this.app.getCamera();
         
         
-        bloqueGraficos = new BloqueGraficos(this.app);
+        //bloqueGraficos = new BloqueGraficos(this.app);
+        
+        bloquesTerrainControl = new BloquesNodeControl(this.app);
+        Node terrainNode = new Node("terrainNode");
+        terrainNode.addControl(bloquesTerrainControl);
+        rootNode.attachChild(terrainNode);
         
         personaje = new Personaje(app);
         
@@ -183,22 +195,31 @@ public class JuegoGraficos {
     public void accionBloque(String accion){        
         Vector3f posicionPlayer = personaje.getPosicionPlayer();
         
-        if (!accion.equals("clonar")){
+        /**if (!accion.equals("clonar")){
             bloqueGraficos.accionBloque(accion, personaje.nomBloqueSeleccionado, posicionPlayer);
         }else{
             String accionBloqueClonar = bloqueGraficos.accionBloqueClonar();
             if (accionBloqueClonar != null){
                 personaje.nomBloqueSeleccionado = accionBloqueClonar;
             }
-        }
+        }*/
     }
     
     /**
      *
      * @param tpf
      */
-    public void update(float tpf){              
-        //la primera vez que se entra aqui se genera el terreno
+    public void update(float tpf){    
+        if (primeraCarga){
+          juegoGui.textoEnPantalla("... Generando Terreno ("+bloquesTerrainControl.getPorcentajeGeneradoTerreno()+"%)... ");
+            
+            if (bloquesTerrainControl.generaTerrenoInicial()){
+                juegoGui.textoEnPantalla("");
+                //bloqueConMasAltura = bloqueGraficos.chunks.getBloqueConMasAltura(20, 20);
+                primeraCarga = false;   
+            }  
+        }
+        /*//la primera vez que se entra aqui se genera el terreno
         if (primeraCarga){
             juegoGui.textoEnPantalla("... Generando Terreno ("+bloqueGraficos.bloqueGeneraTerreno.porcentajeGenerado+"%)... ");
             
@@ -225,13 +246,14 @@ public class JuegoGraficos {
             
             //actualizamos la posicion del personaje
             personaje.update(tpf,bloqueGraficos.chunks);            
-        }
+        }*/
     }
     /**
      *
      */
     public void destroy() {
-        bloqueGraficos.destroy();
+        //bloqueGraficos.destroy();
+        bloquesTerrainControl.destroy();
     }
     
 }

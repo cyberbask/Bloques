@@ -1,5 +1,6 @@
 package cliente;
 
+import cliente.juego.JuegoState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
@@ -13,7 +14,7 @@ import utiles.AppUtiles;
  * @author normenhansen
  */
 public class MainCliente extends SimpleApplication {
-    JuegoState stateJuego;
+    private JuegoState stateJuego;
     private BulletAppState bulletAppState;
             
     /**

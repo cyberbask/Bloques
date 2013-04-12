@@ -1,7 +1,7 @@
 /*
  * Clase donde se configurara la gui durante el juego
  */
-package cliente;
+package cliente.juego;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -32,7 +32,6 @@ public class JuegoStateGui {
         this.assetManager = this.app.getAssetManager();
         
         guiNode = this.app.getGuiNode();
-        
         //fuente de letra
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
     }

@@ -1,7 +1,7 @@
 /*
  * Application State para el juego principal
  */
-package cliente;
+package cliente.juego;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -38,7 +38,10 @@ public class JuegoState extends AbstractAppState implements ActionListener{
     private boolean vsync = true;
     
     //Graficos
-    JuegoGraficos graficos;
+    /**
+     *
+     */
+    protected JuegoGraficos graficos;
     
  
     /**

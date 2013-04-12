@@ -1,7 +1,7 @@
 /*
  * Manejo del personaje
  */
-package personaje;
+package cliente.personaje;
 
 import bloques.manejo.BloqueChunkUtiles;
 import bloques.manejo.BloqueChunks;
