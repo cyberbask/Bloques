@@ -17,7 +17,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import jme3tools.savegame.SaveGame;
 
 /**
  *
@@ -72,7 +71,7 @@ public class BloquesGeneraTerreno{
         HillHeightMap heightmap = null;
         HillHeightMap.NORMALIZE_RANGE = 100; // optional
         try {
-            heightmap = new HillHeightMap(totalTamano + 1, 100, 90, 100, result[0]); // byte 3 is a random seed
+            heightmap = new HillHeightMap(totalTamano + 1, 750, 90, 100, result[0]); // byte 3 is a random seed
         } catch (Exception ex) {
 
         }

@@ -18,6 +18,7 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.CartoonEdgeFilter;
 import com.jme3.post.filters.FogFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
@@ -82,6 +83,9 @@ public class JuegoGraficos {
      */
     protected BloquesControl bloquesTerrainControl;
     
+    private FilterPostProcessor fpp;
+    private PssmShadowRenderer pssmRenderer;
+    
     //variable para controlar si posicionamos la camara
     //o activamos el personaje
     int posicionarCamara = 0;  
@@ -104,6 +108,8 @@ public class JuegoGraficos {
         this.physics      = this.stateManager.getState(BulletAppState.class);
         this.cam          = this.app.getCamera();
         
+        rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
+        
         bloquesTerrainControl = new BloquesControl(this.app);
         Node terrainNode = new Node("terrainNode");
         terrainNode.addControl(bloquesTerrainControl);
@@ -119,9 +125,6 @@ public class JuegoGraficos {
         viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
         //viewPort.setBackgroundColor(ColorRGBA.Blue);
         
-        //Sombras Basicas
-        setUpShadows();
-        
         //Luces basicas
         setUpLight();
         
@@ -130,7 +133,6 @@ public class JuegoGraficos {
         
         //Cielo
         setUpSky();
-       
     }
     
     private void setUpLight() {
@@ -147,9 +149,10 @@ public class JuegoGraficos {
         rootNode.addLight(dl);
     }
     
-    private void setUpShadows(){
-        rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
-        
+    /**
+     *
+     */
+    protected void setUpShadows(){
         /** /
         if (BloquesUtiles.SOMBRAS){
             BasicShadowRenderer bsr = new BasicShadowRenderer(assetManager, 512);
@@ -160,7 +163,7 @@ public class JuegoGraficos {
         
         /**/
         if (BloquesUtiles.SOMBRAS){
-            PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, BloquesUtiles.SOMBRAS_CALIDAD1, BloquesUtiles.SOMBRAS_CALIDAD2);
+            pssmRenderer = new PssmShadowRenderer(assetManager, BloquesUtiles.SOMBRAS_CALIDAD1, BloquesUtiles.SOMBRAS_CALIDAD2);
             pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
             pssmRenderer.setShadowIntensity(BloquesUtiles.SOMBRAS_INTENSIDAD);
             pssmRenderer.setEdgesThickness(1);
@@ -179,6 +182,15 @@ public class JuegoGraficos {
         /**/
     }
     
+    /**
+     *
+     */
+    protected void unsetShadows(){
+        if (BloquesUtiles.SOMBRAS){
+            viewPort.removeProcessor(pssmRenderer);
+        }
+    }
+    
     private void setUpFog(){
         FilterPostProcessor fogPPS=new FilterPostProcessor(assetManager);
         FogFilter fog = new FogFilter(ColorRGBA.White, BloquesUtiles.NIEBLA_INTENSIDAD, BloquesUtiles.NIEBLA_DISTANCIA);
@@ -189,6 +201,26 @@ public class JuegoGraficos {
     private void setUpSky(){
         /** /
         rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/skybox_blue_sphere.jpg", true));
+        /**/
+    }
+    
+    /**
+     *
+     */
+    protected void setUpCellShading(){
+        /**/
+        fpp=new FilterPostProcessor(assetManager);
+        fpp.addFilter(new CartoonEdgeFilter());
+        viewPort.addProcessor(fpp);
+        /**/
+    }
+    
+    /**
+     *
+     */
+    protected void unsetCellShading(){
+        /**/
+        viewPort.removeProcessor(fpp);
         /**/
     }
     

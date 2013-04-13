@@ -38,17 +38,17 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 128; 
+    public static final int TAMANO_GENERA_TERRENO = 320; 
     
     /**
      *
      */
-    public static final int CAM_FRUSTUMFAR = 1250; 
+    public static final int CAM_FRUSTUMFAR = 1500; 
     
     /**
      *
      */
-    public static final Boolean SOMBRAS = false; 
+    public static final Boolean SOMBRAS = true; 
     
     /**
      *
@@ -68,12 +68,12 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final float NIEBLA_DISTANCIA = 1500f;
+    public static final float NIEBLA_DISTANCIA = 1250f;
     
     /**
      *
      */
-    public static final float NIEBLA_INTENSIDAD = 0.5f;
+    public static final float NIEBLA_INTENSIDAD = 0.25f;
     
     
     /**

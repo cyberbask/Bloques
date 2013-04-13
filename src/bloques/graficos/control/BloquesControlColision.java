@@ -11,6 +11,10 @@ import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.WireBox;
 
 /**
  *
@@ -29,6 +33,11 @@ public class BloquesControlColision extends BloquesControlUpdates {
      *
      */
     public Vector3f coorUltColBloqueVecino;
+    
+    /**
+     *
+     */
+    public Vector3f coorAntCol;
 
     /**
      *
@@ -58,72 +67,84 @@ public class BloquesControlColision extends BloquesControlUpdates {
         // 3. Collect intersections between Ray and Shootables in results list.
         rootNode.collideWith(ray, results);
         
+        Boolean ponerNull = false;
+        
         if (results.size() > 0) {
             CollisionResult closest = results.getClosestCollision();
             Vector3f contactPoint = closest.getContactPoint();
-            
-            //closest.getGeometry().getMaterial().getAdditionalRenderState().setWireframe(true);
+            float distancia = closest.getDistance();
             
             //System.out.println("Detecta1: "+contactPoint.x+"-"+contactPoint.y+"-"+contactPoint.z);
+            if (distancia <= (BloquesUtiles.TAMANO_BLOQUE * 6)){
             
-            int ejeComprobar = BloquesUtiles.averiguaCoordenadasContacto(contactPoint);
-            
-            Vector3f vecComprobar = contactPoint.clone();
-            
-            Boolean bloqueVecino1 = false;
-            Boolean bloqueVecino2 = false;
-            Vector3f coodFinales1 = null;
-            Vector3f coodFinales2 = null;
-            
-            switch(ejeComprobar){
-                case 1: //x
-                    vecComprobar.x = vecComprobar.x + 0.5f;
-                    coodFinales1 = vecComprobar.clone();
-                    bloqueVecino1 = chunks.getBloqueVecino(coodFinales1);
-                    vecComprobar.x = vecComprobar.x - 1f;
-                    coodFinales2 = vecComprobar.clone();
-                    bloqueVecino2 = chunks.getBloqueVecino(coodFinales2);
-                break;
-                case 2: //y
-                    vecComprobar.y = vecComprobar.y + 0.5f;
-                    coodFinales1 = vecComprobar.clone();
-                    bloqueVecino1 = chunks.getBloqueVecino(coodFinales1);
-                    vecComprobar.y = vecComprobar.y - 1f;
-                    coodFinales2 = vecComprobar.clone();
-                    bloqueVecino2 = chunks.getBloqueVecino(coodFinales2);
-                break;
-                case 3: //z
-                    vecComprobar.z = vecComprobar.z + 0.5f;
-                    coodFinales1 = vecComprobar.clone();
-                    bloqueVecino1 = chunks.getBloqueVecino(coodFinales1);
-                    vecComprobar.z = vecComprobar.z - 1f;
-                    coodFinales2 = vecComprobar.clone();
-                    bloqueVecino2 = chunks.getBloqueVecino(coodFinales2);
-                break;
-            }
-            
-            if (bloqueVecino1 && !bloqueVecino2 || bloqueVecino2 && !bloqueVecino1){
-                if(bloqueVecino1){
-                    coorUltCol = coodFinales1;
-                    coorUltColBloque = coodFinales1;
-                    coorUltColBloqueVecino = coodFinales2;
+                int ejeComprobar = BloquesUtiles.averiguaCoordenadasContacto(contactPoint);
+
+                Vector3f vecComprobar = contactPoint.clone();
+
+                Boolean bloqueVecino1 = false;
+                Boolean bloqueVecino2 = false;
+                Vector3f coodFinales1 = null;
+                Vector3f coodFinales2 = null;
+
+                switch(ejeComprobar){
+                    case 1: //x
+                        vecComprobar.x = vecComprobar.x + 0.5f;
+                        coodFinales1 = vecComprobar.clone();
+                        bloqueVecino1 = chunks.getBloqueVecino(coodFinales1);
+                        vecComprobar.x = vecComprobar.x - 1f;
+                        coodFinales2 = vecComprobar.clone();
+                        bloqueVecino2 = chunks.getBloqueVecino(coodFinales2);
+                    break;
+                    case 2: //y
+                        vecComprobar.y = vecComprobar.y + 0.5f;
+                        coodFinales1 = vecComprobar.clone();
+                        bloqueVecino1 = chunks.getBloqueVecino(coodFinales1);
+                        vecComprobar.y = vecComprobar.y - 1f;
+                        coodFinales2 = vecComprobar.clone();
+                        bloqueVecino2 = chunks.getBloqueVecino(coodFinales2);
+                    break;
+                    case 3: //z
+                        vecComprobar.z = vecComprobar.z + 0.5f;
+                        coodFinales1 = vecComprobar.clone();
+                        bloqueVecino1 = chunks.getBloqueVecino(coodFinales1);
+                        vecComprobar.z = vecComprobar.z - 1f;
+                        coodFinales2 = vecComprobar.clone();
+                        bloqueVecino2 = chunks.getBloqueVecino(coodFinales2);
+                    break;
+                }
+
+                if (bloqueVecino1 && !bloqueVecino2 || bloqueVecino2 && !bloqueVecino1){
+                    if(bloqueVecino1){
+                        coorUltCol = coodFinales1;
+                        coorUltColBloque = coodFinales1;
+                        coorUltColBloqueVecino = coodFinales2;
+                    }else{
+                        coorUltCol = coodFinales2;
+                        coorUltColBloque = coodFinales2;
+                        coorUltColBloqueVecino = coodFinales1; 
+                    }                    
+                    //System.out.println("Detecta Final: "+coorUltCol.x+"-"+coorUltCol.y+"-"+coorUltCol.z);
+                    
+                    setBloqueWireframe();
+                    
                 }else{
-                    coorUltCol = coodFinales2;
-                    coorUltColBloque = coodFinales2;
-                    coorUltColBloqueVecino = coodFinales1; 
-                }                    
-                //System.out.println("Detecta Final: "+coorUltCol.x+"-"+coorUltCol.y+"-"+coorUltCol.z);
+                    ponerNull = true;
+                }
             }else{
-                coorUltCol = null;
-                coorUltColBloque = null;
-                coorUltColBloqueVecino = null;   
-                //System.out.println("Detecta null");
+                ponerNull = true;
             }
         }else{
+            ponerNull = true;
+        }
+        
+        if (ponerNull){
             coorUltCol = null;
             coorUltColBloque = null;
-            coorUltColBloqueVecino = null;
+            coorUltColBloqueVecino = null; 
+            
+            quitaBloqueWireframe();
         }
+            
     }
     
     /**
@@ -173,6 +194,49 @@ public class BloquesControlColision extends BloquesControlUpdates {
         }
         
         return false;
+    }
+    
+    /**
+     *
+     */
+    public void setBloqueWireframe(){
+        Node terreno = spatial.getParent();
+        
+        if (coorUltCol != null){
+            if (coorAntCol != null &&
+                (coorUltCol.x == coorAntCol.x
+                &&coorUltCol.y == coorAntCol.y
+                &&coorUltCol.z == coorAntCol.z)){
+
+
+            }else{
+                quitaBloqueWireframe();
+                        
+                Node bloqueClonado = bloques.getBloqueGenerado("WireFrame");
+                String nomBloque = BloquesUtiles.generarNombreBloque(coorUltCol);
+                Vector3f coordenadas = BloquesUtiles.devuelveCoordenadasBloque(nomBloque);
+
+                float correcion = BloquesUtiles.TAMANO_BLOQUE / 2;
+
+                bloqueClonado.setLocalTranslation(coordenadas.x + correcion,coordenadas.y + correcion,coordenadas.z + correcion);
+
+                terreno.attachChild(bloqueClonado);
+
+                coorAntCol = coorUltCol.clone(); 
+            }
+        }
+    }
+    
+    /**
+     *
+     */
+    public void quitaBloqueWireframe(){
+        Node terreno = spatial.getParent();
+        
+        Spatial bloqueAntiguo = terreno.getChild("WireFrame");
+        if (bloqueAntiguo != null){
+            terreno.detachChild(bloqueAntiguo);
+        }
     }
     
 }

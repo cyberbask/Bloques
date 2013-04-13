@@ -17,6 +17,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.debug.WireBox;
 import com.jme3.util.BufferUtils;
 import java.util.HashMap;
 import java.util.Map;
@@ -160,6 +161,19 @@ public class BloquesGeneraBloque {
     
     /**
      *
+     * @return
+     */
+    public Geometry makeWireBloque(){
+         WireBox wireBox = new WireBox(BloquesUtiles.TAMANO_BLOQUE / 2, BloquesUtiles.TAMANO_BLOQUE / 2, BloquesUtiles.TAMANO_BLOQUE / 2); 
+         wireBox.setLineWidth(2f);
+
+         Geometry wireBloque = new Geometry("WireBloque", wireBox); 
+         
+         return wireBloque;
+    }
+    
+    /**
+     *
      * @param nomBloque
      * @return
      */
@@ -171,23 +185,40 @@ public class BloquesGeneraBloque {
         }else{
             BloquesGenericosDatos bloquesDatos = bloquesGenericos.getBloqueTipo(nomBloque);
             
-            //Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-            //mat1.setTexture("ColorMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura())); 
-            mat1.setTexture("DiffuseMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));    
+            Node bloque;
+            
+            Material mat1;
+            
+            if (nomBloque.equals("WireFrame")){
+                mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");   
+                mat1.setColor("Color", ColorRGBA.Black);
+                
+                bloque = new Node("WireFrame");
+                
+                Geometry gWireBloque = makeWireBloque();
+                
+                gWireBloque.setMaterial(mat1);
+                
+                bloque.attachChild(gWireBloque);
+            }else{
+                mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+                //mat1.setTexture("ColorMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura())); 
+                mat1.setTexture("DiffuseMap", atlas.getAtlasTexture(bloquesDatos.getNombreTextura()));
+                
+                //luces
+                mat1.setBoolean("UseMaterialColors", true);
+                mat1.setColor("Ambient",  ColorRGBA.White);
+                mat1.setColor("Diffuse",  ColorRGBA.White);
+                mat1.setColor("Specular", ColorRGBA.White);
+                mat1.setFloat("Shininess", 1f);
+                
+                bloque = makeBloque(BloquesUtiles.TAMANO_BLOQUE,nomBloque);
+                
+                bloque.setMaterial(mat1);
+            }
+            
             //mat1.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha); //transparencia
-            
-            //luces
-            mat1.setBoolean("UseMaterialColors", true);
-            mat1.setColor("Ambient",  ColorRGBA.White);
-            mat1.setColor("Diffuse",  ColorRGBA.White);
-            mat1.setColor("Specular", ColorRGBA.White);
-            mat1.setFloat("Shininess", 1f);
 
-            Node bloque = makeBloque(BloquesUtiles.TAMANO_BLOQUE,nomBloque);
-            
-            bloque.setMaterial(mat1);
-            
             bloquesGenerados.put(nomBloque,bloque);
 
             return (Node) bloque.clone();

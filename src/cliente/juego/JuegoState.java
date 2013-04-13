@@ -36,6 +36,8 @@ public class JuegoState extends AbstractAppState implements ActionListener{
     
     //teclas
     private boolean vsync = true;
+    private boolean cellshading = false;
+    private boolean sombras = false;
     
     //Graficos
     /**
@@ -106,7 +108,9 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-        inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_V));
+        inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_RBRACKET));
+        inputManager.addMapping("CellShading", new KeyTrigger(KeyInput.KEY_COMMA));
+        inputManager.addMapping("Sombras", new KeyTrigger(KeyInput.KEY_N));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Correr", new KeyTrigger(KeyInput.KEY_LSHIFT));
         inputManager.addMapping("MouseLeftButton", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -118,6 +122,8 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
         inputManager.addListener(this, "VSync");
+        inputManager.addListener(this, "CellShading");
+        inputManager.addListener(this, "Sombras");
         inputManager.addListener(this, "MouseLeftButton");
         inputManager.addListener(this, "MouseRightButton");
         inputManager.addListener(this, "MouseCentralButton");
@@ -140,13 +146,27 @@ public class JuegoState extends AbstractAppState implements ActionListener{
             AppSettings Appsett = AppUtiles.getSettings(app);
             Appsett.put("VSync", vsync);
             this.app.getContext().restart();
-        }else if (name.equals("Correr")) {
+        } else if (name.equals("CellShading") && !isPressed) {
+            cellshading = !cellshading;
+            if (cellshading){
+                graficos.setUpCellShading();
+            }else{
+                graficos.unsetCellShading();
+            }
+        } else if (name.equals("Sombras") && !isPressed) {
+            sombras = !sombras;
+            if (sombras){
+                graficos.setUpShadows();
+            }else{
+                graficos.unsetShadows();
+            }
+        } else if (name.equals("Correr")) {
            graficos.personaje.correr = isPressed;
-        }else if (name.equals("MouseLeftButton") && !isPressed) {
+        } else if (name.equals("MouseLeftButton") && !isPressed) {
             graficos.accionBloque("destruir");
         } else if (name.equals("MouseRightButton") && !isPressed) {
             graficos.accionBloque("colocar");
-        }else if (name.equals("MouseCentralButton") && !isPressed) {
+        } else if (name.equals("MouseCentralButton") && !isPressed) {
             graficos.accionBloque("seleccionar");
         }
     }
