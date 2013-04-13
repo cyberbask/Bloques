@@ -4,8 +4,8 @@
  */
 package cliente.juego;
 
-import bloquesnode.graficos.control.BloquesNodeControl;
-import bloquesnode.manejo.utiles.BloquesNodeUtiles;
+import bloques.graficos.control.BloquesControl;
+import bloques.manejo.utiles.BloquesUtiles;
 import cliente.personaje.Personaje;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -19,12 +19,10 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FogFilter;
-import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
-import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
 
@@ -82,7 +80,7 @@ public class JuegoGraficos {
     /**
      *
      */
-    protected BloquesNodeControl bloquesTerrainControl;
+    protected BloquesControl bloquesTerrainControl;
     
     //variable para controlar si posicionamos la camara
     //o activamos el personaje
@@ -106,7 +104,7 @@ public class JuegoGraficos {
         this.physics      = this.stateManager.getState(BulletAppState.class);
         this.cam          = this.app.getCamera();
         
-        bloquesTerrainControl = new BloquesNodeControl(this.app);
+        bloquesTerrainControl = new BloquesControl(this.app);
         Node terrainNode = new Node("terrainNode");
         terrainNode.addControl(bloquesTerrainControl);
         terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
@@ -153,7 +151,7 @@ public class JuegoGraficos {
         rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
         
         /** /
-        if (BloquesNodeUtiles.SOMBRAS){
+        if (BloquesUtiles.SOMBRAS){
             BasicShadowRenderer bsr = new BasicShadowRenderer(assetManager, 512);
             bsr.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
             viewPort.addProcessor(bsr);
@@ -161,10 +159,10 @@ public class JuegoGraficos {
         /**/
         
         /**/
-        if (BloquesNodeUtiles.SOMBRAS){
-            PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, BloquesNodeUtiles.SOMBRAS_CALIDAD1, BloquesNodeUtiles.SOMBRAS_CALIDAD2);
+        if (BloquesUtiles.SOMBRAS){
+            PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, BloquesUtiles.SOMBRAS_CALIDAD1, BloquesUtiles.SOMBRAS_CALIDAD2);
             pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
-            pssmRenderer.setShadowIntensity(BloquesNodeUtiles.SOMBRAS_INTENSIDAD);
+            pssmRenderer.setShadowIntensity(BloquesUtiles.SOMBRAS_INTENSIDAD);
             pssmRenderer.setEdgesThickness(1);
             pssmRenderer.setFilterMode(FilterMode.Bilinear);
             viewPort.addProcessor(pssmRenderer);
@@ -172,7 +170,7 @@ public class JuegoGraficos {
         /**/
         
         /** /
-        if (BloquesNodeUtiles.SOMBRAS){
+        if (BloquesUtiles.SOMBRAS){
             FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
             SSAOFilter ssaoFilter = new SSAOFilter(12.94f, 43.92f, 0.33f, 0.61f);
             fpp.addFilter(ssaoFilter);
@@ -183,7 +181,7 @@ public class JuegoGraficos {
     
     private void setUpFog(){
         FilterPostProcessor fogPPS=new FilterPostProcessor(assetManager);
-        FogFilter fog = new FogFilter(ColorRGBA.White, BloquesNodeUtiles.NIEBLA_INTENSIDAD, BloquesNodeUtiles.NIEBLA_DISTANCIA);
+        FogFilter fog = new FogFilter(ColorRGBA.White, BloquesUtiles.NIEBLA_INTENSIDAD, BloquesUtiles.NIEBLA_DISTANCIA);
         fogPPS.addFilter(fog);
         viewPort.addProcessor(fogPPS);
     }
@@ -240,7 +238,7 @@ public class JuegoGraficos {
                 posicionarCamara = personaje.posicionarCamara(bloqueConMasAltura);
             }
             
-            personaje.update(tpf);  
+            personaje.update(tpf,bloquesTerrainControl);  
         }
     }
     /**

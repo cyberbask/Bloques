@@ -1,9 +1,9 @@
 /*
  * Clase para manejar un grupo de chunks
  */
-package bloquesnode.manejo.chunks;
+package bloques.manejo.chunks;
 
-import bloquesnode.manejo.utiles.BloquesNodeUtiles;
+import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.math.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,13 +12,13 @@ import java.util.Map;
  *
  * @author cyberbask
  */
-public class BloquesNodeChunks{
-    Map<String,BloquesNodeChunk> chunks = new HashMap<String, BloquesNodeChunk>();
+public class BloquesChunks{
+    Map<String,BloquesChunk> chunks = new HashMap<String, BloquesChunk>();
     
     /**
      *
      */
-    public BloquesNodeChunks(){
+    public BloquesChunks(){
         
     }
     
@@ -27,8 +27,8 @@ public class BloquesNodeChunks{
      * @param coord
      * @param chunk
      */
-    public void setChunk(Vector3f coord, BloquesNodeChunk chunk){
-        String nombreChunk = BloquesNodeUtiles.generarNombreChunk(coord);
+    public void setChunk(Vector3f coord, BloquesChunk chunk){
+        String nombreChunk = BloquesUtiles.generarNombreChunk(coord);
         
         chunks.put(nombreChunk,chunk);
     }
@@ -38,12 +38,12 @@ public class BloquesNodeChunks{
      * @param coord
      */
     public void setChunkSiNoExiste(Vector3f coord){
-        String nombreChunk = BloquesNodeUtiles.generarNombreChunk(coord);
+        String nombreChunk = BloquesUtiles.generarNombreChunk(coord);
         
-        BloquesNodeChunk chunk = getChunk(nombreChunk);
+        BloquesChunk chunk = getChunk(nombreChunk);
         
         if (chunk == null){
-            chunk = new BloquesNodeChunk();
+            chunk = new BloquesChunk();
             chunk.setNombreChunk(nombreChunk);
             chunks.put(nombreChunk,chunk);
         }
@@ -54,8 +54,8 @@ public class BloquesNodeChunks{
      * @param coord
      * @return
      */
-    public BloquesNodeChunk getChunk(Vector3f coord){
-        String nombreChunk = BloquesNodeUtiles.generarNombreChunk(coord);
+    public BloquesChunk getChunk(Vector3f coord){
+        String nombreChunk = BloquesUtiles.generarNombreChunk(coord);
         
         return getChunk(nombreChunk);
     }
@@ -65,8 +65,8 @@ public class BloquesNodeChunks{
      * @param nombreChunk
      * @return
      */
-    public BloquesNodeChunk getChunk(String nombreChunk){
-        BloquesNodeChunk chunk = chunks.get(nombreChunk);
+    public BloquesChunk getChunk(String nombreChunk){
+        BloquesChunk chunk = chunks.get(nombreChunk);
         
         if (chunk != null){
             return chunk;  
@@ -80,18 +80,18 @@ public class BloquesNodeChunks{
      * @param coord
      * @param bloqueDatos
      */
-    public void setBloque(Vector3f coord, BloquesNodeChunkDatos bloqueDatos){
-        String nombreChunk = BloquesNodeUtiles.generarNombreChunk(coord);
+    public void setBloque(Vector3f coord, BloquesChunkDatos bloqueDatos){
+        String nombreChunk = BloquesUtiles.generarNombreChunk(coord);
         
-        BloquesNodeChunk chunk = getChunk(nombreChunk);
+        BloquesChunk chunk = getChunk(nombreChunk);
         
         if (chunk == null){
-            chunk = new BloquesNodeChunk();
+            chunk = new BloquesChunk();
             chunk.setNombreChunk(nombreChunk);
             chunks.put(nombreChunk,chunk);
         }
         
-        String nombreBloque = BloquesNodeUtiles.generarNombreBloque(nombreChunk,coord);
+        String nombreBloque = BloquesUtiles.generarNombreBloque(nombreChunk,coord);
         
         chunk.setBloque(nombreBloque, bloqueDatos);
     }
@@ -101,8 +101,8 @@ public class BloquesNodeChunks{
      * @param coord
      * @return
      */
-    public BloquesNodeChunkDatos getBloque(Vector3f coord){
-        String nombreBloque = BloquesNodeUtiles.generarNombreBloque(coord);
+    public BloquesChunkDatos getBloque(Vector3f coord){
+        String nombreBloque = BloquesUtiles.generarNombreBloque(coord);
         
         return getChunk(coord).getBloque(nombreBloque);
     }
@@ -112,7 +112,7 @@ public class BloquesNodeChunks{
      * @param coord
      */
     public void quitaBloque(Vector3f coord){
-        String nombreBloque = BloquesNodeUtiles.generarNombreBloque(coord);
+        String nombreBloque = BloquesUtiles.generarNombreBloque(coord);
         
         getChunk(coord).quitaBloque(nombreBloque);
     }
@@ -121,7 +121,7 @@ public class BloquesNodeChunks{
      *
      * @return
      */
-    public Map<String,BloquesNodeChunk> getAllChunks(){
+    public Map<String,BloquesChunk> getAllChunks(){
         return chunks;
     }
     
@@ -131,17 +131,17 @@ public class BloquesNodeChunks{
      * @param z
      * @return
      */
-    public BloquesNodeChunks getGrupoChunks(int x, int z){
-        int maxbucle = BloquesNodeUtiles.MAX_ALTURA_BLOQUES / BloquesNodeUtiles.TAMANO_CHUNK_Y;
+    public BloquesChunks getGrupoChunks(int x, int z){
+        int maxbucle = BloquesUtiles.MAX_ALTURA_BLOQUES / BloquesUtiles.TAMANO_CHUNK_Y;
         
-        BloquesNodeChunks grupoChunks = new BloquesNodeChunks();
+        BloquesChunks grupoChunks = new BloquesChunks();
         
         for (int i=0;i<maxbucle;i++){
-            int y = i * BloquesNodeUtiles.TAMANO_CHUNK_Y * BloquesNodeUtiles.TAMANO_BLOQUE;
+            int y = i * BloquesUtiles.TAMANO_CHUNK_Y * BloquesUtiles.TAMANO_BLOQUE;
             
             Vector3f coord = new Vector3f(x, y, z);
             
-            BloquesNodeChunk chunk = getChunk(coord);
+            BloquesChunk chunk = getChunk(coord);
             if (chunk != null){
                grupoChunks.setChunk(coord, chunk);
             }
@@ -157,16 +157,16 @@ public class BloquesNodeChunks{
      * @return
      */
     public String[] getGrupoChunksNombres(int x, int z){
-        int maxbucle = BloquesNodeUtiles.MAX_ALTURA_BLOQUES / BloquesNodeUtiles.TAMANO_CHUNK_Y;
+        int maxbucle = BloquesUtiles.MAX_ALTURA_BLOQUES / BloquesUtiles.TAMANO_CHUNK_Y;
         
         String[] grupoChunks = new String[maxbucle];
         
         for (int i=0;i<maxbucle;i++){
-            int y = i * BloquesNodeUtiles.TAMANO_CHUNK_Y * BloquesNodeUtiles.TAMANO_BLOQUE;
+            int y = i * BloquesUtiles.TAMANO_CHUNK_Y * BloquesUtiles.TAMANO_BLOQUE;
             
             Vector3f coord = new Vector3f(x, y, z);
                         
-            grupoChunks[i] = BloquesNodeUtiles.generarNombreChunk(coord);
+            grupoChunks[i] = BloquesUtiles.generarNombreChunk(coord);
 
         }
 
@@ -180,22 +180,22 @@ public class BloquesNodeChunks{
      * @return
      */
     public int getBloqueConMasAltura(int x, int z){
-        int maxbucle = BloquesNodeUtiles.MAX_ALTURA_BLOQUES / BloquesNodeUtiles.TAMANO_CHUNK_Y;
+        int maxbucle = BloquesUtiles.MAX_ALTURA_BLOQUES / BloquesUtiles.TAMANO_CHUNK_Y;
         
         for (int i=(maxbucle - 1);i>=0;i--){
-            int a = i * BloquesNodeUtiles.TAMANO_CHUNK_Y * BloquesNodeUtiles.TAMANO_BLOQUE;
+            int a = i * BloquesUtiles.TAMANO_CHUNK_Y * BloquesUtiles.TAMANO_BLOQUE;
             
             Vector3f coordChunk = new Vector3f(x, a, z);
             
-            BloquesNodeChunk chunk = getChunk(coordChunk);
+            BloquesChunk chunk = getChunk(coordChunk);
             
             if (chunk != null){
-               for(int y = 0;y < (BloquesNodeUtiles.TAMANO_CHUNK_Y * BloquesNodeUtiles.TAMANO_BLOQUE);y = y + BloquesNodeUtiles.TAMANO_BLOQUE){
+               for(int y = 0;y < (BloquesUtiles.TAMANO_CHUNK_Y * BloquesUtiles.TAMANO_BLOQUE);y = y + BloquesUtiles.TAMANO_BLOQUE){
                     int b = a - y;
                     
                     Vector3f coodBloque = new Vector3f(x, b, z);
                     
-                    BloquesNodeChunkDatos datosBloque = getBloque(coodBloque);
+                    BloquesChunkDatos datosBloque = getBloque(coodBloque);
                             
                     if (datosBloque != null){
                         return b;
@@ -204,7 +204,7 @@ public class BloquesNodeChunks{
             }
         }
         
-        return BloquesNodeUtiles.MAX_ALTURA_BLOQUES;
+        return BloquesUtiles.MAX_ALTURA_BLOQUES;
     }
     
     /**
@@ -213,7 +213,7 @@ public class BloquesNodeChunks{
      * @return
      */
     public Boolean getBloqueVecino(Vector3f coord){
-        BloquesNodeChunkDatos bloque = getBloque(coord);
+        BloquesChunkDatos bloque = getBloque(coord);
         
         if (bloque != null){
             return true;
@@ -236,12 +236,12 @@ public class BloquesNodeChunks{
             bloques[i] = null;
         }
         
-        BloquesNodeChunkDatos bloque;
-        BloquesNodeChunk chunk;
+        BloquesChunkDatos bloque;
+        BloquesChunk chunk;
         
         Vector3f vVecino;
         
-        String nombreChunkOriginal = BloquesNodeUtiles.generarNombreChunk(coord);
+        String nombreChunkOriginal = BloquesUtiles.generarNombreChunk(coord);
         
         //tenemos que sacar los bloques alrededor al proporcionado
         for(int i=0;i<6;i++) {
@@ -249,27 +249,27 @@ public class BloquesNodeChunks{
             switch(i){
                 case 0:
                   //frontal z+1
-                    vVecino.z = vVecino.z + BloquesNodeUtiles.TAMANO_BLOQUE;  
+                    vVecino.z = vVecino.z + BloquesUtiles.TAMANO_BLOQUE;  
                 break;
                 case 1:
                     //lateral derecha x+1
-                    vVecino.x = vVecino.x + BloquesNodeUtiles.TAMANO_BLOQUE;  
+                    vVecino.x = vVecino.x + BloquesUtiles.TAMANO_BLOQUE;  
                 break;
                 case 2:
                     //trasera z-1
-                    vVecino.z = vVecino.z - BloquesNodeUtiles.TAMANO_BLOQUE;  
+                    vVecino.z = vVecino.z - BloquesUtiles.TAMANO_BLOQUE;  
                 break;
                 case 3:
                     //lateral izquierda x-1
-                    vVecino.x = vVecino.x - BloquesNodeUtiles.TAMANO_BLOQUE;  
+                    vVecino.x = vVecino.x - BloquesUtiles.TAMANO_BLOQUE;  
                 break;
                 case 4:
                     //Superior y+1
-                    vVecino.y = vVecino.y + BloquesNodeUtiles.TAMANO_BLOQUE;
+                    vVecino.y = vVecino.y + BloquesUtiles.TAMANO_BLOQUE;
                 break;
                 case 5:
                     //inferior y-1
-                    vVecino.y = vVecino.y - BloquesNodeUtiles.TAMANO_BLOQUE;  
+                    vVecino.y = vVecino.y - BloquesUtiles.TAMANO_BLOQUE;  
                 break;
             }
             
@@ -287,7 +287,7 @@ public class BloquesNodeChunks{
                     bloques[i][1] = (int) vVecino.y;
                     bloques[i][2] = (int) vVecino.z;
 
-                    String nombreChunkVecino = BloquesNodeUtiles.generarNombreChunk(vVecino);
+                    String nombreChunkVecino = BloquesUtiles.generarNombreChunk(vVecino);
 
                     if (nombreChunkVecino.equals(nombreChunkOriginal)){
                         bloques[i][3] = 0;  
@@ -335,7 +335,7 @@ public class BloquesNodeChunks{
         int[] carasbloquesVecinos = getCarasAPartirDeBloquesVecinos(bloquesVecinosDelBloqueVecino);
 
         //guardamos sus caras
-        BloquesNodeChunkDatos datosBloque = getBloque(coord);
+        BloquesChunkDatos datosBloque = getBloque(coord);
         if (datosBloque != null){
             datosBloque.setCaras(carasbloquesVecinos);
         }

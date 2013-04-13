@@ -1,11 +1,9 @@
 /*
  * Clase para generar un bloque mediante triangulos, sus caras, las texturas de cada cara ...
  */
-package bloques.graficos;
+package bloques.graficos.generabloque;
 
-import bloques.manejo.BloqueChunkUtiles;
-import bloques.manejo.BloqueGenericos;
-import bloques.manejo.BloqueGenericosDatos;
+import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
@@ -27,7 +25,7 @@ import java.util.Map;
  * 
  * @author mcarballo
  */
-public class BloqueGeneraBloque {
+public class BloquesGeneraBloque {
     /**
      *
      */
@@ -40,11 +38,11 @@ public class BloqueGeneraBloque {
     /**
      *
      */
-    public BloqueTextureAtlas atlas;
+    public BloquesTextureAtlas atlas;
     /**
      *
      */
-    public BloqueGenericos bloquesGenericos;
+    public BloquesGenericos bloquesGenericos;
     
     
     Map<String,Node> bloquesGenerados = new HashMap<String,Node>();
@@ -53,14 +51,14 @@ public class BloqueGeneraBloque {
      *
      * @param app
      */
-    public BloqueGeneraBloque(Application app){
+    public BloquesGeneraBloque(Application app){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
         
-        atlas = new BloqueTextureAtlas(app);
+        atlas = new BloquesTextureAtlas(app);
         atlas.setTexturesInAtlas();
         
-        bloquesGenericos = new BloqueGenericos();
+        bloquesGenericos = new BloquesGenericos();
     }
     
     /**
@@ -71,7 +69,7 @@ public class BloqueGeneraBloque {
      */
     public Node makeBloque(int tamano,String tipo) {        
         Node bloque = new Node("bloque");
-        BloqueGenericosDatos bloquesDatos = bloquesGenericos.getBloqueTipo(tipo);
+        BloquesGenericosDatos bloquesDatos = bloquesGenericos.getBloqueTipo(tipo);
         
         float tamanoTile = (float) atlas.getAnchoImagenTextura() / 16f;
         tamanoTile = tamanoTile / (float) atlas.getAnchoImagenTextura();
@@ -171,7 +169,7 @@ public class BloqueGeneraBloque {
         if (bloqueGenerado != null){
             return (Node) bloqueGenerado.clone();
         }else{
-            BloqueGenericosDatos bloquesDatos = bloquesGenericos.getBloqueTipo(nomBloque);
+            BloquesGenericosDatos bloquesDatos = bloquesGenericos.getBloqueTipo(nomBloque);
             
             //Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             Material mat1 = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
@@ -186,7 +184,7 @@ public class BloqueGeneraBloque {
             mat1.setColor("Specular", ColorRGBA.White);
             mat1.setFloat("Shininess", 1f);
 
-            Node bloque = makeBloque(BloqueChunkUtiles.TAMANO_BLOQUE,nomBloque);
+            Node bloque = makeBloque(BloquesUtiles.TAMANO_BLOQUE,nomBloque);
             
             bloque.setMaterial(mat1);
             

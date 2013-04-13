@@ -1,7 +1,7 @@
 /*
  * Manejo de un Chunk de Bloques
  */
-package bloquesnode.manejo.chunks;
+package bloques.manejo.chunks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,18 +10,18 @@ import java.util.Map;
  *
  * @author mcarballo
  */
-public class BloquesNodeChunk{
+public class BloquesChunk{
     /**
      * Contiene los datos del bloque segun coordenadas
      */
-    Map<String,BloquesNodeChunkDatos> bloquesDatos = new HashMap<String, BloquesNodeChunkDatos>();
+    Map<String,BloquesChunkDatos> bloquesDatos = new HashMap<String, BloquesChunkDatos>();
     
     String nombreChunk = null;
 
     /**
      * Constructor
      */
-    public BloquesNodeChunk(){
+    public BloquesChunk(){
     }
     
     /**
@@ -29,7 +29,7 @@ public class BloquesNodeChunk{
      * @param indiceBloque
      * @param datosBloque
      */
-    public void setBloque(String indiceBloque, BloquesNodeChunkDatos datosBloque){
+    public void setBloque(String indiceBloque, BloquesChunkDatos datosBloque){
         bloquesDatos.put(indiceBloque, datosBloque);
     }
     
@@ -38,7 +38,7 @@ public class BloquesNodeChunk{
      * @param indiceBloque
      * @return
      */
-    public BloquesNodeChunkDatos getBloque(String indiceBloque){
+    public BloquesChunkDatos getBloque(String indiceBloque){
         return bloquesDatos.get(indiceBloque);
     }
 
@@ -54,7 +54,7 @@ public class BloquesNodeChunk{
      *
      * @return
      */
-    public Map<String,BloquesNodeChunkDatos> getAllBloquesDatos(){
+    public Map<String,BloquesChunkDatos> getAllBloquesDatos(){
         return bloquesDatos;
     }
     

@@ -1,7 +1,7 @@
 /*
  * Setters y Getters varios
  */
-package bloquesnode.graficos.control;
+package bloques.graficos.control;
 
 import com.jme3.app.Application;
 
@@ -9,12 +9,12 @@ import com.jme3.app.Application;
  *
  * @author mcarballo
  */
-public class BloquesNodeControlSetterGetter extends BloquesNodeControlBasic{
+public class BloquesControlSetterGetter extends BloquesControlBasic{
     /**
      *
      * @param app
      */
-    public BloquesNodeControlSetterGetter(Application app){
+    public BloquesControlSetterGetter(Application app){
         super(app);
     }
     

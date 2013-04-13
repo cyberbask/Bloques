@@ -1,7 +1,7 @@
 /*
  * Clase para guardar constante, y funciones estaticas
  */
-package bloquesnode.manejo.utiles;
+package bloques.manejo.utiles;
 
 import com.jme3.math.Vector3f;
 
@@ -9,7 +9,7 @@ import com.jme3.math.Vector3f;
  *
  * @author mcarballo
  */
-public class BloquesNodeUtiles {
+public class BloquesUtiles {
      /**
      *
      */
@@ -38,7 +38,7 @@ public class BloquesNodeUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 320; 
+    public static final int TAMANO_GENERA_TERRENO = 128; 
     
     /**
      *

@@ -1,11 +1,11 @@
 /*
  * Manejo de los updates de los chunks sobre rootNode
  */
-package bloquesnode.graficos.control;
+package bloques.graficos.control;
 
-import bloquesnode.manejo.chunks.BloquesNodeChunk;
-import bloquesnode.manejo.chunks.BloquesNodeChunkDatos;
-import bloquesnode.manejo.utiles.BloquesNodeUtiles;
+import bloques.manejo.chunks.BloquesChunk;
+import bloques.manejo.chunks.BloquesChunkDatos;
+import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -28,7 +28,7 @@ import jme3tools.optimize.GeometryBatchFactory;
  *
  * @author mcarballo
  */
-public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
+public class BloquesControlUpdates extends BloquesControlSetterGetter{
     /**
      *
      */
@@ -63,7 +63,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
      *
      * @param app
      */
-    public BloquesNodeControlUpdates(Application app){
+    public BloquesControlUpdates(Application app){
         super(app);
     }
     
@@ -113,15 +113,15 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
      *
      * @param updatear
      */
-    public void updateaChunks(Map<Integer,BloquesNodeChunk> updatear){
+    public void updateaChunks(Map<Integer,BloquesChunk> updatear){
         //Timer timer = app.getTimer();
         //float totalInicio = timer.getTimeInSeconds();
 
-        BloquesNodeChunk chunkActual;
+        BloquesChunk chunkActual;
         String claveActual;
         Node bloquesMostrar;
         
-        BloquesNodeChunkDatos datosBloque;
+        BloquesChunkDatos datosBloque;
         String nomDatosBloque;
         Node bloqueClonado;
         Vector3f coordenadas;
@@ -130,7 +130,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
         int contaCarasQuitadas;
         int mostrar;
             
-        for (Map.Entry<Integer,BloquesNodeChunk> entryChunk : updatear.entrySet()){    
+        for (Map.Entry<Integer,BloquesChunk> entryChunk : updatear.entrySet()){    
             //float totalInicioChunk = timer.getTimeInSeconds();
             
             chunkActual = entryChunk.getValue();
@@ -140,7 +140,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
             
             mostrar = 0;
             
-            for (Map.Entry<String,BloquesNodeChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
+            for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
                 datosBloque = entryBloquesDatos.getValue();
                 
                 if (datosBloque != null){
@@ -149,7 +149,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
                     bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
 
                     //coordenadas reales del cubo, no las del chunk
-                    coordenadas = BloquesNodeUtiles.devuelveCoordenadasBloque(nomDatosBloque);
+                    coordenadas = BloquesUtiles.devuelveCoordenadasBloque(nomDatosBloque);
 
                     //le quitamos las caras que no se ven
                     contaCarasQuitadas = 0;
@@ -165,7 +165,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
                     }
 
                     if (contaCarasQuitadas < 6){
-                        bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesNodeUtiles.TAMANO_BLOQUE);
+                        bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesUtiles.TAMANO_BLOQUE);
                         bloquesMostrar.attachChild(bloqueClonado);
                         mostrar = 1;
                     }
@@ -184,7 +184,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
 
                         physics.getPhysicsSpace().add(optimizado);
                         
-                        if (BloquesNodeUtiles.SOMBRAS){
+                        if (BloquesUtiles.SOMBRAS){
                             TangentBinormalGenerator.generate(optimizado);
                             optimizado.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
                         }
@@ -209,13 +209,13 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
      *
      * @param updatear
      */
-    public void updateaChunksUrgentes(Map<Integer,BloquesNodeChunk> updatear){
+    public void updateaChunksUrgentes(Map<Integer,BloquesChunk> updatear){
         Timer timer = app.getTimer();
         float totalInicio = timer.getTimeInSeconds();
 
         Map<String, Spatial> nodosUpdatar = new HashMap<String, Spatial>();
         
-        BloquesNodeChunk chunkActual;
+        BloquesChunk chunkActual;
         String claveActual;
         Node bloquesMostrar;
         
@@ -224,9 +224,9 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
         Vector3f coordenadas;
         int contaCarasQuitadas;
         int[] carasbloquesVecinos;
-        BloquesNodeChunkDatos datosBloque;
+        BloquesChunkDatos datosBloque;
         
-        for (Map.Entry<Integer,BloquesNodeChunk> entryChunk : updatear.entrySet()){    
+        for (Map.Entry<Integer,BloquesChunk> entryChunk : updatear.entrySet()){    
             //float totalInicioChunk = timer.getTimeInSeconds();
             
             chunkActual = entryChunk.getValue();
@@ -236,7 +236,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
             
             
             
-            for (Map.Entry<String,BloquesNodeChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
+            for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
                 datosBloque = entryBloquesDatos.getValue();
                 
                 if (datosBloque != null){
@@ -245,7 +245,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
                     bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
 
                     //coordenadas reales del cubo, no las del chunk
-                    coordenadas = BloquesNodeUtiles.devuelveCoordenadasBloque(nomDatosBloque);
+                    coordenadas = BloquesUtiles.devuelveCoordenadasBloque(nomDatosBloque);
 
                     //le quitamos las caras que no se ven
                     contaCarasQuitadas = 0;
@@ -259,7 +259,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
                     }
 
                     if (contaCarasQuitadas < 6){
-                        bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesNodeUtiles.TAMANO_BLOQUE);
+                        bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesUtiles.TAMANO_BLOQUE);
                         bloquesMostrar.attachChild(bloqueClonado);
                     }
                 }
@@ -301,7 +301,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
                             terreno.detachChild(child);
                         }
 
-                        if (BloquesNodeUtiles.SOMBRAS){
+                        if (BloquesUtiles.SOMBRAS){
                             TangentBinormalGenerator.generate(nodoOptimizado);
                             nodoOptimizado.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
                         }        
@@ -324,8 +324,8 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
     // A self-contained time-intensive task:
     private Callable<Boolean> procesaGraficosUpdates = new Callable<Boolean>(){
         public Boolean call() throws Exception {
-            Map<Integer,BloquesNodeChunk> updatear = app.enqueue(new Callable<Map<Integer,BloquesNodeChunk>>() {
-                public Map<Integer,BloquesNodeChunk> call() throws Exception {
+            Map<Integer,BloquesChunk> updatear = app.enqueue(new Callable<Map<Integer,BloquesChunk>>() {
+                public Map<Integer,BloquesChunk> call() throws Exception {
                     return getUpdates(true);
                 }
             }).get();
@@ -341,8 +341,8 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
     // A self-contained time-intensive task:
     private Callable<Boolean> procesaGraficosUpdatesUrgentes = new Callable<Boolean>(){
         public Boolean call() throws Exception {
-            Map<Integer,BloquesNodeChunk> updatear = app.enqueue(new Callable<Map<Integer,BloquesNodeChunk>>() {
-                public Map<Integer,BloquesNodeChunk> call() throws Exception {
+            Map<Integer,BloquesChunk> updatear = app.enqueue(new Callable<Map<Integer,BloquesChunk>>() {
+                public Map<Integer,BloquesChunk> call() throws Exception {
                     return getUpdatesUrgentes(true);
                 }
             }).get();
@@ -360,7 +360,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
      * @param vaciarUpdate
      * @return
      */
-    public Map<Integer,BloquesNodeChunk> getUpdates(Boolean vaciarUpdate){
+    public Map<Integer,BloquesChunk> getUpdates(Boolean vaciarUpdate){
         if (vaciarUpdate){
             if (updatesChunk == null){
                 return null;
@@ -368,11 +368,11 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
             
             int contador = 0;
             
-            Map<Integer,BloquesNodeChunk> updatesCopia = new HashMap<Integer, BloquesNodeChunk>();
+            Map<Integer,BloquesChunk> updatesCopia = new HashMap<Integer, BloquesChunk>();
             
             SortedSet<Integer> keys = new TreeSet<Integer>(updatesChunk.keySet());
             for (Integer key : keys) {
-                BloquesNodeChunk chunk = chunks.getChunk(updatesChunk.get(key));
+                BloquesChunk chunk = chunks.getChunk(updatesChunk.get(key));
                 
                 if (chunk != null){
                     updatesCopia.put(contador,chunk);
@@ -398,7 +398,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
      * @param vaciarUpdate
      * @return
      */
-    public Map<Integer,BloquesNodeChunk> getUpdatesUrgentes(Boolean vaciarUpdate){
+    public Map<Integer,BloquesChunk> getUpdatesUrgentes(Boolean vaciarUpdate){
         if (vaciarUpdate){
             if (updateChunkUrgentes == null){
                 return null;
@@ -406,11 +406,11 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
             
             int contador = 0;
             
-            Map<Integer,BloquesNodeChunk> updatesCopia = new HashMap<Integer, BloquesNodeChunk>();
+            Map<Integer,BloquesChunk> updatesCopia = new HashMap<Integer, BloquesChunk>();
             
             SortedSet<Integer> keys = new TreeSet<Integer>(updateChunkUrgentes.keySet());
             for (Integer key : keys) {
-                BloquesNodeChunk chunk = chunks.getChunk(updateChunkUrgentes.get(key));
+                BloquesChunk chunk = chunks.getChunk(updateChunkUrgentes.get(key));
                 
                 if (chunk != null){
                     updatesCopia.put(contador,chunk);

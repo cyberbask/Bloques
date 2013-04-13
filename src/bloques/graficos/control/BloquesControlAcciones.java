@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package bloquesnode.graficos.control;
+package bloques.graficos.control;
 
-import bloquesnode.manejo.chunks.BloquesNodeChunkDatos;
-import bloquesnode.manejo.utiles.BloquesNodeUtiles;
+import bloques.manejo.chunks.BloquesChunkDatos;
+import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 import com.jme3.math.Vector3f;
 import java.util.HashMap;
@@ -15,13 +15,13 @@ import java.util.Map;
  *
  * @author cyberbask
  */
-public class BloquesNodeControlAcciones extends BloquesNodeControlColision{
+public class BloquesControlAcciones extends BloquesControlColision{
     
     /**
      *
      * @param app
      */
-    public BloquesNodeControlAcciones(Application app){
+    public BloquesControlAcciones(Application app){
         super(app);
     }
     
@@ -38,7 +38,7 @@ public class BloquesNodeControlAcciones extends BloquesNodeControlColision{
             
             //tenemos que comprobar si la posicion de colision(normalmente el player) no esta en el mismo lugar que el bloque a colocar
             if (posicionColision != null && !calculaColisionObjeto(coordUsar, posicionColision)){
-                BloquesNodeChunkDatos bloqueDatos = new BloquesNodeChunkDatos();
+                BloquesChunkDatos bloqueDatos = new BloquesChunkDatos();
                 bloqueDatos.setNomBloque(nomBloque);
                 chunks.setBloque(coordUsar, bloqueDatos);
                 
@@ -71,7 +71,7 @@ public class BloquesNodeControlAcciones extends BloquesNodeControlColision{
         if (coorUltCol != null){
             Vector3f coordUsar = coorUltCol;
             
-            BloquesNodeChunkDatos datosBloque = chunks.getBloque(coordUsar);
+            BloquesChunkDatos datosBloque = chunks.getBloque(coordUsar);
             if (datosBloque != null){
                 String nomBloqueClonar = datosBloque.getNomBloque();
                 if (datosBloque.getNomBloque() != null){
@@ -94,7 +94,7 @@ public class BloquesNodeControlAcciones extends BloquesNodeControlColision{
         int[][] bloquesVecinos = chunks.setCarasVecinas(coordUsar,true);
 
         //recargamos el chunk donde esta el bloque de la colision
-        nombreChunk = BloquesNodeUtiles.generarNombreChunk(coordUsar);
+        nombreChunk = BloquesUtiles.generarNombreChunk(coordUsar);
         if (chunksAUpdatar.get(nombreChunk) == null){
             chunksAUpdatar.put(nombreChunk,1);
         }
@@ -107,7 +107,7 @@ public class BloquesNodeControlAcciones extends BloquesNodeControlColision{
 
                     chunks.setCarasVecinas(coordVecino,false);
 
-                    nombreChunk = BloquesNodeUtiles.generarNombreChunk(coordVecino);
+                    nombreChunk = BloquesUtiles.generarNombreChunk(coordVecino);
                     if (chunksAUpdatar.get(nombreChunk) == null){
                         chunksAUpdatar.put(nombreChunk,1);
                     }  

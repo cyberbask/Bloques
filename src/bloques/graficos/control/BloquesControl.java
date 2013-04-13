@@ -1,21 +1,21 @@
 /*
  * Custom control para el manejo de bloques y chunks
  */
-package bloquesnode.graficos.control;
+package bloques.graficos.control;
 
-import bloquesnode.manejo.utiles.BloquesNodeUtiles;
+import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 
 /**
  *
  * @author mcarballo
  */
-public class BloquesNodeControl extends BloquesNodeControlAcciones{
+public class BloquesControl extends BloquesControlAcciones{
     /**
      *
      * @param app
      */
-    public BloquesNodeControl(Application app){
+    public BloquesControl(Application app){
         super(app);
     }
     
@@ -31,9 +31,9 @@ public class BloquesNodeControl extends BloquesNodeControlAcciones{
             chunks = bloqueGeneraTerreno.getChunks();
             
             //tenemos que pasar a updates estos chunks
-            for (int x = 0;x<BloquesNodeUtiles.TAMANO_GENERA_TERRENO;x = x + BloquesNodeUtiles.TAMANO_CHUNK_X){
-                for (int z = 0;z<BloquesNodeUtiles.TAMANO_GENERA_TERRENO;z = z + BloquesNodeUtiles.TAMANO_CHUNK_Z){
-                    String[] grupoChunks = chunks.getGrupoChunksNombres(x * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE);
+            for (int x = 0;x<BloquesUtiles.TAMANO_GENERA_TERRENO;x = x + BloquesUtiles.TAMANO_CHUNK_X){
+                for (int z = 0;z<BloquesUtiles.TAMANO_GENERA_TERRENO;z = z + BloquesUtiles.TAMANO_CHUNK_Z){
+                    String[] grupoChunks = chunks.getGrupoChunksNombres(x * BloquesUtiles.TAMANO_BLOQUE, z * BloquesUtiles.TAMANO_BLOQUE);
                     
                     for (String s : grupoChunks){
                         updatesChunk.put(contadorUpdates,s);

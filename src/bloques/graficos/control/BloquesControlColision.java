@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package bloquesnode.graficos.control;
+package bloques.graficos.control;
 
-import bloquesnode.manejo.utiles.BloquesNodeUtiles;
+import bloques.manejo.chunks.BloquesChunkDatos;
+import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -15,7 +16,7 @@ import com.jme3.math.Vector3f;
  *
  * @author cyberbask
  */
-public class BloquesNodeControlColision extends BloquesNodeControlUpdates {
+public class BloquesControlColision extends BloquesControlUpdates {
     /**
      *
      */
@@ -33,7 +34,7 @@ public class BloquesNodeControlColision extends BloquesNodeControlUpdates {
      *
      * @param app
      */
-    public BloquesNodeControlColision(Application app){
+    public BloquesControlColision(Application app){
         super(app);
     }
     
@@ -65,7 +66,7 @@ public class BloquesNodeControlColision extends BloquesNodeControlUpdates {
             
             //System.out.println("Detecta1: "+contactPoint.x+"-"+contactPoint.y+"-"+contactPoint.z);
             
-            int ejeComprobar = BloquesNodeUtiles.averiguaCoordenadasContacto(contactPoint);
+            int ejeComprobar = BloquesUtiles.averiguaCoordenadasContacto(contactPoint);
             
             Vector3f vecComprobar = contactPoint.clone();
             
@@ -132,11 +133,11 @@ public class BloquesNodeControlColision extends BloquesNodeControlUpdates {
      * @return
      */
     public static Boolean calculaColisionObjeto(Vector3f coordBloque, Vector3f coordObjeto){
-        Vector3f dentroChunkBloque = BloquesNodeUtiles.redondeaCoordenadasContacto(coordBloque);
-        Vector3f dentroChunkPlayer = BloquesNodeUtiles.redondeaCoordenadasContacto(coordObjeto);
+        Vector3f dentroChunkBloque = BloquesUtiles.redondeaCoordenadasContacto(coordBloque);
+        Vector3f dentroChunkPlayer = BloquesUtiles.redondeaCoordenadasContacto(coordObjeto);
         
-        dentroChunkBloque = BloquesNodeUtiles.calculaCoordenadasBloque(dentroChunkBloque);
-        dentroChunkPlayer = BloquesNodeUtiles.calculaCoordenadasBloque(dentroChunkPlayer);
+        dentroChunkBloque = BloquesUtiles.calculaCoordenadasBloque(dentroChunkBloque);
+        dentroChunkPlayer = BloquesUtiles.calculaCoordenadasBloque(dentroChunkPlayer);
         
         if (dentroChunkBloque.x == dentroChunkPlayer.x
                 &&dentroChunkBloque.y == dentroChunkPlayer.y
@@ -147,13 +148,27 @@ public class BloquesNodeControlColision extends BloquesNodeControlUpdates {
         
         //comprobamos tambien que no este en el bloque superior que seria el de la camara en principio
         Vector3f dentroChunkPlayerNuevo = dentroChunkPlayer.clone();
-        dentroChunkPlayerNuevo.y = dentroChunkPlayerNuevo.y + BloquesNodeUtiles.TAMANO_BLOQUE;
-        dentroChunkPlayer = BloquesNodeUtiles.redondeaCoordenadasContacto(dentroChunkPlayerNuevo);
+        dentroChunkPlayerNuevo.y = dentroChunkPlayerNuevo.y + BloquesUtiles.TAMANO_BLOQUE;
         
         if (dentroChunkBloque.x == dentroChunkPlayerNuevo.x
                 &&dentroChunkBloque.y == dentroChunkPlayerNuevo.y
                 &&dentroChunkBloque.z == dentroChunkPlayerNuevo.z){
             
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     *
+     * @param coordObjeto
+     * @return
+     */
+    public Boolean calculaDentroBloqueObjeto(Vector3f coordObjeto){
+        BloquesChunkDatos bloque = chunks.getBloque(coordObjeto);
+        
+        if (bloque != null){
             return true;
         }
         

@@ -1,13 +1,13 @@
 /*
  * Datos de los bloques, setter/getter, etc..
  */
-package bloques.manejo;
+package bloques.graficos.generabloque;
 
 /**
  *
  * @author mcarballo
  */
-public class BloqueGenericosDatos {
+public class BloquesGenericosDatos {
     private String nombreTextura; 
     private int[] posicionTexturaX = new int[6];
     private int[] posicionTexturaY = new int[6];
@@ -15,7 +15,7 @@ public class BloqueGenericosDatos {
     /**
      *
      */
-    public BloqueGenericosDatos(){
+    public BloquesGenericosDatos(){
         
     }
     

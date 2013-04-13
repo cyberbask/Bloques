@@ -1,7 +1,7 @@
 /*
  * Clase para manejo de las texturas en el juego
  */
-package bloquesnode.graficos.generabloque;
+package bloques.graficos.generabloque;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -15,7 +15,7 @@ import jme3tools.optimize.TextureAtlas;
  *
  * @author mcarballo
  */
-public class BloquesNodeTextureAtlas extends TextureAtlas{
+public class BloquesTextureAtlas extends TextureAtlas{
     private SimpleApplication app;
     private AssetManager      assetManager;
     
@@ -25,7 +25,7 @@ public class BloquesNodeTextureAtlas extends TextureAtlas{
      *
      * @param app
      */
-    public BloquesNodeTextureAtlas(Application app){
+    public BloquesTextureAtlas(Application app){
         super(2048,2048);
         initVarios(app);
     }
@@ -36,7 +36,7 @@ public class BloquesNodeTextureAtlas extends TextureAtlas{
      * @param y
      * @param app  
      */
-    public BloquesNodeTextureAtlas(int x, int y,Application app){
+    public BloquesTextureAtlas(int x, int y,Application app){
         super(x,y);
         initVarios(app);
         

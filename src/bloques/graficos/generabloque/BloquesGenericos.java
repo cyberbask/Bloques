@@ -1,7 +1,7 @@
 /*
  * Datos basicos y por defecto de los bloques
  */
-package bloquesnode.graficos.generabloque;
+package bloques.graficos.generabloque;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,13 +10,13 @@ import java.util.Map;
  *
  * @author mcarballo
  */
-public class BloquesNodeGenericos {
-    Map<String,BloquesNodeGenericosDatos> bloques = new HashMap<String,BloquesNodeGenericosDatos>();
+public class BloquesGenericos {
+    Map<String,BloquesGenericosDatos> bloques = new HashMap<String,BloquesGenericosDatos>();
     
     /**
      *
      */
-    public BloquesNodeGenericos(){
+    public BloquesGenericos(){
         
     }
     
@@ -25,13 +25,13 @@ public class BloquesNodeGenericos {
      * @param nomBloque
      * @return
      */
-    public BloquesNodeGenericosDatos getBloqueTipo(String nomBloque){
+    public BloquesGenericosDatos getBloqueTipo(String nomBloque){
         if (bloques.get(nomBloque) != null){
             return bloques.get(nomBloque);
         }else{
             //TODO sacar los datos de algun sitio real
             
-            BloquesNodeGenericosDatos datosBloque = new BloquesNodeGenericosDatos();
+            BloquesGenericosDatos datosBloque = new BloquesGenericosDatos();
             
             //bloque tierra
             if ("Tierra".equals(nomBloque)){

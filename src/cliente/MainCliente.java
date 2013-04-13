@@ -1,6 +1,6 @@
 package cliente;
 
-import bloquesnode.manejo.utiles.BloquesNodeUtiles;
+import bloques.manejo.utiles.BloquesUtiles;
 import cliente.juego.JuegoState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
@@ -58,7 +58,7 @@ public class MainCliente extends SimpleApplication {
         flyCam.setRotationSpeed(5f);
 
         //setemoa la distancia de dibujado de la camara
-        cam.setFrustumFar(BloquesNodeUtiles.CAM_FRUSTUMFAR);
+        cam.setFrustumFar(BloquesUtiles.CAM_FRUSTUMFAR);
         //float aspect = (float)cam.getWidth() / (float)cam.getHeight();
         //cam.setFrustumPerspective( 60f, aspect, 0.1f, cam.getFrustumFar() );
         cam.update();

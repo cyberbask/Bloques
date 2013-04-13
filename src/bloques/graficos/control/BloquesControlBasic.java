@@ -1,11 +1,11 @@
 /*
  * Clase con lo que se va a usar en todas las clases que la extienden
  */
-package bloquesnode.graficos.control;
+package bloques.graficos.control;
 
-import bloquesnode.graficos.generabloque.BloquesNodeGeneraBloque;
-import bloquesnode.manejo.chunks.BloquesNodeChunks;
-import bloquesnode.manejo.generaterreno.BloquesNodeGeneraTerreno;
+import bloques.graficos.generabloque.BloquesGeneraBloque;
+import bloques.manejo.chunks.BloquesChunks;
+import bloques.manejo.generaterreno.BloquesGeneraTerreno;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -29,7 +29,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  *
  * @author mcarballo
  */
-public class BloquesNodeControlBasic extends AbstractControl implements Savable, Cloneable{
+public class BloquesControlBasic extends AbstractControl implements Savable, Cloneable{
     /**
      *
      */
@@ -66,7 +66,7 @@ public class BloquesNodeControlBasic extends AbstractControl implements Savable,
     /**
      *
      */
-    protected BloquesNodeGeneraTerreno bloqueGeneraTerreno;
+    protected BloquesGeneraTerreno bloqueGeneraTerreno;
     
     /**
      *
@@ -77,19 +77,19 @@ public class BloquesNodeControlBasic extends AbstractControl implements Savable,
     /**
      *
      */
-    protected BloquesNodeChunks chunks = new BloquesNodeChunks();
+    protected BloquesChunks chunks = new BloquesChunks();
     
     /**
      *
      */
-    protected BloquesNodeGeneraBloque bloques;
+    protected BloquesGeneraBloque bloques;
     
     
     /**
      *
      * @param app 
      */
-    public BloquesNodeControlBasic(Application app){
+    public BloquesControlBasic(Application app){
         this.app = (SimpleApplication) app;
         this.rootNode     = this.app.getRootNode();
         this.assetManager = this.app.getAssetManager();
@@ -99,9 +99,9 @@ public class BloquesNodeControlBasic extends AbstractControl implements Savable,
         this.physics      = this.stateManager.getState(BulletAppState.class);
         this.cam          = this.app.getCamera();
                 
-        bloques = new BloquesNodeGeneraBloque(this.app);
+        bloques = new BloquesGeneraBloque(this.app);
         
-        bloqueGeneraTerreno = new BloquesNodeGeneraTerreno(this.app,bloques);
+        bloqueGeneraTerreno = new BloquesGeneraTerreno(this.app,bloques);
     }
     
     /**
@@ -136,7 +136,7 @@ public class BloquesNodeControlBasic extends AbstractControl implements Savable,
      * @return
      */
     public Control cloneForSpatial(Spatial spatial) {
-        final BloquesNodeControlBasic control = new BloquesNodeControlBasic(this.app);
+        final BloquesControlBasic control = new BloquesControlBasic(this.app);
    
         control.setSpatial(spatial);
         return control;

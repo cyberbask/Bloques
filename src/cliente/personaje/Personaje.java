@@ -3,7 +3,8 @@
  */
 package cliente.personaje;
 
-import bloquesnode.manejo.utiles.BloquesNodeUtiles;
+import bloques.graficos.control.BloquesControl;
+import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -109,9 +110,9 @@ public class Personaje {
     public int posicionarCamara(int bloqueConMasAltura){
         if (bloqueConMasAltura > 0){ 
             Vector3f cood = new Vector3f(60,bloqueConMasAltura,60);
-            String nombreChunk = BloquesNodeUtiles.generarNombreChunk(cood);
+            String nombreChunk = BloquesUtiles.generarNombreChunk(cood);
             if (rootNode.getChild(nombreChunk) != null){
-                bloqueConMasAltura = bloqueConMasAltura + (60 * BloquesNodeUtiles.TAMANO_BLOQUE * 2);
+                bloqueConMasAltura = bloqueConMasAltura + (60 * BloquesUtiles.TAMANO_BLOQUE * 2);
                 cam.setLocation(new Vector3f(10, bloqueConMasAltura, 10));
                 cam.setRotation(new Quaternion().fromAngleAxis(90*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
                 cam.update();
@@ -141,8 +142,9 @@ public class Personaje {
     /**
      *
      * @param tpf
+     * @param bloquesTerrainControl  
      */
-    public void update(float tpf){  
+    public void update(float tpf, BloquesControl bloquesTerrainControl){  
         /**/
         if (iniciado){
             float mov1 = 0.10f;
@@ -153,9 +155,9 @@ public class Personaje {
                 mov2 = mov2 * 1.75f;
             }
             
-            Vector3f camDir = cam.getDirection().clone().multLocal(mov1 * BloquesNodeUtiles.TAMANO_BLOQUE);
+            Vector3f camDir = cam.getDirection().clone().multLocal(mov1 * BloquesUtiles.TAMANO_BLOQUE);
             camDir.setY(0f); //evita despegarse del chan :-D
-            Vector3f camLeft = cam.getLeft().clone().multLocal(mov2 * BloquesNodeUtiles.TAMANO_BLOQUE);
+            Vector3f camLeft = cam.getLeft().clone().multLocal(mov2 * BloquesUtiles.TAMANO_BLOQUE);
             walkDirection.set(0, 0, 0);
             if (left)  { walkDirection.addLocal(camLeft); }
             if (right) { walkDirection.addLocal(camLeft.negate()); }
@@ -169,33 +171,35 @@ public class Personaje {
             
             //TODO terminar la colisiones
             //Esta peli es para no meterse dentro de un bloque
-            /** /
-            float correcion = BloqueChunkUtiles.TAMANO_BLOQUE - 1f;
+            /**/
+            if (!player.onGround()){
+                float correcion = BloquesUtiles.TAMANO_BLOQUE - 1f;
 
-            Vector3f playerLocation = physicsLocation.clone();
-            playerLocation.y = playerLocation.y - correcion; 
-            
-            Boolean dentroBloquePlayer = BloqueColision.calculaDentroBloqueObjeto(playerLocation,chunks);
-            
-            if (dentroBloquePlayer){
-                physics.getPhysicsSpace().remove(player);
-                
-                float sumaY = 0f;
-                do{
-                    sumaY = sumaY + 0.1f;
-                    
-                    playerLocation = ultimaPosicionCorrecta.clone();
-                    playerLocation.y = playerLocation.y - correcion + sumaY; 
-                    
-                }while(BloqueColision.calculaDentroBloqueObjeto(playerLocation,chunks));
-                
-                physicsLocation = playerLocation.clone();
-                physicsLocation.y = physicsLocation.y + correcion;
-                
-                generaPersonaje(physicsLocation.x,physicsLocation.y,physicsLocation.z); 
+                Vector3f playerLocation = physicsLocation.clone();
+                playerLocation.y = playerLocation.y - correcion; 
+
+                Boolean dentroBloquePlayer = bloquesTerrainControl.calculaDentroBloqueObjeto(playerLocation);
+
+                if (dentroBloquePlayer){
+                    physics.getPhysicsSpace().remove(player);
+
+                    float sumaY = 0f;
+                    do{
+                        sumaY = sumaY + 0.1f;
+
+                        playerLocation = ultimaPosicionCorrecta.clone();
+                        playerLocation.y = playerLocation.y - correcion + sumaY; 
+
+                    }while(bloquesTerrainControl.calculaDentroBloqueObjeto(playerLocation));
+
+                    physicsLocation = playerLocation.clone();
+                    physicsLocation.y = physicsLocation.y + correcion;
+
+                    generaPersonaje(physicsLocation); 
+                }
+
+                ultimaPosicionCorrecta = physicsLocation.clone();
             }
-            
-            ultimaPosicionCorrecta = physicsLocation.clone();
             /**/
             //hasta aqui
             

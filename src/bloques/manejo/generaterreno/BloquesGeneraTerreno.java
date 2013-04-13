@@ -1,11 +1,15 @@
 /*
  * Aqui se generaran los chunks y el terreno en general
  */
-package bloques.manejo;
+package bloques.manejo.generaterreno;
 
+import bloques.graficos.generabloque.BloquesGeneraBloque;
+import bloques.manejo.chunks.BloquesChunkDatos;
+import bloques.manejo.chunks.BloquesChunks;
+import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.AssetManager;
+import com.jme3.math.Vector3f;
 import com.jme3.system.Timer;
 import com.jme3.terrain.heightmap.HillHeightMap;
 import java.util.Random;
@@ -19,47 +23,44 @@ import jme3tools.savegame.SaveGame;
  *
  * @author mcarballo
  */
-public class BloqueGeneraTerreno{
+public class BloquesGeneraTerreno{  
     /**
      *
      */
-    private SimpleApplication app;
-    private AssetManager      assetManager;
+    protected SimpleApplication app;
     
-    ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
-    Future future = null;
+    private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
+    private Future future = null;
     
     //chunks
     /**
      *
      */
-    protected BloqueChunks chunks = null;
-    int contadorUpdates = 0;
+    private BloquesChunks chunks = null;
     
     /**
      *
      */
     public Boolean generandoTerreno = false;
+    
     /**
      *
      */
     public int porcentajeGenerado = 0;
     
-    //tamaño del mundo a generar
-    //int totalTamano = 192;
-    //int totalTamano = 400;
     /**
      *
      */
-    public int totalTamano = 400;
+    private int totalTamano = BloquesUtiles.TAMANO_GENERA_TERRENO;
+    
     
     /**
      *
      * @param app
+     * @param bloques  
      */
-    public BloqueGeneraTerreno(Application app){
+    public BloquesGeneraTerreno(Application app, BloquesGeneraBloque bloques){
         this.app = (SimpleApplication) app;
-        this.assetManager = this.app.getAssetManager();
     }
     
     private HillHeightMap generateTerrainconReturn(){
@@ -91,48 +92,48 @@ public class BloqueGeneraTerreno{
         //en este caso mantenemos las x y z sin multiplicar por el tamaño de bloque
         //ya que el generador de terrenos sigue con sus coordenadas normales
         //solo lo multiplicamos cuando pasamos por nuestras funciones
-        
+                
         HillHeightMap heightmap = generateTerrainconReturn();
         
-        int y = 0;
-        int minY = BloqueChunkUtiles.MIN_ALTURA_BLOQUES;
-        int maxY = BloqueChunkUtiles.MAX_ALTURA_BLOQUES;
-        
+        int y;
         int x;
         int z;
-        
+        int minY = BloquesUtiles.MIN_ALTURA_BLOQUES;
+        int maxY = BloquesUtiles.MAX_ALTURA_BLOQUES;
         int variacion = 0;
+        String tipoTerreno;
         
         for (x = 0;x<totalTamano;x++){
             for (z = 0;z<totalTamano;z++){                
                 y = (int) heightmap.getScaledHeightAtPoint(x,z);
  
                 for (int a=maxY; a>=minY; a--){ 
-                    //if (a == y){ //sin relleno                   
-                    if (a <= y){
-                        String tipoTerreno;
-                        if (variacion == 0){
-                            tipoTerreno = "Tierra";
-                            variacion = 1;
-                        }else if(variacion == 1){
-                            tipoTerreno = "Roca";
-                            variacion = 2;
-                        }else if(variacion == 2){
-                            tipoTerreno = "Arena";
-                            variacion = 3;
-                        }else{
-                            tipoTerreno = "Hierba";
-                            variacion = 0;
-                        }
-                        
-                        BloqueChunkDatos bloqueChunkDatos = new BloqueChunkDatos();
-                        bloqueChunkDatos.setNomBloque(tipoTerreno);
-                        chunks.setBloque(x * BloqueChunkUtiles.TAMANO_BLOQUE, a * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE,bloqueChunkDatos);
-                        
-                    }else{
-                        chunks.setBloque(x * BloqueChunkUtiles.TAMANO_BLOQUE, a * BloqueChunkUtiles.TAMANO_BLOQUE, z * BloqueChunkUtiles.TAMANO_BLOQUE, null);
-                    }
+                    int aGuardar = a / 2;
                     
+                    if (a<=y){
+                        tipoTerreno = "Hierba";
+                        
+                        if (a == y){
+                            tipoTerreno = "Hierba";
+                        }else{
+                            if (a < y && (y-a <= 4)){
+                                tipoTerreno = "Tierra";
+                            }
+                            if (a < y && (y-a > 4)){
+                                tipoTerreno = "Roca";
+                            }
+                            if (a > minY && (a-minY <= 2)){
+                                tipoTerreno = "Arena";
+                            }
+                        }
+
+                        BloquesChunkDatos bloqueDatos = new BloquesChunkDatos();
+                        bloqueDatos.setNomBloque(tipoTerreno);
+
+                        chunks.setBloque(new Vector3f(x * BloquesUtiles.TAMANO_BLOQUE, aGuardar * BloquesUtiles.TAMANO_BLOQUE, z * BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+                    }else{
+                        chunks.setChunkSiNoExiste(new Vector3f(x * BloquesUtiles.TAMANO_BLOQUE, aGuardar * BloquesUtiles.TAMANO_BLOQUE, z * BloquesUtiles.TAMANO_BLOQUE));
+                    }
                 }
             }
             
@@ -146,8 +147,6 @@ public class BloqueGeneraTerreno{
             });
             
         }
-        
-         
     }
     
     // A self-contained time-intensive task:
@@ -172,12 +171,13 @@ public class BloqueGeneraTerreno{
         try{
             if(future == null && chunks == null && !generandoTerreno){
                 //BloqueChunks loaded = (BloqueChunks) SaveGame.loadGame("Bloques/terreno/", "allchunks");
+                porcentajeGenerado = 0; //ponemos el porcentaje a cero
                 
-                BloqueChunks loaded=null;
+                BloquesChunks loaded=null;
                 
                 if (loaded == null){
                     generandoTerreno = true;
-                    chunks = new BloqueChunks();
+                    chunks = new BloquesChunks();
                     future = executor.submit(generaTerrenoInicialHilo);
                 }else{
                     chunks = loaded;
@@ -190,13 +190,11 @@ public class BloqueGeneraTerreno{
                     //SaveGame.saveGame("Bloques/terreno/", "allchunks", chunks);
                 }
                 else if(future.isCancelled()){
-                    
                     future = null;
                 }
             }
         } 
         catch(Exception e){ 
-           e.printStackTrace();
         }
     }
     
@@ -204,7 +202,7 @@ public class BloqueGeneraTerreno{
      *
      * @return
      */
-    public BloqueChunks getChunks() {
+    public BloquesChunks getChunks() {
         return chunks;
     }
 
@@ -212,7 +210,7 @@ public class BloqueGeneraTerreno{
      *
      * @param chunks
      */
-    public void setChunks(BloqueChunks chunks) {
+    public void setChunks(BloquesChunks chunks) {
         this.chunks = chunks;
     }
     
@@ -228,7 +226,6 @@ public class BloqueGeneraTerreno{
      */
     public void destroy() {
         //asi parece que cierra bien
-        //el problema esta en el do while con el sleep de hilo
         executor.shutdown();
         executor.shutdownNow();
     }
