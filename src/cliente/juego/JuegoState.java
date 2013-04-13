@@ -147,7 +147,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         } else if (name.equals("MouseRightButton") && !isPressed) {
             graficos.accionBloque("colocar");
         }else if (name.equals("MouseCentralButton") && !isPressed) {
-            graficos.accionBloque("clonar");
+            graficos.accionBloque("seleccionar");
         }
     }
     

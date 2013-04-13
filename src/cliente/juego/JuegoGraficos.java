@@ -5,6 +5,8 @@
 package cliente.juego;
 
 import bloquesnode.graficos.control.BloquesNodeControl;
+import bloquesnode.manejo.utiles.BloquesNodeUtiles;
+import cliente.personaje.Personaje;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -17,14 +19,14 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.FogFilter;
+import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
+import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
-import com.jme3.util.SkyFactory;
-import cliente.personaje.Personaje;
 
 /**
  *
@@ -107,6 +109,7 @@ public class JuegoGraficos {
         bloquesTerrainControl = new BloquesNodeControl(this.app);
         Node terrainNode = new Node("terrainNode");
         terrainNode.addControl(bloquesTerrainControl);
+        terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.attachChild(terrainNode);
         
         personaje = new Personaje(app);
@@ -150,31 +153,37 @@ public class JuegoGraficos {
         rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
         
         /** /
-        BasicShadowRenderer bsr = new BasicShadowRenderer(assetManager, 512);
-        bsr.setDirection(new Vector3f(-.5f, -1f, -.5f).normalizeLocal()); // light direction
-        viewPort.addProcessor(bsr);
+        if (BloquesNodeUtiles.SOMBRAS){
+            BasicShadowRenderer bsr = new BasicShadowRenderer(assetManager, 512);
+            bsr.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
+            viewPort.addProcessor(bsr);
+        }
+        /**/
+        
+        /**/
+        if (BloquesNodeUtiles.SOMBRAS){
+            PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, BloquesNodeUtiles.SOMBRAS_CALIDAD1, BloquesNodeUtiles.SOMBRAS_CALIDAD2);
+            pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
+            pssmRenderer.setShadowIntensity(BloquesNodeUtiles.SOMBRAS_INTENSIDAD);
+            pssmRenderer.setEdgesThickness(1);
+            pssmRenderer.setFilterMode(FilterMode.Bilinear);
+            viewPort.addProcessor(pssmRenderer);
+        }
         /**/
         
         /** /
-        PssmShadowRenderer pssmRenderer = new PssmShadowRenderer(assetManager, 1024, 3);
-        pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
-        pssmRenderer.setShadowIntensity(0.02f);
-        pssmRenderer.setEdgesThickness(1);
-        pssmRenderer.setFilterMode(FilterMode.Bilinear);
-        viewPort.addProcessor(pssmRenderer);
-        /**/
-        
-        /** /
-        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
-        SSAOFilter ssaoFilter = new SSAOFilter(12.94f, 43.92f, 0.33f, 0.61f);
-        fpp.addFilter(ssaoFilter);
-        viewPort.addProcessor(fpp);
+        if (BloquesNodeUtiles.SOMBRAS){
+            FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+            SSAOFilter ssaoFilter = new SSAOFilter(12.94f, 43.92f, 0.33f, 0.61f);
+            fpp.addFilter(ssaoFilter);
+            viewPort.addProcessor(fpp);
+        }
         /**/
     }
     
     private void setUpFog(){
         FilterPostProcessor fogPPS=new FilterPostProcessor(assetManager);
-        FogFilter fog = new FogFilter(ColorRGBA.White, 0.8f, 1200f);
+        FogFilter fog = new FogFilter(ColorRGBA.White, BloquesNodeUtiles.NIEBLA_INTENSIDAD, BloquesNodeUtiles.NIEBLA_DISTANCIA);
         fogPPS.addFilter(fog);
         viewPort.addProcessor(fogPPS);
     }
@@ -192,14 +201,16 @@ public class JuegoGraficos {
     public void accionBloque(String accion){        
         Vector3f posicionPlayer = personaje.getPosicionPlayer();
         
-        /**if (!accion.equals("clonar")){
-            bloqueGraficos.accionBloque(accion, personaje.nomBloqueSeleccionado, posicionPlayer);
-        }else{
-            String accionBloqueClonar = bloqueGraficos.accionBloqueClonar();
+        if (accion.equals("colocar")){
+            bloquesTerrainControl.nuevoBloque(personaje.nomBloqueSeleccionado, posicionPlayer);
+        }else if(accion.equals("destruir")){
+            bloquesTerrainControl.quitaBloque(personaje.nomBloqueSeleccionado, posicionPlayer);
+        }else if(accion.equals("seleccionar")){
+            String accionBloqueClonar = bloquesTerrainControl.seleccionarBloque();
             if (accionBloqueClonar != null){
                 personaje.nomBloqueSeleccionado = accionBloqueClonar;
             }
-        }*/
+        }
     }
     
     /**
@@ -212,33 +223,16 @@ public class JuegoGraficos {
             
             if (bloquesTerrainControl.generaTerrenoInicial()){
                 juegoGui.textoEnPantalla("");
-                //bloqueConMasAltura = bloqueGraficos.chunks.getBloqueConMasAltura(20, 20);
+                bloqueConMasAltura = bloquesTerrainControl.getBloqueConMasAltura(60, 60);
                 primeraCarga = false;   
             }  
         }
         
         if (!primeraCarga){
- 
-            
-        }
-        /*//la primera vez que se entra aqui se genera el terreno
-        if (primeraCarga){
-            juegoGui.textoEnPantalla("... Generando Terreno ("+bloqueGraficos.bloqueGeneraTerreno.porcentajeGenerado+"%)... ");
-            
-            if (bloqueGraficos.generaTerrenoInicial()){
-                juegoGui.textoEnPantalla("");
-                bloqueConMasAltura = bloqueGraficos.chunks.getBloqueConMasAltura(20, 20);
-                primeraCarga = false;   
-            }
-        }
-        
-        if (!primeraCarga){
-            //actualizamos los chunks
-            bloqueGraficos.update(tpf);
-            
             if (posicionarCamara == 1){
                 //Añadimos el personaje
-                personaje.generaPersonaje(20,bloqueConMasAltura+100,20);
+                Vector3f coodPersonaje = new Vector3f(60,bloqueConMasAltura + 100,60);
+                personaje.generaPersonaje(coodPersonaje);
                 posicionarCamara = 2;
             }
             
@@ -246,15 +240,13 @@ public class JuegoGraficos {
                 posicionarCamara = personaje.posicionarCamara(bloqueConMasAltura);
             }
             
-            //actualizamos la posicion del personaje
-            personaje.update(tpf,bloqueGraficos.chunks);            
-        }*/
+            personaje.update(tpf);  
+        }
     }
     /**
      *
      */
     public void destroy() {
-        //bloqueGraficos.destroy();
         bloquesTerrainControl.destroy();
     }
     

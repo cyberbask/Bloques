@@ -191,8 +191,8 @@ public class BloqueGraficos{
      */
     @SuppressWarnings("SleepWhileInLoop")
     public void updateaChunks(Map<Integer,BloqueChunks> updatear){
-        Timer timer = app.getTimer();
-        float totalInicio = timer.getTimeInSeconds();
+        //Timer timer = app.getTimer();
+        //float totalInicio = timer.getTimeInSeconds();
 
         //recorremos el array
         Integer[] keys = (Integer[])( updatear.keySet().toArray( new Integer[updatear.size()] ) ); 
@@ -278,8 +278,8 @@ public class BloqueGraficos{
             }
         }
         
-        float totalFin = timer.getTimeInSeconds();
-        System.out.println("Tiempo update"+(totalFin-totalInicio));
+        //float totalFin = timer.getTimeInSeconds();
+        //System.out.println("Tiempo update"+(totalFin-totalInicio));
         
     }
     

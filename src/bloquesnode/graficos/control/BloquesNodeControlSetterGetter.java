@@ -25,4 +25,14 @@ public class BloquesNodeControlSetterGetter extends BloquesNodeControlBasic{
     public int getPorcentajeGeneradoTerreno(){
         return bloqueGeneraTerreno.porcentajeGenerado;
     }
+    
+    /**
+     *
+     * @param x
+     * @param z
+     * @return
+     */
+    public int getBloqueConMasAltura(int x, int z){
+        return chunks.getBloqueConMasAltura(x, z);
+    }
 }

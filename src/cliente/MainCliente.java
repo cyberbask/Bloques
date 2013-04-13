@@ -1,5 +1,6 @@
 package cliente;
 
+import bloquesnode.manejo.utiles.BloquesNodeUtiles;
 import cliente.juego.JuegoState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
@@ -45,7 +46,7 @@ public class MainCliente extends SimpleApplication {
         
         //capturas de pantalla
         ScreenshotAppState screenShotState = new ScreenshotAppState();
-        screenShotState.setFilePath("bloques/screenshots/");
+        screenShotState.setFilePath("");
         this.stateManager.attach(screenShotState);
         
         //Seteamos la "Applicacion State" principal del juego
@@ -53,12 +54,11 @@ public class MainCliente extends SimpleApplication {
         stateManager.attach(stateJuego);
         
         //setamos la velocidad estandar de la flycam
-        //flyCam.setMoveSpeed(5f);       
-        flyCam.setMoveSpeed(60f);       
+        flyCam.setMoveSpeed(5f);             
         flyCam.setRotationSpeed(5f);
 
         //setemoa la distancia de dibujado de la camara
-        cam.setFrustumFar(4000f);
+        cam.setFrustumFar(BloquesNodeUtiles.CAM_FRUSTUMFAR);
         //float aspect = (float)cam.getWidth() / (float)cam.getHeight();
         //cam.setFrustumPerspective( 60f, aspect, 0.1f, cam.getFrustumFar() );
         cam.update();

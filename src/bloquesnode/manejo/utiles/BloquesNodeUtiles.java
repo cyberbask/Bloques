@@ -38,7 +38,42 @@ public class BloquesNodeUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 128; 
+    public static final int TAMANO_GENERA_TERRENO = 320; 
+    
+    /**
+     *
+     */
+    public static final int CAM_FRUSTUMFAR = 1250; 
+    
+    /**
+     *
+     */
+    public static final Boolean SOMBRAS = false; 
+    
+    /**
+     *
+     */
+    public static final float SOMBRAS_INTENSIDAD = 0.25f; 
+    
+    /**
+     *
+     */
+    public static final int SOMBRAS_CALIDAD1 = 2048; 
+    
+    /**
+     *
+     */
+    public static final int SOMBRAS_CALIDAD2 = 6; 
+    
+    /**
+     *
+     */
+    public static final float NIEBLA_DISTANCIA = 1500f;
+    
+    /**
+     *
+     */
+    public static final float NIEBLA_INTENSIDAD = 0.5f;
     
     
     /**
@@ -92,6 +127,57 @@ public class BloquesNodeUtiles {
     
     /**
      *
+     * @param coord
+     * @return
+     */
+    public static Vector3f calculaCoordenadasBloque(Vector3f coord){
+        return calculaCoordenadasBloque((int) coord.x, (int) coord.y, (int) coord.z);
+    }
+    
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
+    public static Vector3f calculaCoordenadasBloque(float x, float y, float z){
+        return calculaCoordenadasBloque((int) x, (int) y, (int) z);
+    }
+    
+    /**
+     *
+     * @param x
+     * @param y
+     * @param z
+     * @return
+     */
+    public static Vector3f calculaCoordenadasBloque(int x, int y, int z){
+        Vector3f nuevasCoordenadas = new Vector3f();
+        
+        if (x >= 0){
+            nuevasCoordenadas.x = ((int) (x / TAMANO_BLOQUE) * TAMANO_BLOQUE);
+        }else{
+            nuevasCoordenadas.x = ((int) (x / TAMANO_BLOQUE) * TAMANO_BLOQUE) - TAMANO_BLOQUE;
+        }
+        
+        if (y >= 0){
+            nuevasCoordenadas.y = ((int) (y / TAMANO_BLOQUE) * TAMANO_BLOQUE);
+        }else{
+            nuevasCoordenadas.y = ((int) (y / TAMANO_BLOQUE) * TAMANO_BLOQUE) - TAMANO_BLOQUE;
+        }
+        
+        if (z >= 0){
+            nuevasCoordenadas.z = ((int) (z / TAMANO_BLOQUE) * TAMANO_BLOQUE);
+        }else{
+            nuevasCoordenadas.z = ((int) (z / TAMANO_BLOQUE) * TAMANO_BLOQUE) - TAMANO_BLOQUE;
+        }
+
+        return nuevasCoordenadas;
+    }
+    
+    /**
+     *
      * @param cood 
      * @return
      */
@@ -107,7 +193,8 @@ public class BloquesNodeUtiles {
      * @return
      */
     public static String generarNombreBloque(String nomChunk,Vector3f cood){
-        return nomChunk+",Bloque>>"+String.valueOf((int) cood.x)+"__"+String.valueOf((int) cood.y)+"__"+String.valueOf((int) cood.z);
+        Vector3f coordBloque = calculaCoordenadasBloque(cood);
+        return nomChunk+",Bloque>>"+String.valueOf((int) coordBloque.x)+"__"+String.valueOf((int) coordBloque.y)+"__"+String.valueOf((int) coordBloque.z);
     }
     
     /**
@@ -117,7 +204,8 @@ public class BloquesNodeUtiles {
      */
     public static String generarNombreBloque(Vector3f cood){
         String nomChunk = generarNombreChunk(cood);
-        return nomChunk+",Bloque>>"+String.valueOf((int) cood.x)+"__"+String.valueOf((int) cood.y)+"__"+String.valueOf((int) cood.z);
+        Vector3f coordBloque = calculaCoordenadasBloque(cood);
+        return nomChunk+",Bloque>>"+String.valueOf((int) coordBloque.x)+"__"+String.valueOf((int) coordBloque.y)+"__"+String.valueOf((int) coordBloque.z);
     }
     
     /**
@@ -137,5 +225,49 @@ public class BloquesNodeUtiles {
         coord.z = Integer.valueOf(split[2]);
         
         return coord;
+    }
+    
+    /**
+     *
+     * @param coordenadas
+     * @return
+     */
+    public static int averiguaCoordenadasContacto(Vector3f coordenadas){       
+        float calculo = 0.0001f;
+        
+        if (coordenadas.x - Math.floor(coordenadas.x) <= calculo && coordenadas.x - Math.floor(coordenadas.x) >= 0f) {
+            return 1;
+        }else if(coordenadas.x - Math.ceil(coordenadas.x) >= -calculo && coordenadas.x - Math.ceil(coordenadas.x) <= 0f){
+            return 1;
+        }
+        
+        if (coordenadas.y - Math.floor(coordenadas.y) <= calculo && coordenadas.y - Math.floor(coordenadas.y) >= 0f) {
+            return 2;
+        }else if(coordenadas.y - Math.ceil(coordenadas.y) >= -calculo && coordenadas.y - Math.ceil(coordenadas.y) <= 0f){
+            return 2;
+        }
+        
+        if (coordenadas.z - Math.floor(coordenadas.z) <= calculo && coordenadas.z - Math.floor(coordenadas.z) >= 0f) {
+            return 3;
+        }else if(coordenadas.z - Math.ceil(coordenadas.z) >= -calculo && coordenadas.z - Math.ceil(coordenadas.z) <= 0f){
+            return 3;
+        }
+        
+        return 0;
+    }
+    
+    /**
+     *
+     * @param coordenadas
+     * @return
+     */
+    public static Vector3f redondeaCoordenadasContacto(Vector3f coordenadas){
+        Vector3f devolver = new Vector3f();
+        
+        devolver.x = (int) coordenadas.x;
+        devolver.y = (int) coordenadas.y;
+        devolver.z = (int) coordenadas.z;
+
+        return devolver;
     }
 }

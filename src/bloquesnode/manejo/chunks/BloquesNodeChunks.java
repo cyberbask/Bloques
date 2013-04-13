@@ -36,6 +36,22 @@ public class BloquesNodeChunks{
     /**
      *
      * @param coord
+     */
+    public void setChunkSiNoExiste(Vector3f coord){
+        String nombreChunk = BloquesNodeUtiles.generarNombreChunk(coord);
+        
+        BloquesNodeChunk chunk = getChunk(nombreChunk);
+        
+        if (chunk == null){
+            chunk = new BloquesNodeChunk();
+            chunk.setNombreChunk(nombreChunk);
+            chunks.put(nombreChunk,chunk);
+        }
+    }
+    
+    /**
+     *
+     * @param coord
      * @return
      */
     public BloquesNodeChunk getChunk(Vector3f coord){
@@ -159,6 +175,55 @@ public class BloquesNodeChunks{
     
     /**
      *
+     * @param x
+     * @param z
+     * @return
+     */
+    public int getBloqueConMasAltura(int x, int z){
+        int maxbucle = BloquesNodeUtiles.MAX_ALTURA_BLOQUES / BloquesNodeUtiles.TAMANO_CHUNK_Y;
+        
+        for (int i=(maxbucle - 1);i>=0;i--){
+            int a = i * BloquesNodeUtiles.TAMANO_CHUNK_Y * BloquesNodeUtiles.TAMANO_BLOQUE;
+            
+            Vector3f coordChunk = new Vector3f(x, a, z);
+            
+            BloquesNodeChunk chunk = getChunk(coordChunk);
+            
+            if (chunk != null){
+               for(int y = 0;y < (BloquesNodeUtiles.TAMANO_CHUNK_Y * BloquesNodeUtiles.TAMANO_BLOQUE);y = y + BloquesNodeUtiles.TAMANO_BLOQUE){
+                    int b = a - y;
+                    
+                    Vector3f coodBloque = new Vector3f(x, b, z);
+                    
+                    BloquesNodeChunkDatos datosBloque = getBloque(coodBloque);
+                            
+                    if (datosBloque != null){
+                        return b;
+                    }
+                }
+            }
+        }
+        
+        return BloquesNodeUtiles.MAX_ALTURA_BLOQUES;
+    }
+    
+    /**
+     *
+     * @param coord
+     * @return
+     */
+    public Boolean getBloqueVecino(Vector3f coord){
+        BloquesNodeChunkDatos bloque = getBloque(coord);
+        
+        if (bloque != null){
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     *
      * @param coord
      * @return
      */
@@ -257,6 +322,29 @@ public class BloquesNodeChunks{
         }
         
         return caras;
+    }
+    
+    /**
+     *
+     * @param coord
+     * @param withReturn
+     * @return
+     */
+    public int[][] setCarasVecinas(Vector3f coord,Boolean withReturn){
+        int[][] bloquesVecinosDelBloqueVecino = getBloquesVecinos(coord);
+        int[] carasbloquesVecinos = getCarasAPartirDeBloquesVecinos(bloquesVecinosDelBloqueVecino);
+
+        //guardamos sus caras
+        BloquesNodeChunkDatos datosBloque = getBloque(coord);
+        if (datosBloque != null){
+            datosBloque.setCaras(carasbloquesVecinos);
+        }
+        
+        if (withReturn){
+            return bloquesVecinosDelBloqueVecino;
+        }
+
+        return null;
     }
     
 }

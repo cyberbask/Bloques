@@ -10,7 +10,7 @@ import com.jme3.app.Application;
  *
  * @author mcarballo
  */
-public class BloquesNodeControl extends BloquesNodeControlUpdates{
+public class BloquesNodeControl extends BloquesNodeControlAcciones{
     /**
      *
      * @param app

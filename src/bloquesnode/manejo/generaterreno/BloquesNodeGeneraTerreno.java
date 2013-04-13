@@ -101,34 +101,38 @@ public class BloquesNodeGeneraTerreno{
         int minY = BloquesNodeUtiles.MIN_ALTURA_BLOQUES;
         int maxY = BloquesNodeUtiles.MAX_ALTURA_BLOQUES;
         int variacion = 0;
+        String tipoTerreno;
         
         for (x = 0;x<totalTamano;x++){
             for (z = 0;z<totalTamano;z++){                
                 y = (int) heightmap.getScaledHeightAtPoint(x,z);
  
                 for (int a=maxY; a>=minY; a--){ 
+                    int aGuardar = a / 2;
+                    
                     if (a<=y){
-                        String tipoTerreno;
-                        if (variacion == 0){
-                            tipoTerreno = "Tierra";
-                            variacion = 1;
-                        }else if(variacion == 1){
-                            tipoTerreno = "Roca";
-                            variacion = 2;
-                        }else if(variacion == 2){
-                            tipoTerreno = "Arena";
-                            variacion = 3;
-                        }else{
+                        tipoTerreno = "Hierba";
+                        
+                        if (a == y){
                             tipoTerreno = "Hierba";
-                            variacion = 0;
+                        }else{
+                            if (a < y && (y-a <= 4)){
+                                tipoTerreno = "Tierra";
+                            }
+                            if (a < y && (y-a > 4)){
+                                tipoTerreno = "Roca";
+                            }
+                            if (a > minY && (a-minY <= 2)){
+                                tipoTerreno = "Arena";
+                            }
                         }
 
                         BloquesNodeChunkDatos bloqueDatos = new BloquesNodeChunkDatos();
                         bloqueDatos.setNomBloque(tipoTerreno);
 
-                        chunks.setBloque(new Vector3f(x * BloquesNodeUtiles.TAMANO_BLOQUE, a * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE), bloqueDatos);
+                        chunks.setBloque(new Vector3f(x * BloquesNodeUtiles.TAMANO_BLOQUE, aGuardar * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE), bloqueDatos);
                     }else{
-                        chunks.setBloque(new Vector3f(x * BloquesNodeUtiles.TAMANO_BLOQUE, a * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE), null);
+                        chunks.setChunkSiNoExiste(new Vector3f(x * BloquesNodeUtiles.TAMANO_BLOQUE, aGuardar * BloquesNodeUtiles.TAMANO_BLOQUE, z * BloquesNodeUtiles.TAMANO_BLOQUE));
                     }
                 }
             }

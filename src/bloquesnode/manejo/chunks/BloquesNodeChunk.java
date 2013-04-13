@@ -46,7 +46,7 @@ public class BloquesNodeChunk{
      *
      * @param indiceBloque
      */
-    public void quitaBloque(String indiceBloque){
+    public void quitaBloque(String indiceBloque){ 
         bloquesDatos.remove(indiceBloque);
     }
     

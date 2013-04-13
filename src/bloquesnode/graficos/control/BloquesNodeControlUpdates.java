@@ -11,9 +11,11 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.Timer;
+import com.jme3.util.TangentBinormalGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -112,38 +114,46 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
      * @param updatear
      */
     public void updateaChunks(Map<Integer,BloquesNodeChunk> updatear){
-        Timer timer = app.getTimer();
-        float totalInicio = timer.getTimeInSeconds();
+        //Timer timer = app.getTimer();
+        //float totalInicio = timer.getTimeInSeconds();
 
-
-        for (Map.Entry<Integer,BloquesNodeChunk> entryChunk : updatear.entrySet()){    
-            float totalInicioChunk = timer.getTimeInSeconds();
+        BloquesNodeChunk chunkActual;
+        String claveActual;
+        Node bloquesMostrar;
+        
+        BloquesNodeChunkDatos datosBloque;
+        String nomDatosBloque;
+        Node bloqueClonado;
+        Vector3f coordenadas;
+        int[] carasbloquesVecinos;
+        int[][] bloquesVecinos;
+        int contaCarasQuitadas;
+        int mostrar;
             
-            BloquesNodeChunk chunkActual = entryChunk.getValue();
-            String claveActual = chunkActual.getNombreChunk();
+        for (Map.Entry<Integer,BloquesNodeChunk> entryChunk : updatear.entrySet()){    
+            //float totalInicioChunk = timer.getTimeInSeconds();
+            
+            chunkActual = entryChunk.getValue();
+            claveActual = chunkActual.getNombreChunk();
 
-            Node bloquesMostrar = new Node(claveActual);
-
-            int mostrar = 0;
+            bloquesMostrar = new Node(claveActual);
+            
+            mostrar = 0;
             
             for (Map.Entry<String,BloquesNodeChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
-                BloquesNodeChunkDatos datosBloque = entryBloquesDatos.getValue();
+                datosBloque = entryBloquesDatos.getValue();
                 
                 if (datosBloque != null){
-                    String nomDatosBloque = entryBloquesDatos.getKey();
-
-                    Node bloqueClonado;
-
+                    nomDatosBloque = entryBloquesDatos.getKey();
+                    
                     bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
 
                     //coordenadas reales del cubo, no las del chunk
-                    Vector3f coordenadas = BloquesNodeUtiles.devuelveCoordenadasBloque(nomDatosBloque);
+                    coordenadas = BloquesNodeUtiles.devuelveCoordenadasBloque(nomDatosBloque);
 
                     //le quitamos las caras que no se ven
-                    int[] carasbloquesVecinos ;
-                    int contaCarasQuitadas = 0;
-
-                    int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas);
+                    contaCarasQuitadas = 0;
+                    bloquesVecinos = chunks.getBloquesVecinos(coordenadas);
                     carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
                     datosBloque.setCaras(carasbloquesVecinos);
 
@@ -173,6 +183,12 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
                         optimizado.addControl(bloquesMostrarControl);
 
                         physics.getPhysicsSpace().add(optimizado);
+                        
+                        if (BloquesNodeUtiles.SOMBRAS){
+                            TangentBinormalGenerator.generate(optimizado);
+                            optimizado.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+                        }
+                        
                         spatial.getParent().attachChild(optimizado);
                     }
 
@@ -180,8 +196,124 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
                 }
             });
             
-            float totalFinChunk = timer.getTimeInSeconds();
-            System.out.println(claveActual+" : "+(totalFinChunk-totalInicioChunk));
+            //float totalFinChunk = timer.getTimeInSeconds();
+            //System.out.println(claveActual+" : "+(totalFinChunk-totalInicioChunk));
+        }
+        
+        //float totalFin = timer.getTimeInSeconds();
+        //System.out.println("Tiempo update"+(totalFin-totalInicio));
+        
+    }
+    
+    /**
+     *
+     * @param updatear
+     */
+    public void updateaChunksUrgentes(Map<Integer,BloquesNodeChunk> updatear){
+        Timer timer = app.getTimer();
+        float totalInicio = timer.getTimeInSeconds();
+
+        Map<String, Spatial> nodosUpdatar = new HashMap<String, Spatial>();
+        
+        BloquesNodeChunk chunkActual;
+        String claveActual;
+        Node bloquesMostrar;
+        
+        String nomDatosBloque;
+        Node bloqueClonado;
+        Vector3f coordenadas;
+        int contaCarasQuitadas;
+        int[] carasbloquesVecinos;
+        BloquesNodeChunkDatos datosBloque;
+        
+        for (Map.Entry<Integer,BloquesNodeChunk> entryChunk : updatear.entrySet()){    
+            //float totalInicioChunk = timer.getTimeInSeconds();
+            
+            chunkActual = entryChunk.getValue();
+            claveActual = chunkActual.getNombreChunk();
+
+            bloquesMostrar = new Node(claveActual);
+            
+            
+            
+            for (Map.Entry<String,BloquesNodeChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
+                datosBloque = entryBloquesDatos.getValue();
+                
+                if (datosBloque != null){
+                    nomDatosBloque = entryBloquesDatos.getKey();
+
+                    bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
+
+                    //coordenadas reales del cubo, no las del chunk
+                    coordenadas = BloquesNodeUtiles.devuelveCoordenadasBloque(nomDatosBloque);
+
+                    //le quitamos las caras que no se ven
+                    contaCarasQuitadas = 0;
+                    carasbloquesVecinos = datosBloque.getCaras();
+
+                    for(int h = 0;h<6;h++){
+                        if (carasbloquesVecinos[h] == 0){ //si no hay cara
+                            bloqueClonado.detachChildNamed("Cara-"+h); 
+                            contaCarasQuitadas++;
+                        }
+                    }
+
+                    if (contaCarasQuitadas < 6){
+                        bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesNodeUtiles.TAMANO_BLOQUE);
+                        bloquesMostrar.attachChild(bloqueClonado);
+                    }
+                }
+            }
+            
+            nodosUpdatar.put(claveActual,GeometryBatchFactory.optimize(bloquesMostrar));
+            
+            //float totalFinChunk = timer.getTimeInSeconds();
+            //System.out.println(claveActual+" : "+(totalFinChunk-totalInicioChunk));
+        }
+        
+        
+        final String[] keysNodosUpdatar = (String[])( nodosUpdatar.keySet().toArray( new String[nodosUpdatar.size()] ) );
+        final Map<String, Spatial> nodosUpdatarFinal = nodosUpdatar;
+
+        if (keysNodosUpdatar.length > 0){
+            //float totalInicioChunk = timer.getTimeInSeconds();
+            app.enqueue(new Callable() {
+                public Object call() throws Exception {  
+                    Node terreno = spatial.getParent();
+                    
+                    Spatial nodoOptimizado;
+                    CollisionShape bloquesMostrarShape;
+                    RigidBodyControl bloquesMostrarControl;
+                    
+                    for(int j=0; j<keysNodosUpdatar.length; j++){
+                        nodoOptimizado = nodosUpdatarFinal.get(keysNodosUpdatar[j]);
+
+                        bloquesMostrarShape = CollisionShapeFactory.createMeshShape((Node) nodoOptimizado);
+                        bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
+                        nodoOptimizado.addControl(bloquesMostrarControl);
+
+                        physics.getPhysicsSpace().add(nodoOptimizado);
+
+                        //quitamos el chunk anterior y sus fisicas si hace falta
+                        Spatial child = terreno.getChild(keysNodosUpdatar[j]);
+                        if (child != null){
+                            physics.getPhysicsSpace().remove(child.getControl(0)) ; 
+                            terreno.detachChild(child);
+                        }
+
+                        if (BloquesNodeUtiles.SOMBRAS){
+                            TangentBinormalGenerator.generate(nodoOptimizado);
+                            nodoOptimizado.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+                        }        
+                      
+                        terreno.attachChild(nodoOptimizado);
+                    }
+
+                    return null;
+                }
+            });
+            //float totalFinChunk = timer.getTimeInSeconds();
+            //System.out.println("Refresco Urgente"+" : "+(totalFinChunk-totalInicioChunk));
         }
         
         float totalFin = timer.getTimeInSeconds();
@@ -216,7 +348,7 @@ public class BloquesNodeControlUpdates extends BloquesNodeControlSetterGetter{
             }).get();
             
             if (updatear != null){
-                //updateaChunksUrgentes(updatear); //2 es para los rapidos, destruir bloques por ejemplo
+                updateaChunksUrgentes(updatear); //2 es para los rapidos, destruir bloques por ejemplo
             }
             
             return false;

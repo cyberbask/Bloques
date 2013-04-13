@@ -3,8 +3,7 @@
  */
 package cliente.personaje;
 
-import bloques.manejo.BloqueChunkUtiles;
-import bloques.manejo.BloqueChunks;
+import bloquesnode.manejo.utiles.BloquesNodeUtiles;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -16,7 +15,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
-import bloques.utiles.BloqueColision;
 
 /**
  *
@@ -56,7 +54,7 @@ public class Personaje {
     /**
      * La usamos para poner la camara mas alta que el bloque que representa al player
      */
-    protected float correcionAlturaPlayer = 4.5f;
+    protected float correcionAlturaPlayer = 3.5f;
     
     /**
      *
@@ -87,17 +85,15 @@ public class Personaje {
     
     /**
      *
-     * @param posIniX
-     * @param posIniY
-     * @param posIniZ
+     * @param coodPlayer 
      */
-    public void generaPersonaje(float posIniX, float posIniY, float posIniZ){
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(2f, 6f, 1);
+    public void generaPersonaje(Vector3f coodPlayer){
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(2f, 7f, 1);
         player = new CharacterControl(capsuleShape, 0.05f);
         player.setJumpSpeed(50);
         player.setFallSpeed(4500);
         player.setGravity(180);
-        player.setPhysicsLocation(new Vector3f(posIniX, posIniY, posIniZ));
+        player.setPhysicsLocation(coodPlayer);
 
         //Añadimos el personaje al espacio de fisicas
         physics.getPhysicsSpace().add(player);
@@ -112,9 +108,10 @@ public class Personaje {
      */
     public int posicionarCamara(int bloqueConMasAltura){
         if (bloqueConMasAltura > 0){ 
-            String nombreChunk = BloqueChunkUtiles.generarNombreChunk(BloqueChunkUtiles.calculaCoordenadasChunk(20, bloqueConMasAltura , 20));
-            if (rootNode.getChild("Chunk: "+nombreChunk) != null){
-                bloqueConMasAltura = bloqueConMasAltura + (20 * BloqueChunkUtiles.TAMANO_BLOQUE * 2);
+            Vector3f cood = new Vector3f(60,bloqueConMasAltura,60);
+            String nombreChunk = BloquesNodeUtiles.generarNombreChunk(cood);
+            if (rootNode.getChild(nombreChunk) != null){
+                bloqueConMasAltura = bloqueConMasAltura + (60 * BloquesNodeUtiles.TAMANO_BLOQUE * 2);
                 cam.setLocation(new Vector3f(10, bloqueConMasAltura, 10));
                 cam.setRotation(new Quaternion().fromAngleAxis(90*FastMath.DEG_TO_RAD, new Vector3f(0,1,0)));
                 cam.update();
@@ -144,9 +141,8 @@ public class Personaje {
     /**
      *
      * @param tpf
-     * @param chunks  
      */
-    public void update(float tpf, BloqueChunks chunks){  
+    public void update(float tpf){  
         /**/
         if (iniciado){
             float mov1 = 0.10f;
@@ -157,9 +153,9 @@ public class Personaje {
                 mov2 = mov2 * 1.75f;
             }
             
-            Vector3f camDir = cam.getDirection().clone().multLocal(mov1 * BloqueChunkUtiles.TAMANO_BLOQUE);
+            Vector3f camDir = cam.getDirection().clone().multLocal(mov1 * BloquesNodeUtiles.TAMANO_BLOQUE);
             camDir.setY(0f); //evita despegarse del chan :-D
-            Vector3f camLeft = cam.getLeft().clone().multLocal(mov2 * BloqueChunkUtiles.TAMANO_BLOQUE);
+            Vector3f camLeft = cam.getLeft().clone().multLocal(mov2 * BloquesNodeUtiles.TAMANO_BLOQUE);
             walkDirection.set(0, 0, 0);
             if (left)  { walkDirection.addLocal(camLeft); }
             if (right) { walkDirection.addLocal(camLeft.negate()); }
@@ -173,7 +169,7 @@ public class Personaje {
             
             //TODO terminar la colisiones
             //Esta peli es para no meterse dentro de un bloque
-            /**/
+            /** /
             float correcion = BloqueChunkUtiles.TAMANO_BLOQUE - 1f;
 
             Vector3f playerLocation = physicsLocation.clone();
