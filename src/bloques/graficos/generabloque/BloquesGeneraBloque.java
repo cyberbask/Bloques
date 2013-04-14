@@ -48,7 +48,10 @@ public class BloquesGeneraBloque {
     public BloquesGenericos bloquesGenericos;
     
     
-    Map<String,Node> bloquesGenerados = new HashMap<String,Node>();
+    /**
+     *
+     */
+    protected Map<String,Node> bloquesGenerados = new HashMap<String,Node>();
     
     /**
      *
