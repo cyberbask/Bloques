@@ -21,7 +21,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_CHUNK_Y = 64;
+    public static final int TAMANO_CHUNK_Y = 256;
     /**
      *
      */
@@ -29,7 +29,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int MAX_ALTURA_BLOQUES = 256;
+    public static final int MAX_ALTURA_BLOQUES = 320;
     /**
      *
      */
@@ -38,7 +38,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 320; 
+    public static final int TAMANO_GENERA_TERRENO = 128; 
     
     /**
      *
@@ -73,7 +73,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final float NIEBLA_INTENSIDAD = 0.25f;
+    public static final float NIEBLA_INTENSIDAD = 0.15f;
     
     
     /**

@@ -35,4 +35,5 @@ public class BloquesControlSetterGetter extends BloquesControlBasic{
     public int getBloqueConMasAltura(int x, int z){
         return chunks.getBloqueConMasAltura(x, z);
     }
+    
 }

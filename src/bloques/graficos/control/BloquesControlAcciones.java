@@ -4,10 +4,12 @@
  */
 package bloques.graficos.control;
 
+import bloques.manejo.chunks.BloquesChunk;
 import bloques.manejo.chunks.BloquesChunkDatos;
 import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +25,21 @@ public class BloquesControlAcciones extends BloquesControlColision{
      */
     public BloquesControlAcciones(Application app){
         super(app);
+    }
+    
+    
+    /**
+     *
+     * @param coordUsar
+     */
+    public void actualizaBloqueNodo(Vector3f coordUsar){
+        BloquesChunk chunkActual = chunks.getChunk(coordUsar);
+        BloquesChunkDatos bloqueActual = chunks.getBloque(coordUsar);
+        String nombreNodo = BloquesUtiles.generarNombreBloque(coordUsar);
+        Node bloqueClonado = bloques.generaBloqueClonado(nombreNodo, bloqueActual, chunks);
+        if (bloqueClonado != null){
+            chunkActual.setNodo(coordUsar, bloqueClonado);
+        }
     }
     
     /**
@@ -42,7 +59,11 @@ public class BloquesControlAcciones extends BloquesControlColision{
                 bloqueDatos.setNomBloque(nomBloque);
                 chunks.setBloque(coordUsar, bloqueDatos);
                 
+                //actualizamos las caras del bloque
                 refrescaBloque(coordUsar);
+                
+                //lo añadimos al nodo tambien
+                actualizaBloqueNodo(coordUsar);
             }
         }
     }
@@ -58,8 +79,13 @@ public class BloquesControlAcciones extends BloquesControlColision{
         if (coorUltCol != null){
             coordUsar = coorUltCol;
             chunks.quitaBloque(coordUsar);
-                
+            
+            //actualizamos las caras del bloque
             refrescaBloque(coordUsar);
+            
+            //lo quitamos del nodo ambien
+            BloquesChunk chunkActual = chunks.getChunk(coordUsar);
+            chunkActual.quitaNodo(coordUsar);
         }
     }
     
@@ -106,6 +132,9 @@ public class BloquesControlAcciones extends BloquesControlColision{
                     Vector3f coordVecino = new Vector3f(bloquesVecinos[i][0], bloquesVecinos[i][1], bloquesVecinos[i][2]);
 
                     chunks.setCarasVecinas(coordVecino,false);
+                    
+                    //lo actualizamos en el nodo tambien
+                    actualizaBloqueNodo(coordVecino);
 
                     nombreChunk = BloquesUtiles.generarNombreChunk(coordVecino);
                     if (chunksAUpdatar.get(nombreChunk) == null){

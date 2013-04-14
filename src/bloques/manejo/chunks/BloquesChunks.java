@@ -104,7 +104,13 @@ public class BloquesChunks{
     public BloquesChunkDatos getBloque(Vector3f coord){
         String nombreBloque = BloquesUtiles.generarNombreBloque(coord);
         
-        return getChunk(coord).getBloque(nombreBloque);
+        BloquesChunk chunk = getChunk(coord);
+        
+        if (chunk != null){
+            return chunk.getBloque(nombreBloque);
+        }else{
+            return null;
+        }
     }
     
     /**
@@ -182,7 +188,7 @@ public class BloquesChunks{
     public int getBloqueConMasAltura(int x, int z){
         int maxbucle = BloquesUtiles.MAX_ALTURA_BLOQUES / BloquesUtiles.TAMANO_CHUNK_Y;
         
-        for (int i=(maxbucle - 1);i>=0;i--){
+        for (int i=(maxbucle-1);i>=0;i--){
             int a = i * BloquesUtiles.TAMANO_CHUNK_Y * BloquesUtiles.TAMANO_BLOQUE;
             
             Vector3f coordChunk = new Vector3f(x, a, z);
@@ -191,7 +197,12 @@ public class BloquesChunks{
             
             if (chunk != null){
                for(int y = 0;y < (BloquesUtiles.TAMANO_CHUNK_Y * BloquesUtiles.TAMANO_BLOQUE);y = y + BloquesUtiles.TAMANO_BLOQUE){
-                    int b = a - y;
+                   int b; 
+                   if (a == 0){
+                        b = (BloquesUtiles.TAMANO_CHUNK_Y * BloquesUtiles.TAMANO_BLOQUE) - y;
+                    }else{
+                        b = a - y;
+                    }
                     
                     Vector3f coodBloque = new Vector3f(x, b, z);
                     

@@ -124,10 +124,6 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
         BloquesChunkDatos datosBloque;
         String nomDatosBloque;
         Node bloqueClonado;
-        Vector3f coordenadas;
-        int[] carasbloquesVecinos;
-        int[][] bloquesVecinos;
-        int contaCarasQuitadas;
         int mostrar;
             
         for (Map.Entry<Integer,BloquesChunk> entryChunk : updatear.entrySet()){    
@@ -135,41 +131,35 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
             
             chunkActual = entryChunk.getValue();
             claveActual = chunkActual.getNombreChunk();
-
-            bloquesMostrar = new Node(claveActual);
             
-            mostrar = 0;
+            Node allNodos = chunkActual.getAllNodos();
             
-            for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
-                datosBloque = entryBloquesDatos.getValue();
-                
-                if (datosBloque != null){
-                    nomDatosBloque = entryBloquesDatos.getKey();
-                    
-                    bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
+            if (allNodos.getQuantity() <= 0){
+                bloquesMostrar = new Node(claveActual);
 
-                    //coordenadas reales del cubo, no las del chunk
-                    coordenadas = BloquesUtiles.devuelveCoordenadasBloque(nomDatosBloque);
+                mostrar = 0;
 
-                    //le quitamos las caras que no se ven
-                    contaCarasQuitadas = 0;
-                    bloquesVecinos = chunks.getBloquesVecinos(coordenadas);
-                    carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
-                    datosBloque.setCaras(carasbloquesVecinos);
+                for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
+                    datosBloque = entryBloquesDatos.getValue();
 
-                    for(int h = 0;h<6;h++){
-                        if (carasbloquesVecinos[h] == 0){ //si no hay cara
-                            bloqueClonado.detachChildNamed("Cara-"+h); 
-                            contaCarasQuitadas++;
+                    if (datosBloque != null){
+                        nomDatosBloque = entryBloquesDatos.getKey();
+                        
+                        bloqueClonado = bloques.generaBloqueClonado(nomDatosBloque, datosBloque, chunks);
+                        if (bloqueClonado != null){
+                            bloquesMostrar.attachChild(bloqueClonado);
+                            
+                            //tambien lo guardamos como nodo para mejorar el rendimiento
+                            chunkActual.setNodo(nomDatosBloque, (Node) bloqueClonado.clone());
+
+                            mostrar = 1;
                         }
-                    }
-
-                    if (contaCarasQuitadas < 6){
-                        bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesUtiles.TAMANO_BLOQUE);
-                        bloquesMostrar.attachChild(bloqueClonado);
-                        mostrar = 1;
+                        
                     }
                 }
+            }else{
+                bloquesMostrar = (Node) allNodos.clone();
+                mostrar = 1;
             }
             
             final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrar);
@@ -221,9 +211,6 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
         
         String nomDatosBloque;
         Node bloqueClonado;
-        Vector3f coordenadas;
-        int contaCarasQuitadas;
-        int[] carasbloquesVecinos;
         BloquesChunkDatos datosBloque;
         
         for (Map.Entry<Integer,BloquesChunk> entryChunk : updatear.entrySet()){    
@@ -232,38 +219,27 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
             chunkActual = entryChunk.getValue();
             claveActual = chunkActual.getNombreChunk();
 
-            bloquesMostrar = new Node(claveActual);
+            Node allNodos = chunkActual.getAllNodos();
             
-            
-            
-            for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
-                datosBloque = entryBloquesDatos.getValue();
-                
-                if (datosBloque != null){
-                    nomDatosBloque = entryBloquesDatos.getKey();
+            if (allNodos.getQuantity() <= 0){
+                bloquesMostrar = new Node(claveActual);
 
-                    bloqueClonado = bloques.getBloqueGenerado(datosBloque.getNomBloque());
+                for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
+                    datosBloque = entryBloquesDatos.getValue();
 
-                    //coordenadas reales del cubo, no las del chunk
-                    coordenadas = BloquesUtiles.devuelveCoordenadasBloque(nomDatosBloque);
+                    if (datosBloque != null){
+                        nomDatosBloque = entryBloquesDatos.getKey();                        
 
-                    //le quitamos las caras que no se ven
-                    contaCarasQuitadas = 0;
-                    carasbloquesVecinos = datosBloque.getCaras();
-
-                    for(int h = 0;h<6;h++){
-                        if (carasbloquesVecinos[h] == 0){ //si no hay cara
-                            bloqueClonado.detachChildNamed("Cara-"+h); 
-                            contaCarasQuitadas++;
+                        bloqueClonado = bloques.generaBloqueClonado(nomDatosBloque, datosBloque, chunks);
+                        if (bloqueClonado != null){
+                            bloquesMostrar.attachChild(bloqueClonado);
                         }
                     }
-
-                    if (contaCarasQuitadas < 6){
-                        bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesUtiles.TAMANO_BLOQUE);
-                        bloquesMostrar.attachChild(bloqueClonado);
-                    }
                 }
+            }else{
+                bloquesMostrar = (Node) allNodos.clone();
             }
+                
             
             nodosUpdatar.put(claveActual,GeometryBatchFactory.optimize(bloquesMostrar));
             

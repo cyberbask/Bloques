@@ -3,6 +3,10 @@
  */
 package bloques.manejo.chunks;
 
+import bloques.manejo.utiles.BloquesUtiles;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +18,12 @@ public class BloquesChunk{
     /**
      * Contiene los datos del bloque segun coordenadas
      */
-    Map<String,BloquesChunkDatos> bloquesDatos = new HashMap<String, BloquesChunkDatos>();
+    private Map<String,BloquesChunkDatos> bloquesDatos = new HashMap<String, BloquesChunkDatos>();
     
-    String nombreChunk = null;
+    private String nombreChunk = null;
 
+    private Node nodos = new Node();
+    
     /**
      * Constructor
      */
@@ -72,6 +78,76 @@ public class BloquesChunk{
      */
     public void setNombreChunk(String nombreChunk) {
         this.nombreChunk = nombreChunk;
+        this.nodos.setName(nombreChunk);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public Node getAllNodos(){
+        return this.nodos;
+    }
+    
+    /**
+     *
+     * @param coord
+     * @param bloque
+     */
+    public void setNodo(Vector3f coord, Node bloque){
+        String nombreNodo = BloquesUtiles.generarNombreBloque(coord);
+        setNodo(nombreNodo, bloque);
+    }
+    
+    /**
+     *
+     * @param nomNodo
+     * @param bloque
+     */
+    public void setNodo(String nomNodo, Node bloque){
+        Spatial nodo = getNodo(nomNodo);
+        if (nodo != null){
+            quitaNodo(nodo);
+        }
+        
+        this.nodos.attachChild(bloque);
+    }
+    
+    /**
+     *
+     * @param nomNodo
+     * @return
+     */
+    public Spatial getNodo(String nomNodo){
+        return this.nodos.getChild(nomNodo); 
+    }
+    
+    /**
+     *
+     * @param coord
+     */
+    public void quitaNodo(Vector3f coord){
+        String nombreBloque = BloquesUtiles.generarNombreBloque(coord);
+        quitaNodo(nombreBloque);
+    }
+    
+    /**
+     *
+     * @param nomNodo
+     */
+    public void quitaNodo(String nomNodo){
+        Spatial nodo = getNodo(nomNodo);
+        if (nodo != null){
+            quitaNodo(nodo);
+        }
+    }
+    
+    /**
+     *
+     * @param nodo
+     */
+    public void quitaNodo(Spatial nodo){
+        this.nodos.detachChild(nodo);
     }
     
 }

@@ -3,6 +3,8 @@
  */
 package bloques.graficos.generabloque;
 
+import bloques.manejo.chunks.BloquesChunkDatos;
+import bloques.manejo.chunks.BloquesChunks;
 import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -224,6 +226,42 @@ public class BloquesGeneraBloque {
             return (Node) bloque.clone();
         }
         
+    }
+    
+    /**
+     *
+     * @param nomBloqueFinal
+     * @param datosBloque
+     * @param chunks
+     * @return
+     */
+    public Node generaBloqueClonado(String nomBloqueFinal, BloquesChunkDatos datosBloque, BloquesChunks chunks){
+        Node bloqueClonado = getBloqueGenerado(datosBloque.getNomBloque());
+        bloqueClonado.setName(nomBloqueFinal);
+        
+        //coordenadas reales del cubo, no las del chunk
+        Vector3f coordenadas = BloquesUtiles.devuelveCoordenadasBloque(nomBloqueFinal);
+        
+        //le quitamos las caras que no se ven
+        int contaCarasQuitadas = 0;
+
+        int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas);
+        int[] carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
+        datosBloque.setCaras(carasbloquesVecinos);
+
+        for(int h = 0;h<6;h++){
+            if (carasbloquesVecinos[h] == 0){ //si no hay cara
+                bloqueClonado.detachChildNamed("Cara-"+h); 
+                contaCarasQuitadas++;
+            }
+        }
+
+        if (contaCarasQuitadas < 6){
+            bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesUtiles.TAMANO_BLOQUE);
+            return bloqueClonado;
+        }
+        
+        return null;
     }
 
 }
