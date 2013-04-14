@@ -29,7 +29,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int MAX_ALTURA_BLOQUES = 320;
+    public static final int MAX_ALTURA_BLOQUES = 256;
     /**
      *
      */
@@ -38,7 +38,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 128; 
+    public static final int TAMANO_GENERA_TERRENO = 320; 
     
     /**
      *
