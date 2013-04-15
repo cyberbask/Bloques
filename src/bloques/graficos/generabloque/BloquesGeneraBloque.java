@@ -239,29 +239,31 @@ public class BloquesGeneraBloque {
      * @return
      */
     public Node generaBloqueClonado(String nomBloqueFinal, BloquesChunkDatos datosBloque, BloquesChunks chunks){
-        Node bloqueClonado = getBloqueGenerado(datosBloque.getNomBloque());
-        bloqueClonado.setName(nomBloqueFinal);
-        
-        //coordenadas reales del cubo, no las del chunk
-        Vector3f coordenadas = BloquesUtiles.devuelveCoordenadasBloque(nomBloqueFinal);
-        
-        //le quitamos las caras que no se ven
-        int contaCarasQuitadas = 0;
+        if (datosBloque != null){
+            Node bloqueClonado = getBloqueGenerado(datosBloque.getNomBloque());
+            bloqueClonado.setName(nomBloqueFinal);
 
-        int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas);
-        int[] carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
-        datosBloque.setCaras(carasbloquesVecinos);
+            //coordenadas reales del cubo, no las del chunk
+            Vector3f coordenadas = BloquesUtiles.devuelveCoordenadasBloque(nomBloqueFinal);
 
-        for(int h = 0;h<6;h++){
-            if (carasbloquesVecinos[h] == 0){ //si no hay cara
-                bloqueClonado.detachChildNamed("Cara-"+h); 
-                contaCarasQuitadas++;
+            //le quitamos las caras que no se ven
+            int contaCarasQuitadas = 0;
+
+            int[][] bloquesVecinos = chunks.getBloquesVecinos(coordenadas);
+            int[] carasbloquesVecinos = chunks.getCarasAPartirDeBloquesVecinos(bloquesVecinos);
+            datosBloque.setCaras(carasbloquesVecinos);
+
+            for(int h = 0;h<6;h++){
+                if (carasbloquesVecinos[h] == 0){ //si no hay cara
+                    bloqueClonado.detachChildNamed("Cara-"+h); 
+                    contaCarasQuitadas++;
+                }
             }
-        }
 
-        if (contaCarasQuitadas < 6){
-            bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesUtiles.TAMANO_BLOQUE);
-            return bloqueClonado;
+            if (contaCarasQuitadas < 6){
+                bloqueClonado.setLocalTranslation(coordenadas.x,coordenadas.y,coordenadas.z + BloquesUtiles.TAMANO_BLOQUE);
+                return bloqueClonado;
+            }
         }
         
         return null;

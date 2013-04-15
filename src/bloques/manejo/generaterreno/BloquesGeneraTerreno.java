@@ -105,9 +105,12 @@ public class BloquesGeneraTerreno{
         for (x = 0;x<totalTamano;x++){
             for (z = 0;z<totalTamano;z++){                
                 y = (int) heightmap.getScaledHeightAtPoint(x,z);
+                
+                
+                
+                y = (y / 3) + BloquesUtiles.NIVEL_MAR ;
  
                 for (int a=maxY; a>=minY; a--){ 
-                    int aGuardar = a / 2;
                     
                     if (a<=y){
                         tipoTerreno = "Hierba";
@@ -129,9 +132,9 @@ public class BloquesGeneraTerreno{
                         BloquesChunkDatos bloqueDatos = new BloquesChunkDatos();
                         bloqueDatos.setNomBloque(tipoTerreno);
 
-                        chunks.setBloque(new Vector3f(x * BloquesUtiles.TAMANO_BLOQUE, aGuardar * BloquesUtiles.TAMANO_BLOQUE, z * BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+                        chunks.setBloque(new Vector3f(x * BloquesUtiles.TAMANO_BLOQUE, a * BloquesUtiles.TAMANO_BLOQUE, z * BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
                     }else{
-                        chunks.setChunkSiNoExiste(new Vector3f(x * BloquesUtiles.TAMANO_BLOQUE, aGuardar * BloquesUtiles.TAMANO_BLOQUE, z * BloquesUtiles.TAMANO_BLOQUE));
+                        chunks.setChunkSiNoExiste(new Vector3f(x * BloquesUtiles.TAMANO_BLOQUE, a * BloquesUtiles.TAMANO_BLOQUE, z * BloquesUtiles.TAMANO_BLOQUE));
                     }
                 }
             }

@@ -43,6 +43,11 @@ public class BloquesUtiles {
     /**
      *
      */
+    public static final int NIVEL_MAR = 60; 
+    
+    /**
+     *
+     */
     public static final int CAM_FRUSTUMFAR = 1500; 
     
     /**
@@ -78,7 +83,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final float BLUR_FOCUS_RANGE = 200f;
+    public static final float BLUR_FOCUS_RANGE = 150f;
     
     
     /**
