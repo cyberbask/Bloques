@@ -57,6 +57,15 @@ public class MainCliente extends SimpleApplication {
         screenShotState.setFilePath(ScreenshotsPath);
         this.stateManager.attach(screenShotState);
         
+        //ruta para los savegames
+        String savesPath = System.getProperty("user.dir")+"/saves/";
+        File sp = new File(savesPath);
+        try{
+            sp.mkdir();
+        }catch(Exception e){
+
+        }
+        
         //Seteamos la "Applicacion State" principal del juego
         stateJuego = new JuegoState();
         stateManager.attach(stateJuego);
