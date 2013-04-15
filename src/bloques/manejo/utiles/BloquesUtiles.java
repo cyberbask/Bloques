@@ -43,7 +43,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int NIVEL_MAR = 60; 
+    public static final int NIVEL_MAR = 0; 
     
     /**
      *
