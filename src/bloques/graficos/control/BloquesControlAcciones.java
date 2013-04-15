@@ -18,6 +18,23 @@ import java.util.Map;
  * @author cyberbask
  */
 public class BloquesControlAcciones extends BloquesControlColision{
+    /**
+     *
+     */
+    protected BloquesChunk chunkActualABN;
+    /**
+     *
+     */
+    protected BloquesChunkDatos bloqueActualABN;
+    /**
+     *
+     */
+    protected String nombreNodoABN;
+    /**
+     *
+     */
+    protected Node bloqueClonadoABN;
+    
     
     /**
      *
@@ -33,12 +50,12 @@ public class BloquesControlAcciones extends BloquesControlColision{
      * @param coordUsar
      */
     public void actualizaBloqueNodo(Vector3f coordUsar){
-        BloquesChunk chunkActual = chunks.getChunk(coordUsar);
-        BloquesChunkDatos bloqueActual = chunks.getBloque(coordUsar);
-        String nombreNodo = BloquesUtiles.generarNombreBloque(coordUsar);
-        Node bloqueClonado = bloques.generaBloqueClonado(nombreNodo, bloqueActual, chunks);
-        if (bloqueClonado != null){
-            chunkActual.setNodo(coordUsar, bloqueClonado);
+        chunkActualABN = chunks.getChunk(coordUsar);
+        bloqueActualABN = chunks.getBloque(coordUsar);
+        nombreNodoABN = BloquesUtiles.generarNombreBloque(coordUsar);
+        bloqueClonadoABN = bloques.generaBloqueClonado(nombreNodoABN, bloqueActualABN, chunks);
+        if (bloqueClonadoABN != null){
+            chunkActualABN.setNodo(coordUsar, bloqueClonadoABN);
         }
     }
     

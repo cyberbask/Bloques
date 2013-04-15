@@ -166,6 +166,7 @@ public class BloquesControlBasic extends AbstractControl implements Savable, Clo
      *
      */
     public void destroy(){
+        bloqueGeneraTerreno.destroy();
         executor.shutdown();
         executor.shutdownNow();
     }

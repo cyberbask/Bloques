@@ -58,7 +58,6 @@ public class BloquesControl extends BloquesControlAcciones{
     
     @Override
     public void destroy(){
-        super.destroy();
-        bloqueGeneraTerreno.destroy();
+        super.destroy();        
     }
 }

@@ -19,7 +19,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.CartoonEdgeFilter;
+import com.jme3.post.filters.DepthOfFieldFilter;
 import com.jme3.post.filters.FogFilter;
+import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
@@ -113,7 +115,6 @@ public class JuegoGraficos {
         bloquesTerrainControl = new BloquesControl(this.app);
         Node terrainNode = new Node("terrainNode");
         terrainNode.addControl(bloquesTerrainControl);
-        terrainNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         rootNode.attachChild(terrainNode);
         
         personaje = new Personaje(app);
@@ -125,14 +126,28 @@ public class JuegoGraficos {
         viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
         //viewPort.setBackgroundColor(ColorRGBA.Blue);
         
+        fpp=new FilterPostProcessor(assetManager);
+        
         //Luces basicas
         setUpLight();
+        
+        //Sombras
+        setUpShadows();
         
         //Niebla
         setUpFog();
         
+        //Efecto Blur
+        setUpBlur();
+        
+        //celShading
+        setUpCellShading();
+        
         //Cielo
         setUpSky();
+        
+        viewPort.addProcessor(pssmRenderer);
+        viewPort.addProcessor(fpp);
     }
     
     private void setUpLight() {
@@ -152,7 +167,7 @@ public class JuegoGraficos {
     /**
      *
      */
-    protected void setUpShadows(){
+    private void setUpShadows(){
         /** /
         if (BloquesUtiles.SOMBRAS){
             BasicShadowRenderer bsr = new BasicShadowRenderer(assetManager, 512);
@@ -161,41 +176,36 @@ public class JuegoGraficos {
         }
         /**/
         
-        /**/
+        
         if (BloquesUtiles.SOMBRAS){
+            /**/
             pssmRenderer = new PssmShadowRenderer(assetManager, BloquesUtiles.SOMBRAS_CALIDAD1, BloquesUtiles.SOMBRAS_CALIDAD2);
             pssmRenderer.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal()); // light direction
             pssmRenderer.setShadowIntensity(BloquesUtiles.SOMBRAS_INTENSIDAD);
-            pssmRenderer.setEdgesThickness(1);
-            pssmRenderer.setFilterMode(FilterMode.Bilinear);
-            viewPort.addProcessor(pssmRenderer);
-        }
-        /**/
-        
-        /** /
-        if (BloquesUtiles.SOMBRAS){
-            FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+            //pssmRenderer.setEdgesThickness(1);
+            //pssmRenderer.setFilterMode(FilterMode.Bilinear);
+            pssmRenderer.setFilterMode(FilterMode.PCF4);
+            /**/
+            
+            /** /
+            fpp = new FilterPostProcessor(assetManager);
             SSAOFilter ssaoFilter = new SSAOFilter(12.94f, 43.92f, 0.33f, 0.61f);
             fpp.addFilter(ssaoFilter);
-            viewPort.addProcessor(fpp);
+            /**/
         }
-        /**/
     }
     
-    /**
-     *
-     */
-    protected void unsetShadows(){
-        if (BloquesUtiles.SOMBRAS){
-            viewPort.removeProcessor(pssmRenderer);
-        }
+    private void setUpBlur(){
+        DepthOfFieldFilter dofFilter = new DepthOfFieldFilter();
+        dofFilter.setFocusDistance(0f);
+        dofFilter.setFocusRange(BloquesUtiles.BLUR_FOCUS_RANGE);
+        dofFilter.setBlurScale(1.4f);
+        fpp.addFilter(dofFilter);
     }
     
     private void setUpFog(){
-        FilterPostProcessor fogPPS=new FilterPostProcessor(assetManager);
         FogFilter fog = new FogFilter(ColorRGBA.White, BloquesUtiles.NIEBLA_INTENSIDAD, BloquesUtiles.NIEBLA_DISTANCIA);
-        fogPPS.addFilter(fog);
-        viewPort.addProcessor(fogPPS);
+        fpp.addFilter(fog);
     }
     
     private void setUpSky(){
@@ -203,24 +213,13 @@ public class JuegoGraficos {
         rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/skybox_blue_sphere.jpg", true));
         /**/
     }
-    
+        
     /**
      *
      */
-    protected void setUpCellShading(){
-        /**/
-        fpp=new FilterPostProcessor(assetManager);
+    private void setUpCellShading(){
+        /** /        
         fpp.addFilter(new CartoonEdgeFilter());
-        viewPort.addProcessor(fpp);
-        /**/
-    }
-    
-    /**
-     *
-     */
-    protected void unsetCellShading(){
-        /**/
-        viewPort.removeProcessor(fpp);
         /**/
     }
     

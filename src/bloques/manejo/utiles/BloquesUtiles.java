@@ -38,7 +38,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 256; //256 limite por ahora
+    public static final int TAMANO_GENERA_TERRENO = 128; //256 limite por ahora
     
     /**
      *
@@ -74,6 +74,11 @@ public class BloquesUtiles {
      *
      */
     public static final float NIEBLA_INTENSIDAD = 0.15f;
+    
+    /**
+     *
+     */
+    public static final float BLUR_FOCUS_RANGE = 200f;
     
     
     /**
