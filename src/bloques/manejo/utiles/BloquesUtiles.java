@@ -38,7 +38,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 64; //256 limite por ahora
+    public static final int TAMANO_GENERA_TERRENO = 256; //256 limite por ahora
     
     /**
      *
@@ -63,12 +63,12 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int SOMBRAS_CALIDAD1 = 2048; 
+    public static final int SOMBRAS_CALIDAD1 = 1024; 
     
     /**
      *
      */
-    public static final int SOMBRAS_CALIDAD2 = 6; 
+    public static final int SOMBRAS_CALIDAD2 = 3; 
     
     /**
      *

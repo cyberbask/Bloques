@@ -1,7 +1,10 @@
 package cliente;
 
 import bloques.manejo.utiles.BloquesUtiles;
+import cliente.flycam.CustomFlyCam;
+import cliente.flycam.CustomFlyCamAppState;
 import cliente.juego.JuegoState;
+import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
@@ -28,6 +31,7 @@ public class MainCliente extends SimpleApplication {
         
         //inicializamos las settings del app
         app = AppUtiles.initSettings(app);
+        
         
         app.start();
     }
@@ -71,8 +75,13 @@ public class MainCliente extends SimpleApplication {
         stateManager.attach(stateJuego);
         
         //setamos la velocidad estandar de la flycam
+        stateManager.detach(stateManager.getState(FlyCamAppState.class));
+        CustomFlyCamAppState stateFlyCam = new CustomFlyCamAppState();
+        stateManager.attach(stateFlyCam);
+        flyCam = new CustomFlyCam(cam);
         flyCam.setMoveSpeed(5f);             
         flyCam.setRotationSpeed(5f);
+        stateManager.getState(CustomFlyCamAppState.class).setCamera( flyCam ); 
 
         //setemoa la distancia de dibujado de la camara
         cam.setFrustumFar(BloquesUtiles.CAM_FRUSTUMFAR);
