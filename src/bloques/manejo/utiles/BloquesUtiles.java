@@ -38,7 +38,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 128; //256 limite por ahora
+    public static final int TAMANO_GENERA_TERRENO = 64; //256 limite por ahora
     
     /**
      *

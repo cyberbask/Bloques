@@ -18,10 +18,8 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.CartoonEdgeFilter;
 import com.jme3.post.filters.DepthOfFieldFilter;
 import com.jme3.post.filters.FogFilter;
-import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
@@ -125,15 +123,23 @@ public class JuegoGraficos {
         //cambiamos el color del fondo
         viewPort.setBackgroundColor(new ColorRGBA(0.7f,0.8f,1f,1f));
         //viewPort.setBackgroundColor(ColorRGBA.Blue);
-        
-        fpp=new FilterPostProcessor(assetManager);
-        
+
         //Luces basicas
         setUpLight();
         
         //Sombras
         setUpShadows();
-        
+                
+        //Cielo
+        setUpSky();
+    }
+    
+    /**
+     *
+     */
+    protected void setUps() {
+        fpp=new FilterPostProcessor(assetManager);
+               
         //Niebla
         setUpFog();
         
@@ -143,18 +149,28 @@ public class JuegoGraficos {
         //celShading
         setUpCellShading();
         
-        //Cielo
-        setUpSky();
-        
         viewPort.addProcessor(pssmRenderer);
         viewPort.addProcessor(fpp);
     }
     
+    /**
+     *
+     */
+    protected void unsetUps(){
+        viewPort.removeProcessor(fpp);
+        viewPort.removeProcessor(pssmRenderer);
+        
+        fpp.removeAllFilters();
+        fpp.cleanup();
+    }
+    
     private void setUpLight() {
         // We add light so we see the scene
+        /**/
         AmbientLight al = new AmbientLight();
         al.setColor(ColorRGBA.White.mult(0.55f));
         rootNode.addLight(al);
+        /**/
 
         DirectionalLight dl = new DirectionalLight();
         dl.setColor(ColorRGBA.White.mult(0.85f));

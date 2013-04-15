@@ -36,6 +36,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
     
     //teclas
     private boolean vsync = true;
+    private boolean setups = false;
     
     //Graficos
     /**
@@ -107,6 +108,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_RBRACKET));
+        inputManager.addMapping("SetUps", new KeyTrigger(KeyInput.KEY_N));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("Correr", new KeyTrigger(KeyInput.KEY_LSHIFT));
         inputManager.addMapping("MouseLeftButton", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -118,6 +120,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
         inputManager.addListener(this, "VSync");
+        inputManager.addListener(this, "SetUps");
         inputManager.addListener(this, "MouseLeftButton");
         inputManager.addListener(this, "MouseRightButton");
         inputManager.addListener(this, "MouseCentralButton");
@@ -140,6 +143,13 @@ public class JuegoState extends AbstractAppState implements ActionListener{
             AppSettings Appsett = AppUtiles.getSettings(app);
             Appsett.put("VSync", vsync);
             this.app.getContext().restart();
+        } else if (name.equals("SetUps") && !isPressed) {
+            setups = !setups;
+            if (setups){
+                graficos.setUps();
+            }else{
+                graficos.unsetUps();
+            }
         } else if (name.equals("Correr")) {
            graficos.personaje.correr = isPressed;
         } else if (name.equals("MouseLeftButton") && !isPressed) {
