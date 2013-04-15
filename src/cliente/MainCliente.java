@@ -6,6 +6,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.renderer.RenderManager;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utiles.AppUtiles;
@@ -46,7 +47,14 @@ public class MainCliente extends SimpleApplication {
         
         //capturas de pantalla
         ScreenshotAppState screenShotState = new ScreenshotAppState();
-        screenShotState.setFilePath(System.getProperty("user.dir")+"/screenshots/");
+        String ScreenshotsPath = System.getProperty("user.dir")+"/screenshots/";
+        File ssp = new File(ScreenshotsPath);
+        try{
+            ssp.mkdir();
+        }catch(Exception e){
+            ScreenshotsPath = "";
+        }
+        screenShotState.setFilePath(ScreenshotsPath);
         this.stateManager.attach(screenShotState);
         
         //Seteamos la "Applicacion State" principal del juego
