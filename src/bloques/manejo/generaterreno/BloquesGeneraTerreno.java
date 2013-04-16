@@ -6,9 +6,11 @@ package bloques.manejo.generaterreno;
 import bloques.graficos.generabloque.BloquesGeneraBloque;
 import bloques.manejo.chunks.BloquesChunkDatos;
 import bloques.manejo.chunks.BloquesChunks;
+import bloques.manejo.utiles.BloquesSaveLoad;
 import bloques.manejo.utiles.BloquesUtiles;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.system.Timer;
 import com.jme3.terrain.heightmap.HillHeightMap;
@@ -27,6 +29,7 @@ public class BloquesGeneraTerreno{
      *
      */
     protected SimpleApplication app;
+    private AssetManager      assetManager;
     
     private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
     private Future future = null;
@@ -60,6 +63,7 @@ public class BloquesGeneraTerreno{
      */
     public BloquesGeneraTerreno(Application app, BloquesGeneraBloque bloques){
         this.app = (SimpleApplication) app;
+        this.assetManager = this.app.getAssetManager();
     }
     
     private HillHeightMap generateTerrainconReturn(){
@@ -172,10 +176,16 @@ public class BloquesGeneraTerreno{
     public void generaTerreno(){      
         try{
             if(future == null && chunks == null && !generandoTerreno){
-                //BloqueChunks loaded = (BloqueChunks) SaveGame.loadGame("Bloques/terreno/", "allchunks");
+                BloquesChunks loaded = null;
+                try{
+                    //loaded = (BloquesChunks) BloquesSaveLoad.load("terreno/", "allchunks");
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                
                 porcentajeGenerado = 0; //ponemos el porcentaje a cero
                 
-                BloquesChunks loaded=null;
+                //BloquesChunks loaded=null;
                 
                 if (loaded == null){
                     generandoTerreno = true;
@@ -189,7 +199,9 @@ public class BloquesGeneraTerreno{
                 if(future.isDone()){
                     generandoTerreno = false;
                     future = null;
-                    //SaveGame.saveGame("Bloques/terreno/", "allchunks", chunks);
+                    //BloquesSaveLoad.save("terreno/", "allchunks",chunks);
+                    
+                    int interrumpe = 9;
                 }
                 else if(future.isCancelled()){
                     future = null;

@@ -6,12 +6,22 @@ package utiles;
 import cliente.MainCliente;
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
+import java.io.File;
 
 /**
  *
  * @author mcarballo
  */
 public class AppUtiles {
+    /**
+     *
+     */
+    public static final String PATH_SAVE = System.getProperty("user.dir")+"/saves/";
+    
+    /**
+     *
+     */
+    public static final String PATH_SCREENSHOTS = System.getProperty("user.dir")+"/screenshots/";
     
     /**
      *
@@ -19,7 +29,7 @@ public class AppUtiles {
      * @return Aplicacion general con los settings configurados
      */
     public static MainCliente initSettings(MainCliente app){
-        /** /
+        /**/
         app.setShowSettings(false);
         
         AppSettings settings = new AppSettings(true);
@@ -33,7 +43,7 @@ public class AppUtiles {
         app.setSettings(settings);
         /**/
         
-        /**/
+        /** /
         app.setShowSettings(true);
         AppSettings settings = new AppSettings(false);
         settings.put("Title", "Bloques");
@@ -53,5 +63,30 @@ public class AppUtiles {
         AppSettings settings = app.getContext().getSettings();
         
         return settings;
+    }
+    
+    /**
+     *
+     */
+    public static void creaCarpetasIniciales(){
+        File f = new File(PATH_SCREENSHOTS);
+        try{
+            if (!f.exists()){
+                f.mkdir();
+            }
+        }catch(Exception e){
+
+        }
+        
+        //ruta para los savegames
+        f = new File(PATH_SAVE);
+        try{
+            if (!f.exists()){
+                f.mkdir();
+            }
+        }catch(Exception e){
+
+        }
+        
     }
 }

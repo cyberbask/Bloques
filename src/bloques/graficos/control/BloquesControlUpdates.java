@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import jme3tools.optimize.GeometryBatchFactory;
 
@@ -162,75 +163,84 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
     /**
      *
      * @param updatear
+     * @throws InterruptedException 
+     * @throws ExecutionException  
      */
-    public void updateaChunks(Map<Integer,BloquesChunk> updatear){
+    public void updateaChunks(Map<String,Integer> updatear) throws InterruptedException, ExecutionException{
         //Timer timer = app.getTimer();
         //float totalInicio = timer.getTimeInSeconds();
 
         int mostrar;
             
-        for (Map.Entry<Integer,BloquesChunk> entryChunk : updatear.entrySet()){    
+        for (Map.Entry<String,Integer> entryChunk : updatear.entrySet()){    
             //float totalInicioChunk = timer.getTimeInSeconds();
             
-            chunkActualUC = entryChunk.getValue();
-            claveActualUC = chunkActualUC.getNombreChunk();
+            claveActualUC = entryChunk.getKey();
             
-            Node allNodos = chunkActualUC.getAllNodos();
-            
-            if (allNodos.getQuantity() <= 0){
-                bloquesMostrarUC = new Node(claveActualUC);
-
-                mostrar = 0;
-
-                for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActualUC.getAllBloquesDatos().entrySet()){ 
-                    datosBloqueUC = entryBloquesDatos.getValue();
-
-                    if (datosBloqueUC != null){
-                        nomDatosBloqueUC = entryBloquesDatos.getKey();
-                        
-                        bloqueClonadoUC = bloques.generaBloqueClonado(nomDatosBloqueUC, datosBloqueUC, chunks);
-                        if (bloqueClonadoUC != null){
-                            bloquesMostrarUC.attachChild(bloqueClonadoUC);
-                            
-                            //tambien lo guardamos como nodo para mejorar el rendimiento
-                            chunkActualUC.setNodo(nomDatosBloqueUC, (Node) bloqueClonadoUC.clone());
-
-                            mostrar = 1;
-                        }
-                        
-                    }
+            chunkActualUC = app.enqueue(new Callable<BloquesChunk>() {
+                public BloquesChunk call() throws Exception {
+                    return chunks.getChunk(claveActualUC);
                 }
-            }else{
-                bloquesMostrarUC = (Node) allNodos.clone();
-                mostrar = 1;
+            }).get();
+                        
+            if (chunkActualUC != null){
+                Node allNodos = chunkActualUC.getAllNodos();
+
+                if (allNodos.getQuantity() <= 0){
+                    bloquesMostrarUC = new Node(claveActualUC);
+
+                    mostrar = 0;
+
+                    for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActualUC.getAllBloquesDatos().entrySet()){ 
+                        datosBloqueUC = entryBloquesDatos.getValue();
+
+                        if (datosBloqueUC != null){
+                            nomDatosBloqueUC = entryBloquesDatos.getKey();
+
+                            bloqueClonadoUC = bloques.generaBloqueClonado(nomDatosBloqueUC, datosBloqueUC, chunks);
+                            if (bloqueClonadoUC != null){
+                                bloquesMostrarUC.attachChild(bloqueClonadoUC);
+
+                                //tambien lo guardamos como nodo para mejorar el rendimiento
+                                chunkActualUC.setNodo(nomDatosBloqueUC, (Node) bloqueClonadoUC.clone());
+
+                                mostrar = 1;
+                            }
+
+                        }
+                    }
+                }else{
+                    bloquesMostrarUC = (Node) allNodos.clone();
+                    mostrar = 1;
+                }
+
+                final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrarUC);
+                final int mostrarFinal = mostrar;
+
+                app.enqueue(new Callable() {
+                    public Object call() throws Exception {  
+                        if (mostrarFinal == 1){
+                            CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape(optimizado);
+                            RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
+                            optimizado.addControl(bloquesMostrarControl);
+
+                            physics.getPhysicsSpace().add(optimizado);
+
+                            if (BloquesUtiles.SOMBRAS){
+                                optimizado.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+                                TangentBinormalGenerator.generate(optimizado);
+                            }
+
+                            spatial.getParent().attachChild(optimizado);
+                        }
+
+                        return null;
+                    }
+                });
+
+                //float totalFinChunk = timer.getTimeInSeconds();
+                //System.out.println(claveActual+" : "+(totalFinChunk-totalInicioChunk));
             }
-            
-            final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrarUC);
-            final int mostrarFinal = mostrar;
-
-            app.enqueue(new Callable() {
-                public Object call() throws Exception {  
-                    if (mostrarFinal == 1){
-                        CollisionShape bloquesMostrarShape = CollisionShapeFactory.createMeshShape(optimizado);
-                        RigidBodyControl bloquesMostrarControl = new RigidBodyControl(bloquesMostrarShape, 0);
-                        optimizado.addControl(bloquesMostrarControl);
-
-                        physics.getPhysicsSpace().add(optimizado);
-                        
-                        if (BloquesUtiles.SOMBRAS){
-                            optimizado.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-                            TangentBinormalGenerator.generate(optimizado);
-                        }
-                        
-                        spatial.getParent().attachChild(optimizado);
-                    }
-
-                    return null;
-                }
-            });
-            
-            //float totalFinChunk = timer.getTimeInSeconds();
-            //System.out.println(claveActual+" : "+(totalFinChunk-totalInicioChunk));
         }
         
         //float totalFin = timer.getTimeInSeconds();
@@ -335,8 +345,8 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
     // A self-contained time-intensive task:
     private Callable<Boolean> procesaGraficosUpdates = new Callable<Boolean>(){
         public Boolean call() throws Exception {
-            Map<Integer,BloquesChunk> updatear = app.enqueue(new Callable<Map<Integer,BloquesChunk>>() {
-                public Map<Integer,BloquesChunk> call() throws Exception {
+            Map<String,Integer> updatear = app.enqueue(new Callable<Map<String,Integer>>() {
+                public Map<String,Integer> call() throws Exception {
                     return getUpdates(true);
                 }
             }).get();
@@ -371,7 +381,7 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
      * @param vaciarUpdate
      * @return
      */
-    public Map<Integer,BloquesChunk> getUpdates(Boolean vaciarUpdate){
+    public Map<String,Integer> getUpdates(Boolean vaciarUpdate){
         if (vaciarUpdate){
             if (updatesChunk == null){
                 return null;
@@ -379,16 +389,14 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
             
             int contador = 0;
             
-            Map<Integer,BloquesChunk> updatesCopia = new HashMap<Integer, BloquesChunk>();
+            Map<String,Integer> updatesCopia = new HashMap<String, Integer>();
             
             SortedSet<Integer> keys = new TreeSet<Integer>(updatesChunk.keySet());
             for (Integer key : keys) {
-                BloquesChunk chunk = chunks.getChunk(updatesChunk.get(key));
                 
-                if (chunk != null){
-                    updatesCopia.put(contador,chunk);
-                    contador++;
-                }
+                updatesCopia.put(updatesChunk.get(key),1);
+                
+                contador++;
                 
                 updatesChunk.remove(key);
             }

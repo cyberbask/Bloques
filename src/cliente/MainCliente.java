@@ -9,7 +9,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.renderer.RenderManager;
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utiles.AppUtiles;
@@ -44,6 +43,9 @@ public class MainCliente extends SimpleApplication {
     public void simpleInitApp() {     
         Logger.getLogger("").setLevel(Level.WARNING);
         
+        //creamos las carpetas basicas del juego
+        AppUtiles.creaCarpetasIniciales();
+        
         //Fisicas
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
@@ -51,30 +53,14 @@ public class MainCliente extends SimpleApplication {
         
         //capturas de pantalla
         ScreenshotAppState screenShotState = new ScreenshotAppState();
-        String ScreenshotsPath = System.getProperty("user.dir")+"/screenshots/";
-        File ssp = new File(ScreenshotsPath);
-        try{
-            ssp.mkdir();
-        }catch(Exception e){
-            ScreenshotsPath = "";
-        }
-        screenShotState.setFilePath(ScreenshotsPath);
+        screenShotState.setFilePath(AppUtiles.PATH_SCREENSHOTS);
         this.stateManager.attach(screenShotState);
-        
-        //ruta para los savegames
-        String savesPath = System.getProperty("user.dir")+"/saves/";
-        File sp = new File(savesPath);
-        try{
-            sp.mkdir();
-        }catch(Exception e){
-
-        }
         
         //Seteamos la "Applicacion State" principal del juego
         stateJuego = new JuegoState();
         stateManager.attach(stateJuego);
         
-        //setamos la velocidad estandar de la flycam
+        //setamos la flycam
         stateManager.detach(stateManager.getState(FlyCamAppState.class));
         CustomFlyCamAppState stateFlyCam = new CustomFlyCamAppState();
         stateManager.attach(stateFlyCam);
@@ -83,7 +69,7 @@ public class MainCliente extends SimpleApplication {
         flyCam.setRotationSpeed(5f);
         stateManager.getState(CustomFlyCamAppState.class).setCamera( flyCam ); 
 
-        //setemoa la distancia de dibujado de la camara
+        //setemos la distancia de dibujado de la camara
         cam.setFrustumFar(BloquesUtiles.CAM_FRUSTUMFAR);
         //float aspect = (float)cam.getWidth() / (float)cam.getHeight();
         //cam.setFrustumPerspective( 60f, aspect, 0.1f, cam.getFrustumFar() );
