@@ -92,8 +92,6 @@ public class BloquesChunkDatos implements Savable   {
     public void write(JmeExporter ex) throws IOException {
         OutputCapsule capsule = ex.getCapsule(this);
         
-        System.out.println(nomBloque);
-        
         capsule.write(nomBloque,  "nomBloque",  null);
         
         capsule.write(caras,  "caras",  null);
