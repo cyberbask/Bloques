@@ -102,13 +102,35 @@ public class BloquesGeneraTerreno{
         //primero el tronco, unos cuantos bloques parriba
         int alturaTronco = BloquesUtiles.aleatorio(6, 10);
         for (int conta=1;conta<=alturaTronco; conta++){
-            bloqueDatos = new BloquesChunkDatos();
-            bloqueDatos.setNomBloque("Madera");
-            bloqueDatos.setMostrar(true);
+            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Madera");bloqueDatos.setMostrar(true);
             chunks.setBloque(new Vector3f(coord.x, coord.y + (conta * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
         }
         
+        //hojas
+        bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+        chunks.setBloque(new Vector3f(coord.x, coord.y + ((alturaTronco + 1) * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
         
+        
+        int minAltTronco =  BloquesUtiles.aleatorio(4, 6);
+        for (int alt = alturaTronco + 1; alt >=minAltTronco; alt--){
+            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+            chunks.setBloque(new Vector3f(coord.x+BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
+            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+            chunks.setBloque(new Vector3f(coord.x-BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
+            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+            chunks.setBloque(new Vector3f(coord.x, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z+BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+            chunks.setBloque(new Vector3f(coord.x, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z-BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+
+            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+            chunks.setBloque(new Vector3f(coord.x+BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z-BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+            chunks.setBloque(new Vector3f(coord.x+BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z+BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+            chunks.setBloque(new Vector3f(coord.x-BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z-BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+            chunks.setBloque(new Vector3f(coord.x-BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z+BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+        }
     }
     
     /**
@@ -187,17 +209,23 @@ public class BloquesGeneraTerreno{
         }
         
         int espacioArbol = 32;
-        for (x = 0;x<BloquesUtiles.TAMANO_GENERA_TERRENO;x = x + espacioArbol){
-            for (z = 0;z<BloquesUtiles.TAMANO_GENERA_TERRENO;z = z + espacioArbol){     
-                int arbolX = BloquesUtiles.aleatorio(1, espacioArbol - 1);
-                int arbolZ = BloquesUtiles.aleatorio(1, espacioArbol - 1);
+        int veces;
+        for (x = 0;x<totalTamano;x = x + espacioArbol){
+            for (z = 0;z<totalTamano;z = z + espacioArbol){  
+                veces = BloquesUtiles.aleatorio(1, 2);
                 
-                int bloqueConMasAltura = chunks.getBloqueConMasAltura(arbolX, arbolZ);
-                
-                Vector3f bloqueArbol = new Vector3f(arbolX, bloqueConMasAltura - BloquesUtiles.TAMANO_BLOQUE, arbolZ);
+                for (int v=1;v<=veces;v++){
+                    int arbolX = (BloquesUtiles.aleatorio(1, espacioArbol - 1) + x) * BloquesUtiles.TAMANO_BLOQUE;
+                    int arbolZ = (BloquesUtiles.aleatorio(1, espacioArbol - 1) + z) * BloquesUtiles.TAMANO_BLOQUE;
 
-                this.generarArbol(bloqueArbol);
-                
+                    int bloqueConMasAltura = chunks.getBloqueConMasAltura(arbolX, arbolZ);
+
+                    if (bloqueConMasAltura > 0){
+                        Vector3f bloqueArbol = new Vector3f(arbolX, bloqueConMasAltura - BloquesUtiles.TAMANO_BLOQUE, arbolZ);
+
+                        this.generarArbol(bloqueArbol);
+                    }
+                }
             }
         }
         

@@ -355,6 +355,7 @@ public class BloquesChunks implements Savable{
         BloquesChunkDatos datosBloque = getBloque(coord);
         if (datosBloque != null){
             datosBloque.setCaras(carasbloquesVecinos);
+            datosBloque.setMostrar(true);
         }
         
         if (withReturn){

@@ -74,6 +74,7 @@ public class BloquesControlAcciones extends BloquesControlColision{
             if (posicionColision != null && !calculaColisionObjeto(coordUsar, posicionColision)){
                 BloquesChunkDatos bloqueDatos = new BloquesChunkDatos();
                 bloqueDatos.setNomBloque(nomBloque);
+                bloqueDatos.setMostrar(true);
                 chunks.setBloque(coordUsar, bloqueDatos);
                 
                 //actualizamos las caras del bloque
