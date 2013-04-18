@@ -4,6 +4,7 @@
 package bloques.manejo.utiles;
 
 import com.jme3.math.Vector3f;
+import java.util.Random;
 
 /**
  *
@@ -21,7 +22,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_CHUNK_Y = 32;
+    public static final int TAMANO_CHUNK_Y = 256;
     /**
      *
      */
@@ -38,7 +39,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 256; //320 limite por ahora
+    public static final int TAMANO_GENERA_TERRENO = 128; //320 limite por ahora
     
     /**
      *
@@ -279,5 +280,21 @@ public class BloquesUtiles {
         devolver.z = (int) coordenadas.z;
 
         return devolver;
+    }
+    
+    /**
+     *
+     * @param min
+     * @param max
+     * @return
+     */
+    public static int aleatorio(int min, int max){
+        Random r = new Random();
+        
+        int Low = min;
+        int High = max;
+        int R = r.nextInt(High-Low) + Low;
+        
+        return R;
     }
 }

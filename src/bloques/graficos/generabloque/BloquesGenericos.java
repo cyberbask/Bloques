@@ -64,23 +64,23 @@ public class BloquesGenericos {
             if ("Tierra".equals(nomBloque)){
                datosBloque.setNombreTextura("bloques1");
                
-               datosBloque.setPosicionTexturasX(0, 1);//frontal
-               datosBloque.setPosicionTexturasY(0, 2);
+               datosBloque.setPosicionTexturasX(0, 3);//frontal
+               datosBloque.setPosicionTexturasY(0, 1);
                
-               datosBloque.setPosicionTexturasX(1, 2);//lateral derecha
-               datosBloque.setPosicionTexturasY(1, 2);
+               datosBloque.setPosicionTexturasX(1, 3);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 1);
                
                datosBloque.setPosicionTexturasX(2, 3);//trasera
-               datosBloque.setPosicionTexturasY(2, 2);
+               datosBloque.setPosicionTexturasY(2, 1);
                
-               datosBloque.setPosicionTexturasX(3, 4);//lateral izquierda
-               datosBloque.setPosicionTexturasY(3, 2);
+               datosBloque.setPosicionTexturasX(3, 3);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 1);
                
-               datosBloque.setPosicionTexturasX(4, 5);//Superior
-               datosBloque.setPosicionTexturasY(4, 2);
+               datosBloque.setPosicionTexturasX(4, 3);//Superior
+               datosBloque.setPosicionTexturasY(4, 1);
                
-               datosBloque.setPosicionTexturasX(5, 6); //inferior
-               datosBloque.setPosicionTexturasY(5, 2);
+               datosBloque.setPosicionTexturasX(5, 3); //inferior
+               datosBloque.setPosicionTexturasY(5, 1);
                
                bloques.put(nomBloque,datosBloque);
                
@@ -92,22 +92,22 @@ public class BloquesGenericos {
                datosBloque.setNombreTextura("bloques1");
                
                datosBloque.setPosicionTexturasX(0, 1);//frontal
-               datosBloque.setPosicionTexturasY(0, 1);
+               datosBloque.setPosicionTexturasY(0, 2);
                
-               datosBloque.setPosicionTexturasX(1, 2);//lateral derecha
-               datosBloque.setPosicionTexturasY(1, 1);
+               datosBloque.setPosicionTexturasX(1, 1);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 2);
                
-               datosBloque.setPosicionTexturasX(2, 3);//trasera
-               datosBloque.setPosicionTexturasY(2, 1);
+               datosBloque.setPosicionTexturasX(2, 1);//trasera
+               datosBloque.setPosicionTexturasY(2, 2);
                
-               datosBloque.setPosicionTexturasX(3, 4);//lateral izquierda
-               datosBloque.setPosicionTexturasY(3, 1);
+               datosBloque.setPosicionTexturasX(3, 1);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 2);
                
-               datosBloque.setPosicionTexturasX(4, 5);//Superior
-               datosBloque.setPosicionTexturasY(4, 1);
+               datosBloque.setPosicionTexturasX(4, 1);//Superior
+               datosBloque.setPosicionTexturasY(4, 2);
                
-               datosBloque.setPosicionTexturasX(5, 6); //inferior
-               datosBloque.setPosicionTexturasY(5, 1);
+               datosBloque.setPosicionTexturasX(5, 1); //inferior
+               datosBloque.setPosicionTexturasY(5, 2);
                
                bloques.put(nomBloque,datosBloque);
                
@@ -118,23 +118,23 @@ public class BloquesGenericos {
             if ("Arena".equals(nomBloque)){
                datosBloque.setNombreTextura("bloques1");
                
-               datosBloque.setPosicionTexturasX(0, 1);//frontal
-               datosBloque.setPosicionTexturasY(0, 5);
+               datosBloque.setPosicionTexturasX(0, 7);//frontal
+               datosBloque.setPosicionTexturasY(0, 15);
                
-               datosBloque.setPosicionTexturasX(1, 2);//lateral derecha
-               datosBloque.setPosicionTexturasY(1, 5);
+               datosBloque.setPosicionTexturasX(1, 7);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 15);
                
-               datosBloque.setPosicionTexturasX(2, 3);//trasera
-               datosBloque.setPosicionTexturasY(2, 5);
+               datosBloque.setPosicionTexturasX(2, 7);//trasera
+               datosBloque.setPosicionTexturasY(2, 15);
                
-               datosBloque.setPosicionTexturasX(3, 4);//lateral izquierda
-               datosBloque.setPosicionTexturasY(3, 5);
+               datosBloque.setPosicionTexturasX(3, 7);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 15);
                
-               datosBloque.setPosicionTexturasX(4, 5);//Superior
-               datosBloque.setPosicionTexturasY(4, 5);
+               datosBloque.setPosicionTexturasX(4, 7);//Superior
+               datosBloque.setPosicionTexturasY(4, 15);
                
-               datosBloque.setPosicionTexturasX(5, 6); //inferior
-               datosBloque.setPosicionTexturasY(5, 5);
+               datosBloque.setPosicionTexturasX(5, 7); //inferior
+               datosBloque.setPosicionTexturasY(5, 15);
                
                bloques.put(nomBloque,datosBloque);
                
@@ -143,7 +143,7 @@ public class BloquesGenericos {
             
             //bloque Hierba
             if ("Hierba".equals(nomBloque)){
-               datosBloque.setNombreTextura("bloques2");
+               datosBloque.setNombreTextura("bloques1");
                
                datosBloque.setPosicionTexturasX(0, 4);//frontal
                datosBloque.setPosicionTexturasY(0, 1);
@@ -162,6 +162,60 @@ public class BloquesGenericos {
                
                datosBloque.setPosicionTexturasX(5, 3); //inferior
                datosBloque.setPosicionTexturasY(5, 1);
+               
+               bloques.put(nomBloque,datosBloque);
+               
+               return datosBloque;
+            }
+            
+            //bloque Madera
+            if ("Madera".equals(nomBloque)){
+               datosBloque.setNombreTextura("bloques1");
+               
+               datosBloque.setPosicionTexturasX(0, 5);//frontal
+               datosBloque.setPosicionTexturasY(0, 2);
+               
+               datosBloque.setPosicionTexturasX(1, 5);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 2);
+               
+               datosBloque.setPosicionTexturasX(2, 5);//trasera
+               datosBloque.setPosicionTexturasY(2, 2);
+               
+               datosBloque.setPosicionTexturasX(3, 5);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 2);
+               
+               datosBloque.setPosicionTexturasX(4, 6);//Superior
+               datosBloque.setPosicionTexturasY(4, 2);
+               
+               datosBloque.setPosicionTexturasX(5, 6); //inferior
+               datosBloque.setPosicionTexturasY(5, 2);
+               
+               bloques.put(nomBloque,datosBloque);
+               
+               return datosBloque;
+            }
+            
+            //bloque Hojas
+            if ("Hojas".equals(nomBloque)){
+               datosBloque.setNombreTextura("bloques1");
+               
+               datosBloque.setPosicionTexturasX(0, 6);//frontal
+               datosBloque.setPosicionTexturasY(0, 9);
+               
+               datosBloque.setPosicionTexturasX(1, 6);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 9);
+               
+               datosBloque.setPosicionTexturasX(2, 6);//trasera
+               datosBloque.setPosicionTexturasY(2, 9);
+               
+               datosBloque.setPosicionTexturasX(3, 6);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 9);
+               
+               datosBloque.setPosicionTexturasX(4, 6);//Superior
+               datosBloque.setPosicionTexturasY(4, 9);
+               
+               datosBloque.setPosicionTexturasX(5, 6); //inferior
+               datosBloque.setPosicionTexturasY(5, 9);
                
                bloques.put(nomBloque,datosBloque);
                

@@ -116,6 +116,8 @@ public class BloquesChunkDatos implements Savable   {
         capsule.write(nomBloque,  "nomBloque",  null);
         
         capsule.write(caras,  "caras",  null);
+        
+        capsule.write(mostrar,  "mostrar",  true);
     }
 
     /**
@@ -129,5 +131,7 @@ public class BloquesChunkDatos implements Savable   {
         nomBloque = capsule.readString("nomBloque",   null);
         
         caras = capsule.readIntArray("caras",   null);
+        
+        mostrar = capsule.readBoolean("caras",   true);
     }
 }

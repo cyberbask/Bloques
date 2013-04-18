@@ -94,6 +94,25 @@ public class BloquesGeneraTerreno{
     
     /**
      *
+     * @param coord
+     */
+    public void generarArbol(Vector3f coord){
+        BloquesChunkDatos bloqueDatos;
+        
+        //primero el tronco, unos cuantos bloques parriba
+        int alturaTronco = BloquesUtiles.aleatorio(6, 10);
+        for (int conta=1;conta<=alturaTronco; conta++){
+            bloqueDatos = new BloquesChunkDatos();
+            bloqueDatos.setNomBloque("Madera");
+            bloqueDatos.setMostrar(true);
+            chunks.setBloque(new Vector3f(coord.x, coord.y + (conta * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
+        }
+        
+        
+    }
+    
+    /**
+     *
      * @throws InterruptedException 
      * @throws ExecutionException 
      */
@@ -142,6 +161,12 @@ public class BloquesGeneraTerreno{
 
                         BloquesChunkDatos bloqueDatos = new BloquesChunkDatos();
                         bloqueDatos.setNomBloque(tipoTerreno);
+                        
+                        if (a == y){
+                            bloqueDatos.setMostrar(true);
+                        }else{
+                            bloqueDatos.setMostrar(false);
+                        }
 
                         chunks.setBloque(new Vector3f(x * BloquesUtiles.TAMANO_BLOQUE, a * BloquesUtiles.TAMANO_BLOQUE, z * BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
                     }else{
@@ -161,6 +186,23 @@ public class BloquesGeneraTerreno{
             
         }
         
+        int espacioArbol = 32;
+        for (x = 0;x<BloquesUtiles.TAMANO_GENERA_TERRENO;x = x + espacioArbol){
+            for (z = 0;z<BloquesUtiles.TAMANO_GENERA_TERRENO;z = z + espacioArbol){     
+                int arbolX = BloquesUtiles.aleatorio(1, espacioArbol - 1);
+                int arbolZ = BloquesUtiles.aleatorio(1, espacioArbol - 1);
+                
+                int bloqueConMasAltura = chunks.getBloqueConMasAltura(arbolX, arbolZ);
+                
+                Vector3f bloqueArbol = new Vector3f(arbolX, bloqueConMasAltura - BloquesUtiles.TAMANO_BLOQUE, arbolZ);
+
+                this.generarArbol(bloqueArbol);
+                
+            }
+        }
+        
+        
+        
         BloquesChunk chunkActual;
         BloquesChunkDatos datosBloque;
         String nomDatosBloque;
@@ -179,10 +221,14 @@ public class BloquesGeneraTerreno{
                     if (datosBloque != null && datosBloque.getMostrar()){
                         nomDatosBloque = entryBloquesDatos.getKey();
 
+                        bloques.generaBloqueClonado(nomDatosBloque, datosBloque, chunks, false);
+                        
+                        /** /
                         bloqueClonado = bloques.generaBloqueClonado(nomDatosBloque, datosBloque, chunks, true);
                         if (bloqueClonado != null){
                             chunkActual.setNodo(nomDatosBloque, (Node) bloqueClonado.clone());
                         }
+                        /**/
                     }
                 }
             }
