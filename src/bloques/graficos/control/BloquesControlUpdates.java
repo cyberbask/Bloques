@@ -166,16 +166,15 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
      * @throws InterruptedException 
      * @throws ExecutionException  
      */
-    public void updateaChunks(Map<String,Integer> updatear) throws InterruptedException, ExecutionException{
+    public void updateaChunks(Map<Integer,String> updatear) throws InterruptedException, ExecutionException{
         //Timer timer = app.getTimer();
         //float totalInicio = timer.getTimeInSeconds();
 
         int mostrar;
-            
-        for (Map.Entry<String,Integer> entryChunk : updatear.entrySet()){    
-            //float totalInicioChunk = timer.getTimeInSeconds();
-            
-            claveActualUC = entryChunk.getKey();
+        
+        SortedSet<Integer> keys = new TreeSet<Integer>(updatear.keySet());
+        for (Integer key : keys) {
+            claveActualUC = updatear.get(key);
             
             chunkActualUC = app.enqueue(new Callable<BloquesChunk>() {
                 public BloquesChunk call() throws Exception {
@@ -213,7 +212,7 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
                     bloquesMostrarUC = (Node) allNodos.clone();
                     mostrar = 1;
                 }
-
+                
                 final Spatial optimizado = GeometryBatchFactory.optimize(bloquesMostrarUC);
                 final int mostrarFinal = mostrar;
 
@@ -348,8 +347,8 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
     // A self-contained time-intensive task:
     private Callable<Boolean> procesaGraficosUpdates = new Callable<Boolean>(){
         public Boolean call() throws Exception {
-            Map<String,Integer> updatear = app.enqueue(new Callable<Map<String,Integer>>() {
-                public Map<String,Integer> call() throws Exception {
+            Map<Integer,String> updatear = app.enqueue(new Callable<Map<Integer,String>>() {
+                public Map<Integer,String> call() throws Exception {
                     return getUpdates(true);
                 }
             }).get();
@@ -384,7 +383,7 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
      * @param vaciarUpdate
      * @return
      */
-    public Map<String,Integer> getUpdates(Boolean vaciarUpdate){
+    public Map<Integer,String> getUpdates(Boolean vaciarUpdate){
         if (vaciarUpdate){
             if (updatesChunk == null){
                 return null;
@@ -392,12 +391,12 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
             
             int contador = 0;
             
-            Map<String,Integer> updatesCopia = new HashMap<String, Integer>();
+            Map<Integer,String> updatesCopia = new HashMap<Integer, String>();
             
             SortedSet<Integer> keys = new TreeSet<Integer>(updatesChunk.keySet());
             for (Integer key : keys) {
                 
-                updatesCopia.put(updatesChunk.get(key),1);
+                updatesCopia.put(contador,updatesChunk.get(key));
                 
                 contador++;
                 
