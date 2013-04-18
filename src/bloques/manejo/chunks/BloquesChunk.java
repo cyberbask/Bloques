@@ -172,16 +172,16 @@ public class BloquesChunk implements Savable{
         
         capsule.write(nombreChunk,  "nombreChunk",  null);
                
-        capsule.write(nodos,  "ChunkDatoNodos",  null);
+        //capsule.write(nodos,  "ChunkDatoNodos",  null);
         
         for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : bloquesDatos.entrySet()){
             claveGuardar = "ChunkDatoClave_"+contador;
             
             capsule.write(entryBloquesDatos.getKey(),  claveGuardar,  null);
-            capsule.write(entryBloquesDatos.getValue(),  entryBloquesDatos.getKey(),  null);
+            capsule.write((Savable) entryBloquesDatos.getValue(),  entryBloquesDatos.getKey(),  null);
             
             contador++;
-        }  
+        }
     }
 
     /**
@@ -199,9 +199,9 @@ public class BloquesChunk implements Savable{
         
         nombreChunk = capsule.readString("nombreChunk",   null);
         
-        nodos = (Node) capsule.readSavable("ChunkDatoNodos",   null);
+        //nodos = (Node) capsule.readSavable("ChunkDatoNodos",   new Node());
         
-        for(int i=0;i<tamano;i++){
+       for(int i=0;i<tamano;i++){
             claveGuardar = "ChunkDatoClave_"+i;
             
             claveGuardada = capsule.readString(claveGuardar, null);

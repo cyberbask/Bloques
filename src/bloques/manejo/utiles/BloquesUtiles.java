@@ -21,7 +21,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_CHUNK_Y = 256;
+    public static final int TAMANO_CHUNK_Y = 32;
     /**
      *
      */
@@ -38,7 +38,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_GENERA_TERRENO = 32; //256 limite por ahora
+    public static final int TAMANO_GENERA_TERRENO = 128; //320 limite por ahora
     
     /**
      *

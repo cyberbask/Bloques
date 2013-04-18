@@ -194,10 +194,10 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
                     for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActualUC.getAllBloquesDatos().entrySet()){ 
                         datosBloqueUC = entryBloquesDatos.getValue();
 
-                        if (datosBloqueUC != null){
+                        if (datosBloqueUC != null && datosBloqueUC.getMostrar()){
                             nomDatosBloqueUC = entryBloquesDatos.getKey();
 
-                            bloqueClonadoUC = bloques.generaBloqueClonado(nomDatosBloqueUC, datosBloqueUC, chunks);
+                            bloqueClonadoUC = bloques.generaBloqueClonado(nomDatosBloqueUC, datosBloqueUC, chunks,true);
                             if (bloqueClonadoUC != null){
                                 bloquesMostrarUC.attachChild(bloqueClonadoUC);
 
@@ -239,7 +239,7 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
                 });
 
                 //float totalFinChunk = timer.getTimeInSeconds();
-                //System.out.println(claveActual+" : "+(totalFinChunk-totalInicioChunk));
+                //System.out.println(chunkActualUC+" : "+(totalFinChunk-totalInicioChunk));
             }
         }
         
@@ -272,12 +272,15 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
                 for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActualUCU.getAllBloquesDatos().entrySet()){ 
                     datosBloqueUCU = entryBloquesDatos.getValue();
 
-                    if (datosBloqueUCU != null){
+                    if (datosBloqueUCU != null && datosBloqueUC.getMostrar()){
                         nomDatosBloqueUCU = entryBloquesDatos.getKey();                        
 
-                        bloqueClonadoUCU = bloques.generaBloqueClonado(nomDatosBloqueUCU, datosBloqueUCU, chunks);
+                        bloqueClonadoUCU = bloques.generaBloqueClonado(nomDatosBloqueUCU, datosBloqueUCU, chunks, true);
                         if (bloqueClonadoUCU != null){
                             bloquesMostrarUCU.attachChild(bloqueClonadoUCU);
+                            
+                            //tambien lo guardamos como nodo para mejorar el rendimiento
+                            chunkActualUCU.setNodo(nomDatosBloqueUCU, (Node) bloqueClonadoUCU.clone());
                         }
                     }
                 }

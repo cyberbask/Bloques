@@ -4,6 +4,7 @@
 package bloques.manejo.generaterreno;
 
 import bloques.graficos.generabloque.BloquesGeneraBloque;
+import bloques.manejo.chunks.BloquesChunk;
 import bloques.manejo.chunks.BloquesChunkDatos;
 import bloques.manejo.chunks.BloquesChunks;
 import bloques.manejo.utiles.BloquesSaveLoad;
@@ -12,8 +13,10 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.system.Timer;
 import com.jme3.terrain.heightmap.HillHeightMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -55,6 +58,8 @@ public class BloquesGeneraTerreno{
      */
     private int totalTamano = BloquesUtiles.TAMANO_GENERA_TERRENO;
     
+    private BloquesGeneraBloque bloques;
+    
     
     /**
      *
@@ -64,6 +69,8 @@ public class BloquesGeneraTerreno{
     public BloquesGeneraTerreno(Application app, BloquesGeneraBloque bloques){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
+        
+        this.bloques = bloques;
     }
     
     private HillHeightMap generateTerrainconReturn(){
@@ -147,12 +154,50 @@ public class BloquesGeneraTerreno{
             final int xx = x;
             app.enqueue(new Callable() {
                 public Object call() throws Exception {
-                    porcentajeGenerado =  (xx * 100) / totalTamano;
+                    porcentajeGenerado =  ((xx * 100) / totalTamano) / 2;
                     return null;
                 }
             });
             
         }
+        
+        BloquesChunk chunkActual;
+        BloquesChunkDatos datosBloque;
+        String nomDatosBloque;
+        Node bloqueClonado;
+        
+        final int tamano = chunks.getAllChunks().entrySet().size();
+        int contador = 0;
+        
+        for (Map.Entry<String,BloquesChunk> entryChunk : chunks.getAllChunks().entrySet()){                
+            chunkActual = entryChunk.getValue();
+                        
+            if (chunkActual != null){
+                for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : chunkActual.getAllBloquesDatos().entrySet()){ 
+                    datosBloque = entryBloquesDatos.getValue();
+
+                    if (datosBloque != null && datosBloque.getMostrar()){
+                        nomDatosBloque = entryBloquesDatos.getKey();
+
+                        bloqueClonado = bloques.generaBloqueClonado(nomDatosBloque, datosBloque, chunks, true);
+                        if (bloqueClonado != null){
+                            chunkActual.setNodo(nomDatosBloque, (Node) bloqueClonado.clone());
+                        }
+                    }
+                }
+            }
+            
+            final int xx = contador;
+            app.enqueue(new Callable() {
+                public Object call() throws Exception {
+                    porcentajeGenerado =  (((xx * 100) / tamano) / 2) + 50;
+                    return null;
+                }
+            });
+            
+            contador ++;
+        }
+        
     }
     
     // A self-contained time-intensive task:
@@ -193,6 +238,7 @@ public class BloquesGeneraTerreno{
                     future = executor.submit(generaTerrenoInicialHilo);
                 }else{
                     chunks = loaded;
+                    int interrumpe = 9;
                 }
             }
             else if(future != null){

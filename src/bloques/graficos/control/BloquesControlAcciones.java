@@ -53,7 +53,7 @@ public class BloquesControlAcciones extends BloquesControlColision{
         chunkActualABN = chunks.getChunk(coordUsar);
         bloqueActualABN = chunks.getBloque(coordUsar);
         nombreNodoABN = BloquesUtiles.generarNombreBloque(coordUsar);
-        bloqueClonadoABN = bloques.generaBloqueClonado(nombreNodoABN, bloqueActualABN, chunks);
+        bloqueClonadoABN = bloques.generaBloqueClonado(nombreNodoABN, bloqueActualABN, chunks, true);
         if (bloqueClonadoABN != null){
             chunkActualABN.setNodo(coordUsar, bloqueClonadoABN);
         }

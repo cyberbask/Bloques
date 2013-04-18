@@ -383,7 +383,7 @@ public class BloquesChunks implements Savable{
             
             capsule.write(entryChunk.getKey(),  claveGuardar,  null);
             
-            capsule.write(entryChunk.getValue(),  entryChunk.getKey(),  null);
+            capsule.write((Savable) entryChunk.getValue(),  entryChunk.getKey(),  null);
             
             contador++;
         }    
@@ -406,7 +406,7 @@ public class BloquesChunks implements Savable{
             claveGuardar = "ChunkClave_"+i;
                         
             claveGuardada = capsule.readString(claveGuardar, null);
-            
+
             if (claveGuardada != null){
                 chunks.put(claveGuardada,(BloquesChunk) capsule.readSavable(claveGuardada,  null));
             }           
