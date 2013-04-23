@@ -4,13 +4,7 @@
 package bloques.manejo.chunks;
 
 import bloques.manejo.utiles.BloquesUtiles;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
-import com.jme3.export.Savable;
 import com.jme3.math.Vector3f;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +12,7 @@ import java.util.Map;
  *
  * @author cyberbask
  */
-public class BloquesChunks implements Savable{
+public class BloquesChunks{
     Map<String,BloquesChunk> chunks = new HashMap<String, BloquesChunk>();
     
     /**
@@ -364,54 +358,4 @@ public class BloquesChunks implements Savable{
 
         return null;
     }
-
-    /**
-     *
-     * @param ex
-     * @throws IOException
-     */
-    public void write(JmeExporter ex) throws IOException {
-        OutputCapsule capsule = ex.getCapsule(this);
-        
-        int tamano = chunks.entrySet().size();
-        int contador = 0;
-        String claveGuardar;
-        
-        capsule.write(tamano,  "ChunkTamano",  0);
-        
-        for (Map.Entry<String,BloquesChunk> entryChunk : chunks.entrySet()){
-            claveGuardar = "ChunkClave_"+contador;
-            
-            capsule.write(entryChunk.getKey(),  claveGuardar,  null);
-            
-            capsule.write((Savable) entryChunk.getValue(),  entryChunk.getKey(),  null);
-            
-            contador++;
-        }    
-    }
-
-    /**
-     *
-     * @param im
-     * @throws IOException
-     */
-    public void read(JmeImporter im) throws IOException {
-        InputCapsule capsule = im.getCapsule(this);
-        
-        String claveGuardar;
-        String claveGuardada;
-        
-        int tamano   = capsule.readInt("ChunkTamano",   0);
-        
-        for(int i=0;i<tamano;i++){
-            claveGuardar = "ChunkClave_"+i;
-                        
-            claveGuardada = capsule.readString(claveGuardar, null);
-
-            if (claveGuardada != null){
-                chunks.put(claveGuardada,(BloquesChunk) capsule.readSavable(claveGuardada,  null));
-            }           
-        }
-    }
-    
 }

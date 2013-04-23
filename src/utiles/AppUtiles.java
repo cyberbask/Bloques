@@ -29,7 +29,7 @@ public class AppUtiles {
      * @return Aplicacion general con los settings configurados
      */
     public static MainCliente initSettings(MainCliente app){
-        /** /
+        /**/
         app.setShowSettings(false);
         
         AppSettings settings = new AppSettings(true);
@@ -43,7 +43,7 @@ public class AppUtiles {
         app.setSettings(settings);
         /**/
         
-        /**/
+        /** /
         app.setShowSettings(true);
         AppSettings settings = new AppSettings(false);
         settings.put("Title", "Bloques");

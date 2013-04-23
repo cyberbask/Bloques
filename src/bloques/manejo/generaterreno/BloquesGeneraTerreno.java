@@ -297,7 +297,14 @@ public class BloquesGeneraTerreno{
             if(future == null && chunks == null && !generandoTerreno){
                 BloquesChunks loaded = null;
                 try{
+                    Timer timer = app.getTimer();
+                    float totalInicio = timer.getTimeInSeconds();
+                    
                     //loaded = (BloquesChunks) BloquesSaveLoad.load("terreno/", "allchunks");
+                    
+                    float totalFin = timer.getTimeInSeconds();
+                    System.out.println("Cargando Terreno del Disco Duro "+(totalFin-totalInicio));
+                    
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -319,7 +326,15 @@ public class BloquesGeneraTerreno{
                 if(future.isDone()){
                     generandoTerreno = false;
                     future = null;
+                    
                     //BloquesSaveLoad.save("terreno/", "allchunks",chunks);
+                    Timer timer = app.getTimer();
+                    float totalInicio = timer.getTimeInSeconds();
+                    
+                    BloquesSaveLoad.saveChunks(chunks);
+                    
+                    float totalFin = timer.getTimeInSeconds();
+                    System.out.println("Guardado Terreno en Disco Duro "+(totalFin-totalInicio));
                     
                     int interrumpe = 9;
                 }

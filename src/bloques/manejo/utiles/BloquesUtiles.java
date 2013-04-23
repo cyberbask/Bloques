@@ -18,7 +18,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_CHUNK_X = 16;
+    public static final int TAMANO_CHUNK_X = 32;
     /**
      *
      */
@@ -26,7 +26,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_CHUNK_Z = 16;
+    public static final int TAMANO_CHUNK_Z = 32;
     /**
      *
      */
@@ -44,7 +44,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int NIVEL_MAR = 5; 
+    public static final int NIVEL_MAR = 20; 
     
     /**
      *

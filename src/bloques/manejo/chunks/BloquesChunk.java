@@ -4,15 +4,9 @@
 package bloques.manejo.chunks;
 
 import bloques.manejo.utiles.BloquesUtiles;
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
-import com.jme3.export.Savable;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +14,7 @@ import java.util.Map;
  *
  * @author mcarballo
  */
-public class BloquesChunk implements Savable{
+public class BloquesChunk{
     /**
      * Contiene los datos del bloque segun coordenadas
      */
@@ -155,60 +149,4 @@ public class BloquesChunk implements Savable{
     public void quitaNodo(Spatial nodo){
         this.nodos.detachChild(nodo);
     }
-
-    /**
-     *
-     * @param ex
-     * @throws IOException
-     */
-    public void write(JmeExporter ex) throws IOException {
-        OutputCapsule capsule = ex.getCapsule(this);
-        
-        int tamano = bloquesDatos.entrySet().size();
-        int contador = 0;
-        String claveGuardar;
-        
-        capsule.write(tamano,  "ChunkDatoTamano",  0);
-        
-        capsule.write(nombreChunk,  "nombreChunk",  null);
-               
-        //capsule.write(nodos,  "ChunkDatoNodos",  null);
-        
-        for (Map.Entry<String,BloquesChunkDatos> entryBloquesDatos : bloquesDatos.entrySet()){
-            claveGuardar = "ChunkDatoClave_"+contador;
-            
-            capsule.write(entryBloquesDatos.getKey(),  claveGuardar,  null);
-            capsule.write((Savable) entryBloquesDatos.getValue(),  entryBloquesDatos.getKey(),  null);
-            
-            contador++;
-        }
-    }
-
-    /**
-     *
-     * @param im
-     * @throws IOException
-     */
-    public void read(JmeImporter im) throws IOException {
-        InputCapsule capsule = im.getCapsule(this);
-        
-        String claveGuardar;
-        String claveGuardada;
-        
-        int tamano   = capsule.readInt("ChunkDatoTamano",   0);
-        
-        nombreChunk = capsule.readString("nombreChunk",   null);
-        
-        //nodos = (Node) capsule.readSavable("ChunkDatoNodos",   new Node());
-        
-       for(int i=0;i<tamano;i++){
-            claveGuardar = "ChunkDatoClave_"+i;
-            
-            claveGuardada = capsule.readString(claveGuardar, null);
-            if (claveGuardada != null){
-                bloquesDatos.put(claveGuardada,(BloquesChunkDatos) capsule.readSavable(claveGuardada,  null));
-            }
-        }
-    }
-    
 }

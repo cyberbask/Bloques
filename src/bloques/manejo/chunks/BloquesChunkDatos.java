@@ -3,21 +3,11 @@
  */
 package bloques.manejo.chunks;
 
-import com.jme3.export.InputCapsule;
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.OutputCapsule;
-import com.jme3.export.Savable;
-import com.jme3.scene.Node;
-import java.io.IOException;
-import java.util.Map;
-
-
 /**
  *
  * @author mcarballo
  */
-public class BloquesChunkDatos implements Savable   {
+public class BloquesChunkDatos {
     /**
      * Nombre o Tipo del Bloque
      */
@@ -103,35 +93,5 @@ public class BloquesChunkDatos implements Savable   {
      */
     public void setMostrar(Boolean mostrar) {
         this.mostrar = mostrar;
-    }
-
-    /**
-     *
-     * @param ex
-     * @throws IOException
-     */
-    public void write(JmeExporter ex) throws IOException {
-        OutputCapsule capsule = ex.getCapsule(this);
-        
-        capsule.write(nomBloque,  "nomBloque",  null);
-        
-        capsule.write(caras,  "caras",  null);
-        
-        capsule.write(mostrar,  "mostrar",  true);
-    }
-
-    /**
-     *
-     * @param im
-     * @throws IOException
-     */
-    public void read(JmeImporter im) throws IOException {
-        InputCapsule capsule = im.getCapsule(this);
-        
-        nomBloque = capsule.readString("nomBloque",   null);
-        
-        caras = capsule.readIntArray("caras",   null);
-        
-        mostrar = capsule.readBoolean("caras",   true);
     }
 }
