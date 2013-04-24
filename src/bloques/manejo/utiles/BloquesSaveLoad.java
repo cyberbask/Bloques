@@ -138,10 +138,12 @@ public class BloquesSaveLoad {
         
         //TODO ahora se guarda todos los chuunks en el mismo archivo.
         //     habria que guardarlos en archivos independientes o algun sistema similar
+        String eol = System.getProperty("line.separator");
+        
         BufferedWriter writer = null;
         
         try{            
-            GZIPOutputStream zip = new GZIPOutputStream(new FileOutputStream(new File(AppUtiles.PATH_SAVE + "terreno/" + "allchunks.txt")));
+            GZIPOutputStream zip = new GZIPOutputStream(new FileOutputStream(new File(AppUtiles.PATH_SAVE + "terreno/" + "allchunks.txt")),512);
             //writer = new BufferedWriter(new OutputStreamWriter(zip, "UTF-8"));
             writer = new BufferedWriter(new OutputStreamWriter(zip));
             
@@ -190,9 +192,11 @@ public class BloquesSaveLoad {
                             }else{
                                 datosEscribir += "0;";
                                 datosEscribir += "null;";
-                            }                           
+                            }   
+                            
+                            datosEscribir += eol;
 
-                            writer.append(datosEscribir);writer.newLine();
+                            writer.append(datosEscribir);
                         }
                     }
                 } 

@@ -215,7 +215,7 @@ public class JuegoGraficos {
         DepthOfFieldFilter dofFilter = new DepthOfFieldFilter();
         dofFilter.setFocusDistance(0f);
         dofFilter.setFocusRange(BloquesUtiles.BLUR_FOCUS_RANGE);
-        dofFilter.setBlurScale(1.4f);
+        dofFilter.setBlurScale(BloquesUtiles.BLUR_SCALE);
         fpp.addFilter(dofFilter);
     }
     
