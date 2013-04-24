@@ -51,9 +51,11 @@ public class BloquesTextureAtlas extends TextureAtlas{
      * Añade todas las texturas que tenemos al Atlas
      */
     public void setTexturesInAtlas(){
-        TextureKey textura = new TextureKey("Textures/bloques1.png");
+        /*TextureKey textura = new TextureKey("Textures/bloques1.png");
         textura.setGenerateMips(true);
-        Texture text = assetManager.loadTexture(textura);
+        Texture text = assetManager.loadTexture(textura);*/
+        
+        Texture text = assetManager.loadTexture("Textures/bloques1.png");
         
         Image image = text.getImage();
         setAnchoImagenTextura(image.getWidth()); //esto se hace la primera vez para los calculos posteriores
