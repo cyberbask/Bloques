@@ -18,7 +18,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_CHUNK_X = 32;
+    public static final int TAMANO_CHUNK_X = 16;
     /**
      *
      */
@@ -26,7 +26,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final int TAMANO_CHUNK_Z = 32;
+    public static final int TAMANO_CHUNK_Z = 16;
     /**
      *
      */
@@ -84,7 +84,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final float BLUR_FOCUS_RANGE = TAMANO_GENERA_TERRENO * 3f;
+    public static final float BLUR_FOCUS_RANGE = TAMANO_GENERA_TERRENO;
     
     /**
      *

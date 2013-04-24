@@ -11,10 +11,8 @@ import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.debug.WireBox;
 
 /**
  *
@@ -38,6 +36,20 @@ public class BloquesControlColision extends BloquesControlUpdates {
      *
      */
     public Vector3f coorAntCol;
+    private CollisionResults results;
+    private Ray ray;
+    private Boolean ponerNull;
+    private CollisionResult closest;
+    private Vector3f contactPoint;
+    private float distancia;
+    private int ejeComprobar;
+    private Vector3f vecComprobar;
+    private Boolean bloqueVecino1;
+    private Boolean bloqueVecino2;
+    private Vector3f coodFinales1;
+    private Vector3f coodFinales2;
+    
+    private float timer = 0f;
 
     /**
      *
@@ -51,7 +63,12 @@ public class BloquesControlColision extends BloquesControlUpdates {
     protected void controlUpdate(float tpf) {
         super.controlUpdate(tpf);
         
-        getCoordenadasColision();
+        timer += tpf;
+       
+        if (timer > 0.15f){
+            timer = 0f;
+            getCoordenadasColision();
+        }
     }
     
     /**
@@ -59,32 +76,32 @@ public class BloquesControlColision extends BloquesControlUpdates {
      */
     public void getCoordenadasColision(){
         // 1. Reset results list.
-        CollisionResults results = new CollisionResults();
+        results = new CollisionResults();
         
         // 2. Aim the ray from cam loc to cam direction.
-        Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+        ray = new Ray(cam.getLocation(), cam.getDirection());
         
         // 3. Collect intersections between Ray and Shootables in results list.
         rootNode.collideWith(ray, results);
         
-        Boolean ponerNull = false;
+        ponerNull = false;
         
         if (results.size() > 0) {
-            CollisionResult closest = results.getClosestCollision();
-            Vector3f contactPoint = closest.getContactPoint();
-            float distancia = closest.getDistance();
+            closest = results.getClosestCollision();
+            contactPoint = closest.getContactPoint();
+            distancia = closest.getDistance();
             
             //System.out.println("Detecta1: "+contactPoint.x+"-"+contactPoint.y+"-"+contactPoint.z);
             if (distancia <= (BloquesUtiles.TAMANO_BLOQUE * 6)){
             
-                int ejeComprobar = BloquesUtiles.averiguaCoordenadasContacto(contactPoint);
+                ejeComprobar = BloquesUtiles.averiguaCoordenadasContacto(contactPoint);
 
-                Vector3f vecComprobar = contactPoint.clone();
+                vecComprobar = contactPoint.clone();
 
-                Boolean bloqueVecino1 = false;
-                Boolean bloqueVecino2 = false;
-                Vector3f coodFinales1 = null;
-                Vector3f coodFinales2 = null;
+                bloqueVecino1 = false;
+                bloqueVecino2 = false;
+                coodFinales1 = null;
+                coodFinales2 = null;
 
                 switch(ejeComprobar){
                     case 1: //x

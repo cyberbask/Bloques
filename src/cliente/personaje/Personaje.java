@@ -147,8 +147,8 @@ public class Personaje {
     public void update(float tpf, BloquesControl bloquesTerrainControl){  
         /**/
         if (iniciado){
-            float mov1 = 0.10f;
-            float mov2 = 0.05f;
+            float mov1 = 0.07f;
+            float mov2 = 0.035f;
             
             if (correr){
                 mov1 = mov1 * 1.75f;

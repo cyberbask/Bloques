@@ -110,27 +110,44 @@ public class BloquesGeneraTerreno{
         bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
         chunks.setBloque(new Vector3f(coord.x, coord.y + ((alturaTronco + 1) * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
         
-        
         int minAltTronco =  BloquesUtiles.aleatorio(4, 6);
-        for (int alt = alturaTronco + 1; alt >=minAltTronco; alt--){
-            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
-            chunks.setBloque(new Vector3f(coord.x+BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
-            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
-            chunks.setBloque(new Vector3f(coord.x-BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
-            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
-            chunks.setBloque(new Vector3f(coord.x, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z+BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
-            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
-            chunks.setBloque(new Vector3f(coord.x, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z-BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+        int calculo;
+        int contador = 0;
+        int calCoord;
+        
+        do{
+            calculo = (alturaTronco + 1) - minAltTronco;
+            calCoord = contador * BloquesUtiles.TAMANO_BLOQUE;
 
-            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
-            chunks.setBloque(new Vector3f(coord.x+BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z-BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
-            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
-            chunks.setBloque(new Vector3f(coord.x+BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z+BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
-            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
-            chunks.setBloque(new Vector3f(coord.x-BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z-BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
-            bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
-            chunks.setBloque(new Vector3f(coord.x-BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z+BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
-        }
+            for (int alt = alturaTronco + 1; alt >=minAltTronco; alt--){
+                bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+                chunks.setBloque(new Vector3f(coord.x + calCoord + BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
+                bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+                chunks.setBloque(new Vector3f(coord.x - calCoord - BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z), bloqueDatos);
+                bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+                chunks.setBloque(new Vector3f(coord.x, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z + calCoord +BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+                bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+                chunks.setBloque(new Vector3f(coord.x, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z - calCoord -BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+
+                bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+                chunks.setBloque(new Vector3f(coord.x+BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z-BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+                bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+                chunks.setBloque(new Vector3f(coord.x+BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z+BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+                bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+                chunks.setBloque(new Vector3f(coord.x-BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z-BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+                bloqueDatos = new BloquesChunkDatos();bloqueDatos.setNomBloque("Hojas");bloqueDatos.setMostrar(true);
+                chunks.setBloque(new Vector3f(coord.x-BloquesUtiles.TAMANO_BLOQUE, coord.y + ((alt) * BloquesUtiles.TAMANO_BLOQUE), coord.z+BloquesUtiles.TAMANO_BLOQUE), bloqueDatos);
+            }
+            
+            alturaTronco--;
+            minAltTronco++;
+            
+            contador++;
+            if (contador > 6){
+                break;
+            }
+            
+        }while(calculo >= 3);
     }
     
     /**

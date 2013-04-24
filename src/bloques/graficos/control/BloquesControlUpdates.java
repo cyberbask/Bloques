@@ -109,6 +109,8 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
      */
     protected BloquesChunkDatos datosBloqueUCU;
     
+    private float timer = 0f;
+    
     
     /**
      *
@@ -122,22 +124,28 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
     protected void controlUpdate(float tpf) {
         super.controlUpdate(tpf);
         
+        timer += tpf;
+        
         //las siguientes veces que se hace update se actualizan los chunks
-       try{
-            if(future == null){
-                future = executor.submit(procesaGraficosUpdates);
-            }
-            else if(future != null){
-                if(future.isDone()){
-                    future = null;
+        if (timer >= 1f){
+            timer = 0f;
+            
+            try{
+                if(future == null){
+                    future = executor.submit(procesaGraficosUpdates);
                 }
-                else if(future.isCancelled()){
-                    future = null;
+                else if(future != null){
+                    if(future.isDone()){
+                        future = null;
+                    }
+                    else if(future.isCancelled()){
+                        future = null;
+                    }
                 }
-            }
-        } 
-        catch(Exception e){ 
+            } 
+            catch(Exception e){ 
 
+            }
         }
 
         //updatemos los chunks urgentes
@@ -346,15 +354,22 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
     
     // A self-contained time-intensive task:
     private Callable<Boolean> procesaGraficosUpdates = new Callable<Boolean>(){
+        @SuppressWarnings("SleepWhileInLoop")
         public Boolean call() throws Exception {
-            Map<Integer,String> updatear = app.enqueue(new Callable<Map<Integer,String>>() {
-                public Map<Integer,String> call() throws Exception {
-                    return getUpdates(true);
-                }
-            }).get();
+            int cosa = 0;
             
-            if (updatear != null){
-                updateaChunks(updatear); //1 es para los updates lentos del terreno
+            while(cosa == 0){
+                Map<Integer,String> updatear = app.enqueue(new Callable<Map<Integer,String>>() {
+                    public Map<Integer,String> call() throws Exception {
+                        return getUpdates(true);
+                    }
+                }).get();
+
+                if (updatear != null){
+                    updateaChunks(updatear); //para los updates lentos del terreno
+                }
+
+                Thread.sleep(500);
             }
             
             return false;
@@ -371,7 +386,7 @@ public class BloquesControlUpdates extends BloquesControlSetterGetter{
             }).get();
             
             if (updatear != null){
-                updateaChunksUrgentes(updatear); //2 es para los rapidos, destruir bloques por ejemplo
+                updateaChunksUrgentes(updatear); //para los rapidos, destruir bloques por ejemplo
             }
             
             return false;
