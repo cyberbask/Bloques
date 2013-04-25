@@ -44,12 +44,17 @@ public class BloquesUtiles {
     /**
      *
      */
+    public static final int TAMANO_DISTANCIA_DIBUJADO = 128;
+    
+    /**
+     *
+     */
     public static final int NIVEL_MAR = 10; 
     
     /**
      *
      */
-    public static final int CAM_FRUSTUMFAR = 1500; 
+    public static final int CAM_FRUSTUMFAR = (int) ((TAMANO_DISTANCIA_DIBUJADO * TAMANO_BLOQUE) * 2f);
     
     /**
      *
@@ -74,7 +79,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final float NIEBLA_DISTANCIA = (TAMANO_GENERA_TERRENO * TAMANO_BLOQUE) * 1.5f;
+    public static final float NIEBLA_DISTANCIA = (TAMANO_DISTANCIA_DIBUJADO * TAMANO_BLOQUE) * 1.5f;
     
     /**
      *
@@ -84,7 +89,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final float BLUR_FOCUS_RANGE = TAMANO_GENERA_TERRENO;
+    public static final float BLUR_FOCUS_RANGE = TAMANO_DISTANCIA_DIBUJADO;
     
     /**
      *
