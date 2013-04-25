@@ -6,6 +6,7 @@ package bloques.graficos.control;
 import bloques.graficos.generabloque.BloquesGeneraBloque;
 import bloques.manejo.chunks.BloquesChunks;
 import bloques.manejo.generaterreno.BloquesGeneraTerreno;
+import bloques.manejo.utiles.BloquesSaveLoad;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
@@ -71,7 +72,7 @@ public class BloquesControlBasic extends AbstractControl implements Savable, Clo
     /**
      *
      */
-    protected ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
+    protected ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(8);
 
     
     /**
@@ -83,6 +84,11 @@ public class BloquesControlBasic extends AbstractControl implements Savable, Clo
      *
      */
     protected BloquesGeneraBloque bloques;
+    
+    /**
+     *
+     */
+    protected BloquesSaveLoad bloquesSaveLoad;
     
     
     /**
@@ -102,6 +108,8 @@ public class BloquesControlBasic extends AbstractControl implements Savable, Clo
         bloques = new BloquesGeneraBloque(this.app);
         
         bloqueGeneraTerreno = new BloquesGeneraTerreno(this.app,bloques,executor);
+        
+        bloquesSaveLoad = new BloquesSaveLoad(this.app,executor);
     }
     
     /**
@@ -165,8 +173,16 @@ public class BloquesControlBasic extends AbstractControl implements Savable, Clo
     /**
      *
      */
+    public void stop(){
+        BloquesSaveLoad.saveChunks(chunks);
+    }
+    
+    /**
+     *
+     */
     public void destroy(){
         bloqueGeneraTerreno.destroy();
+        bloquesSaveLoad.destroy();
         executor.shutdown();
         executor.shutdownNow();
     }

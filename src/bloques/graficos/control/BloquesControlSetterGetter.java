@@ -28,12 +28,32 @@ public class BloquesControlSetterGetter extends BloquesControlBasic{
     
     /**
      *
+     * @return
+     */
+    public int getPorcentajeCarga(){
+        return bloquesSaveLoad.porcentageCargado;
+    }
+    
+    /**
+     *
      * @param x
      * @param z
      * @return
      */
     public int getBloqueConMasAltura(int x, int z){
         return chunks.getBloqueConMasAltura(x, z);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public Boolean isChunksNull(){
+        if (chunks == null){
+            return true;
+        }else{
+            return false;
+        }
     }
     
 }

@@ -95,6 +95,12 @@ public class MainCliente extends SimpleApplication {
     }
     
     @Override
+    public void stop(){
+        super.stop();
+        stateJuego.stop();
+    }
+    
+    @Override
     public void destroy() {
         super.destroy();
         stateJuego.destroy(); //lo ejecutamos para cerrar cualquier posible hilo

@@ -320,39 +320,15 @@ public class BloquesGeneraTerreno{
     public void generaTerreno(){      
         try{
             if(future == null && chunks == null && !generandoTerreno){
-                BloquesChunks loaded = null;
-                try{
-                    Timer timer = app.getTimer();
-                    float totalInicio = timer.getTimeInSeconds();
-                    
-                    //loaded = (BloquesChunks) BloquesSaveLoad.load("terreno/", "allchunks");
-                    
-                    float totalFin = timer.getTimeInSeconds();
-                    System.out.println("Cargando Terreno del Disco Duro "+(totalFin-totalInicio));
-                    
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-                
-                porcentajeGenerado = 0; //ponemos el porcentaje a cero
-                
-                //BloquesChunks loaded=null;
-                
-                if (loaded == null){
-                    generandoTerreno = true;
-                    chunks = new BloquesChunks();
-                    future = executor.submit(generaTerrenoInicialHilo);
-                }else{
-                    chunks = loaded;
-                    int interrumpe = 9;
-                }
+                generandoTerreno = true;
+                chunks = new BloquesChunks();
+                future = executor.submit(generaTerrenoInicialHilo);
             }
             else if(future != null){
                 if(future.isDone()){
                     generandoTerreno = false;
                     future = null;
                     
-                    //BloquesSaveLoad.save("terreno/", "allchunks",chunks);
                     Timer timer = app.getTimer();
                     float totalInicio = timer.getTimeInSeconds();
                     

@@ -172,6 +172,13 @@ public class JuegoState extends AbstractAppState implements ActionListener{
     /**
      *
      */
+    public void stop(){
+        graficos.stop();
+    }
+    
+    /**
+     *
+     */
     public void destroy() {
         graficos.destroy();
     }

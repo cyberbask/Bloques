@@ -92,7 +92,7 @@ public class JuegoGraficos {
     int bloqueConMasAltura; //ñapa para posiconar al personaje
     
     //primera carga
-    private Boolean primeraCarga = true;
+    private int controlPrimeraCarga = 0;
     
     /**
      *
@@ -192,7 +192,6 @@ public class JuegoGraficos {
         }
         /**/
         
-        
         if (BloquesUtiles.SOMBRAS){
             /**/
             pssmRenderer = new PssmShadowRenderer(assetManager, BloquesUtiles.SOMBRAS_CALIDAD1, BloquesUtiles.SOMBRAS_CALIDAD2);
@@ -262,18 +261,34 @@ public class JuegoGraficos {
      *
      * @param tpf
      */
-    public void update(float tpf){    
-        if (primeraCarga){
-          juegoGui.textoEnPantalla("... Generando Terreno ("+bloquesTerrainControl.getPorcentajeGeneradoTerreno()+"%)... ");
+    public void update(float tpf){   
+        if (controlPrimeraCarga == 0){
+            //juegoGui.textoEnPantalla("... Cargando Partida ("+bloquesTerrainControl.getPorcentajeCarga()+"%)... ");
+            juegoGui.textoEnPantalla("... Cargando Partida ... ");
+            
+            if (bloquesTerrainControl.cargaAllChunks()){
+                juegoGui.textoEnPantalla("");
+                
+                if (bloquesTerrainControl.isChunksNull()){
+                    controlPrimeraCarga = 1;   
+                }else{
+                    bloqueConMasAltura = bloquesTerrainControl.getBloqueConMasAltura(60, 60);
+                    controlPrimeraCarga = 2;  
+                }
+            }  
+        }
+        
+        if (controlPrimeraCarga == 1){
+            juegoGui.textoEnPantalla("... Generando Terreno ("+bloquesTerrainControl.getPorcentajeGeneradoTerreno()+"%)... ");
             
             if (bloquesTerrainControl.generaTerrenoInicial()){
                 juegoGui.textoEnPantalla("");
                 bloqueConMasAltura = bloquesTerrainControl.getBloqueConMasAltura(60, 60);
-                primeraCarga = false;   
+                controlPrimeraCarga = 2;   
             }  
         }
         
-        if (!primeraCarga){
+        if (controlPrimeraCarga == 2){
             if (posicionarCamara == 1){
                 //Añadimos el personaje
                 Vector3f coodPersonaje = new Vector3f(60,bloqueConMasAltura + 100,60);
@@ -288,6 +303,14 @@ public class JuegoGraficos {
             personaje.update(tpf,bloquesTerrainControl);  
         }
     }
+    
+    /**
+     *
+     */
+    public void stop(){
+        bloquesTerrainControl.stop();
+    }
+    
     /**
      *
      */
