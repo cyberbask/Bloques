@@ -96,14 +96,19 @@ public class BloquesControlAcciones extends BloquesControlColision{
         
         if (coorUltCol != null){
             coordUsar = coorUltCol;
-            chunks.quitaBloque(coordUsar);
             
-            //actualizamos las caras del bloque
-            refrescaBloque(coordUsar);
+            BloquesChunkDatos bloque = chunks.getBloque(coordUsar);
             
-            //lo quitamos del nodo ambien
-            BloquesChunk chunkActual = chunks.getChunk(coordUsar);
-            chunkActual.quitaNodo(coordUsar);
+            if (bloque != null && !bloque.getIrrompible()){
+                chunks.quitaBloque(coordUsar);
+
+                //actualizamos las caras del bloque
+                refrescaBloque(coordUsar);
+
+                //lo quitamos del nodo ambien
+                BloquesChunk chunkActual = chunks.getChunk(coordUsar);
+                chunkActual.quitaNodo(coordUsar);
+            }
         }
     }
     

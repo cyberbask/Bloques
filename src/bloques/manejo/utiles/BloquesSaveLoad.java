@@ -194,6 +194,12 @@ public class BloquesSaveLoad {
                                 datosEscribir += "null;";
                             }   
                             
+                            if (datosBloque.getIrrompible()){
+                                datosEscribir += "1;";
+                            }else{
+                                datosEscribir += "0;";
+                            }
+                            
                             datosEscribir += eol;
 
                             writer.append(datosEscribir);

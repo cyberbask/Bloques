@@ -34,7 +34,7 @@ public class BloquesGeneraTerreno{
     protected SimpleApplication app;
     private AssetManager      assetManager;
     
-    private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(4);
+    private ScheduledThreadPoolExecutor executor;
     private Future future = null;
     
     //chunks
@@ -64,11 +64,13 @@ public class BloquesGeneraTerreno{
     /**
      *
      * @param app
-     * @param bloques  
+     * @param bloques
+     * @param executor  
      */
-    public BloquesGeneraTerreno(Application app, BloquesGeneraBloque bloques){
+    public BloquesGeneraTerreno(Application app, BloquesGeneraBloque bloques, ScheduledThreadPoolExecutor executor){
         this.app = (SimpleApplication) app;
         this.assetManager = this.app.getAssetManager();
+        this.executor = executor;
         
         this.bloques = bloques;
     }
@@ -147,7 +149,7 @@ public class BloquesGeneraTerreno{
                 break;
             }
             
-        }while(calculo >= 3);
+        }while(calculo >= 1);
     }
     
     /**
@@ -186,6 +188,11 @@ public class BloquesGeneraTerreno{
                         
                         if (a == y){
                             tipoTerreno = "Hierba";
+                            
+                            if (a >= BloquesUtiles.NIVEL_MAR && a <= (BloquesUtiles.NIVEL_MAR + 3)){
+                                tipoTerreno = "Arena";
+                            }
+                            
                         }else{
                             if (a < y && (y-a <= 4)){
                                 tipoTerreno = "Tierra";
@@ -193,13 +200,14 @@ public class BloquesGeneraTerreno{
                             if (a < y && (y-a > 4)){
                                 tipoTerreno = "Roca";
                             }
-                            if (a > minY && (a-minY <= 2)){
-                                tipoTerreno = "Arena";
+                            if (a == minY){
+                                tipoTerreno = "Base";
                             }
                         }
 
                         BloquesChunkDatos bloqueDatos = new BloquesChunkDatos();
                         bloqueDatos.setNomBloque(tipoTerreno);
+                        bloqueDatos.setIrrompible(bloques.bloquesGenericos.getBloqueTipo(tipoTerreno).getIrrompible());
                         
                         if (a == y){
                             bloqueDatos.setMostrar(true);
@@ -391,8 +399,6 @@ public class BloquesGeneraTerreno{
      *
      */
     public void destroy() {
-        //asi parece que cierra bien
-        executor.shutdown();
-        executor.shutdownNow();
+
     }
 }

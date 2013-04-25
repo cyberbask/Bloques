@@ -22,6 +22,11 @@ public class BloquesChunkDatos {
      *
      */
     protected Boolean mostrar = true;
+    
+    /**
+     *
+     */
+    protected Boolean irrompible = false;
 
     /**
      * Constructor
@@ -94,4 +99,21 @@ public class BloquesChunkDatos {
     public void setMostrar(Boolean mostrar) {
         this.mostrar = mostrar;
     }
+    
+    /**
+     *
+     * @return
+     */
+    public Boolean getIrrompible() {
+        return irrompible;
+    }
+
+    /**
+     *
+     * @param irrompible
+     */
+    public void setIrrompible(Boolean irrompible) {
+        this.irrompible = irrompible;
+    }
+
 }

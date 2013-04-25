@@ -221,6 +221,35 @@ public class BloquesGenericos {
                
                return datosBloque;
             }
+            
+            //bloque Base
+            if ("Base".equals(nomBloque)){
+               datosBloque.setNombreTextura("bloques1");
+               
+               datosBloque.setPosicionTexturasX(0, 2);//frontal
+               datosBloque.setPosicionTexturasY(0, 2);
+               
+               datosBloque.setPosicionTexturasX(1, 2);//lateral derecha
+               datosBloque.setPosicionTexturasY(1, 2);
+               
+               datosBloque.setPosicionTexturasX(2, 2);//trasera
+               datosBloque.setPosicionTexturasY(2, 2);
+               
+               datosBloque.setPosicionTexturasX(3, 2);//lateral izquierda
+               datosBloque.setPosicionTexturasY(3, 2);
+               
+               datosBloque.setPosicionTexturasX(4, 2);//Superior
+               datosBloque.setPosicionTexturasY(4, 2);
+               
+               datosBloque.setPosicionTexturasX(5, 2); //inferior
+               datosBloque.setPosicionTexturasY(5, 2);
+               
+               bloques.put(nomBloque,datosBloque);
+               
+               datosBloque.setIrrompible(true);
+               
+               return datosBloque;
+            }
         }
         
         return null;

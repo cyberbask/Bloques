@@ -101,7 +101,7 @@ public class BloquesControlBasic extends AbstractControl implements Savable, Clo
                 
         bloques = new BloquesGeneraBloque(this.app);
         
-        bloqueGeneraTerreno = new BloquesGeneraTerreno(this.app,bloques);
+        bloqueGeneraTerreno = new BloquesGeneraTerreno(this.app,bloques,executor);
     }
     
     /**

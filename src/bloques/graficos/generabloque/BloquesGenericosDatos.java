@@ -12,6 +12,8 @@ public class BloquesGenericosDatos {
     private int[] posicionTexturaX = new int[6];
     private int[] posicionTexturaY = new int[6];
     
+    private Boolean irrompible = false;
+    
     /**
      *
      */
@@ -67,5 +69,21 @@ public class BloquesGenericosDatos {
      */
     public void setPosicionTexturasY(int pos, int val){
         posicionTexturaY[pos] = val;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public Boolean getIrrompible() {
+        return irrompible;
+    }
+
+    /**
+     *
+     * @param irrompible
+     */
+    public void setIrrompible(Boolean irrompible) {
+        this.irrompible = irrompible;
     }
 }
