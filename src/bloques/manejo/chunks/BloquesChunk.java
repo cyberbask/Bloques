@@ -21,6 +21,8 @@ public class BloquesChunk{
     private Map<String,BloquesChunkDatos> bloquesDatos = new HashMap<String, BloquesChunkDatos>();
     
     private String nombreChunk = null;
+    
+    private Boolean actualizado = false;
 
     private Node nodos = new Node();
     
@@ -79,6 +81,22 @@ public class BloquesChunk{
     public void setNombreChunk(String nombreChunk) {
         this.nombreChunk = nombreChunk;
         this.nodos.setName(nombreChunk);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public Boolean getActualizado() {
+        return actualizado;
+    }
+
+    /**
+     *
+     * @param actualizado
+     */
+    public void setActualizado(Boolean actualizado) {
+        this.actualizado = actualizado;
     }
     
     /**

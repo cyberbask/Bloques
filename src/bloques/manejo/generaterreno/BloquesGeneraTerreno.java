@@ -328,16 +328,6 @@ public class BloquesGeneraTerreno{
                 if(future.isDone()){
                     generandoTerreno = false;
                     future = null;
-                    
-                    Timer timer = app.getTimer();
-                    float totalInicio = timer.getTimeInSeconds();
-                    
-                    BloquesSaveLoad.saveChunks(chunks);
-                    
-                    float totalFin = timer.getTimeInSeconds();
-                    System.out.println("Guardado Terreno en Disco Duro "+(totalFin-totalInicio));
-                    
-                    int interrumpe = 9;
                 }
                 else if(future.isCancelled()){
                     future = null;

@@ -100,6 +100,9 @@ public class BloquesControlAcciones extends BloquesControlColision{
             BloquesChunkDatos bloque = chunks.getBloque(coordUsar);
             
             if (bloque != null && !bloque.getIrrompible()){
+                //quitamos el bloque que señala al bloque que quitamos
+                quitaBloqueWireframe();
+                
                 chunks.quitaBloque(coordUsar);
 
                 //actualizamos las caras del bloque

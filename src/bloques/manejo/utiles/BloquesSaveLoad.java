@@ -33,6 +33,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Level;
@@ -65,6 +66,10 @@ public class BloquesSaveLoad {
      *
      */
     public Boolean guardando = false;
+    
+    private BloquesChunks chunksAGuardar;
+    
+    private Boolean chunksAGuardarSoloActualizados = false;
     
     /**
      *
@@ -178,8 +183,25 @@ public class BloquesSaveLoad {
     /**
      *
      * @param chunks
+     * @throws InterruptedException 
+     * @throws ExecutionException  
      */
-    public static void saveChunks(BloquesChunks chunks){
+    public void saveChunks(BloquesChunks chunks) throws InterruptedException, ExecutionException{
+        if (chunks == null){
+            chunks = app.enqueue(new Callable<BloquesChunks>() {
+                public BloquesChunks call() throws Exception {
+                    return chunksAGuardar;
+                }
+            }).get();
+        }
+        
+        Boolean soloActualizados = app.enqueue(new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                return chunksAGuardarSoloActualizados;
+            }
+        }).get();
+
+        
         if (chunks == null) {
             return;
         }
@@ -207,6 +229,9 @@ public class BloquesSaveLoad {
             BloquesChunkDatos datosBloque;
             BloquesChunk datosChunk;
             Map<String, BloquesChunkDatos> allBloquesDatos;
+            int contador = 0;
+            
+            final int tamano = chunks.getAllChunks().size();
             
             for (Map.Entry<String,BloquesChunk> entryChunk : chunks.getAllChunks().entrySet()){
                 datosChunk = entryChunk.getValue();
@@ -260,6 +285,18 @@ public class BloquesSaveLoad {
                         }
                     }
                 } 
+                
+                
+                final int xx = contador;
+                app.enqueue(new Callable() {
+                    public Object call() throws Exception {
+                        porcentageGuardado =  (xx * 100) / tamano;
+                        return null;
+                    }
+                });
+                
+                contador++;
+                
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -273,6 +310,50 @@ public class BloquesSaveLoad {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+    
+    private Callable<Boolean> saveAllChunksHilo = new Callable<Boolean>(){
+        public Boolean call() throws Exception {
+            Timer timer = app.getTimer();
+            float totalInicio = timer.getTimeInSeconds();
+            
+            saveChunks(null);
+            
+            float totalFin = timer.getTimeInSeconds();
+            System.out.println("Terreno Guardado en el HD "+(totalFin-totalInicio));
+            
+            return false;
+        }
+    };
+    
+    /**
+     *
+     * @param chunks 
+     * @param soloActualizados 
+     */
+    public void saveAllChunks(BloquesChunks chunks, Boolean soloActualizados){      
+        try{
+            if(futureGuarda == null && !guardando){
+                porcentageGuardado = 0;
+                chunksAGuardar = chunks;
+                chunksAGuardarSoloActualizados = soloActualizados;
+                
+                futureGuarda = executor.submit(saveAllChunksHilo);
+                guardando = true;
+            }
+            else if(futureGuarda != null){
+                if(futureGuarda.isDone()){
+                    futureGuarda = null;
+                    chunksAGuardar = null;
+                    guardando = false;
+                }
+                else if(futureGuarda.isCancelled()){
+                    futureGuarda = null;
+                }
+            }
+        } 
+        catch(Exception e){ 
         }
     }
     
@@ -378,6 +459,7 @@ public class BloquesSaveLoad {
     public BloquesChunks loadAllChunks(){      
         try{
             if(futureCarga == null && !cargando){
+                porcentageCargado = 0;
                 futureCarga = executor.submit(loadAllChunksHilo);
                 cargando = true;
             }

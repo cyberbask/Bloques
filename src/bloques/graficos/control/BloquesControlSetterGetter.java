@@ -36,6 +36,14 @@ public class BloquesControlSetterGetter extends BloquesControlBasic{
     
     /**
      *
+     * @return
+     */
+    public int getPorcentajeGuardado(){
+        return bloquesSaveLoad.porcentageGuardado;
+    }
+    
+    /**
+     *
      * @param x
      * @param z
      * @return
@@ -48,8 +56,8 @@ public class BloquesControlSetterGetter extends BloquesControlBasic{
      *
      * @return
      */
-    public Boolean isChunksNull(){
-        if (chunks == null){
+    public Boolean isChunksEmpty(){
+        if (chunks.getAllChunks().size() <= 0){
             return true;
         }else{
             return false;

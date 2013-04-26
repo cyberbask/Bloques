@@ -9,6 +9,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.renderer.RenderManager;
+import com.jme3.scene.Spatial;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utiles.AppUtiles;
@@ -74,6 +75,11 @@ public class MainCliente extends SimpleApplication {
         //float aspect = (float)cam.getWidth() / (float)cam.getHeight();
         //cam.setFrustumPerspective( 60f, aspect, 0.1f, cam.getFrustumFar() );
         cam.update();
+        
+        if (!BloquesUtiles.ESTADISTICAS){
+            this.setDisplayStatView(false);
+            this.setDisplayFps(false);
+        }
     }
 
     /**

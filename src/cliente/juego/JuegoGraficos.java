@@ -94,6 +94,8 @@ public class JuegoGraficos {
     //primera carga
     private int controlPrimeraCarga = 0;
     
+    private Boolean cerrandoGraficos = false;
+    
     /**
      *
      * @param app
@@ -259,21 +261,35 @@ public class JuegoGraficos {
     
     /**
      *
+     * @return
+     */
+    public Boolean cerrarGraficos(){
+        juegoGui.textoEnPantalla("... Guardando Terreno ("+bloquesTerrainControl.getPorcentajeGuardado()+"%)... ");
+        
+        if (bloquesTerrainControl.guardaAllChunks(true)){
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     *
      * @param tpf
      */
     public void update(float tpf){   
         if (controlPrimeraCarga == 0){
             //juegoGui.textoEnPantalla("... Cargando Partida ("+bloquesTerrainControl.getPorcentajeCarga()+"%)... ");
-            juegoGui.textoEnPantalla("... Cargando Partida ... ");
+            juegoGui.textoEnPantalla("... Cargando Terreno ... ");
             
             if (bloquesTerrainControl.cargaAllChunks()){
                 juegoGui.textoEnPantalla("");
                 
-                if (bloquesTerrainControl.isChunksNull()){
+                if (bloquesTerrainControl.isChunksEmpty()){
                     controlPrimeraCarga = 1;   
                 }else{
                     bloqueConMasAltura = bloquesTerrainControl.getBloqueConMasAltura(60, 60);
-                    controlPrimeraCarga = 2;  
+                    controlPrimeraCarga = 3;  
                 }
             }  
         }
@@ -289,6 +305,16 @@ public class JuegoGraficos {
         }
         
         if (controlPrimeraCarga == 2){
+            juegoGui.textoEnPantalla("... Guardando Terreno ("+bloquesTerrainControl.getPorcentajeGuardado()+"%)... ");
+            
+            if (bloquesTerrainControl.guardaAllChunks(false)){
+                juegoGui.textoEnPantalla("");
+
+                controlPrimeraCarga = 3;  
+            }  
+        }
+        
+        if (controlPrimeraCarga == 3){
             if (posicionarCamara == 1){
                 //Añadimos el personaje
                 Vector3f coodPersonaje = new Vector3f(60,bloqueConMasAltura + 100,60);

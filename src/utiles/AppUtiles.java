@@ -3,6 +3,7 @@
  */
 package utiles;
 
+import bloques.manejo.utiles.BloquesUtiles;
 import cliente.MainCliente;
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
@@ -29,27 +30,30 @@ public class AppUtiles {
      * @return Aplicacion general con los settings configurados
      */
     public static MainCliente initSettings(MainCliente app){
-        /**/
-        app.setShowSettings(false);
-        
-        AppSettings settings = new AppSettings(true);
-        settings.put("Width", 1024);
-        settings.put("Height", 576);
-        settings.put("Title", "Bloques");
-        settings.put("VSync", true);
-        //Anti-Aliasing
-        settings.put("Samples", 0);
+        if (!BloquesUtiles.TEST_FINAL){
+            /**/
+            app.setShowSettings(false);
 
-        app.setSettings(settings);
-        /**/
-        
-        /** /
-        app.setShowSettings(true);
-        AppSettings settings = new AppSettings(false);
-        settings.put("Title", "Bloques");
-        settings.setSettingsDialogImage("Interface/splashscreen.png");
-        app.setSettings(settings);
-        /**/
+            AppSettings settings = new AppSettings(true);
+            settings.put("Width", 1024);
+            settings.put("Height", 576);
+            settings.put("Title", "Bloques");
+            settings.put("VSync", true);
+            //Anti-Aliasing
+            settings.put("Samples", 0);
+
+            app.setSettings(settings);
+            /**/
+        }else{
+
+            /**/
+            app.setShowSettings(true);
+            AppSettings settings = new AppSettings(false);
+            settings.put("Title", "Bloques");
+            settings.setSettingsDialogImage("Interface/splashscreen.png");
+            app.setSettings(settings);
+            /**/
+        }
         
         return app;
     }  

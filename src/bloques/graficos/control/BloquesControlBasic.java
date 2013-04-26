@@ -24,7 +24,10 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -174,7 +177,7 @@ public class BloquesControlBasic extends AbstractControl implements Savable, Clo
      *
      */
     public void stop(){
-        BloquesSaveLoad.saveChunks(chunks);
+
     }
     
     /**

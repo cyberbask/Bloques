@@ -94,6 +94,8 @@ public class BloquesChunks{
         String nombreBloque = BloquesUtiles.generarNombreBloque(nombreChunk,coord);
         
         chunk.setBloque(nombreBloque, bloqueDatos);
+        
+        chunk.setActualizado(true);
     }
     
     /**
@@ -120,7 +122,11 @@ public class BloquesChunks{
     public void quitaBloque(Vector3f coord){
         String nombreBloque = BloquesUtiles.generarNombreBloque(coord);
         
-        getChunk(coord).quitaBloque(nombreBloque);
+        BloquesChunk chunk = getChunk(coord);
+        
+        chunk.quitaBloque(nombreBloque);
+        
+        chunk.setActualizado(true);
     }
     
     /**
@@ -344,12 +350,15 @@ public class BloquesChunks{
     public int[][] setCarasVecinas(Vector3f coord,Boolean withReturn){
         int[][] bloquesVecinosDelBloqueVecino = getBloquesVecinos(coord);
         int[] carasbloquesVecinos = getCarasAPartirDeBloquesVecinos(bloquesVecinosDelBloqueVecino);
-
+        
         //guardamos sus caras
         BloquesChunkDatos datosBloque = getBloque(coord);
         if (datosBloque != null){
             datosBloque.setCaras(carasbloquesVecinos);
             datosBloque.setMostrar(true);
+            
+            BloquesChunk chunk = getChunk(coord);
+            chunk.setActualizado(true);
         }
         
         if (withReturn){

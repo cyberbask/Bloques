@@ -60,6 +60,21 @@ public class BloquesControl extends BloquesControlAcciones{
     
     /**
      *
+     * @param soloActualizados
+     * @return
+     */
+    public Boolean guardaAllChunks(Boolean soloActualizados){
+        bloquesSaveLoad.saveAllChunks(chunks,soloActualizados);
+        
+        if (!bloquesSaveLoad.guardando){            
+            return true;
+        }
+         
+        return false;
+    }
+    
+    /**
+     *
      * @return
      */
     public Boolean generaTerrenoInicial(){

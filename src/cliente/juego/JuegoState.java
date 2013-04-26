@@ -44,6 +44,8 @@ public class JuegoState extends AbstractAppState implements ActionListener{
      */
     protected JuegoGraficos graficos;
     
+    private Boolean cerrandoState = false;
+    
  
     /**
      *
@@ -82,7 +84,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         if(enabled){
             setupKeys();
         } else {
-
+            unSetupKeys();
         }
     }
  
@@ -96,6 +98,14 @@ public class JuegoState extends AbstractAppState implements ActionListener{
             graficos.posicionarCamara = 3;
             setupKeys();
         }
+        
+        if (cerrandoState){
+            Boolean cerrado = graficos.cerrarGraficos();
+            
+            if (cerrado){
+                app.stop();
+            }
+        }
     }
  
     
@@ -103,6 +113,8 @@ public class JuegoState extends AbstractAppState implements ActionListener{
      * Configuracion de las Teclas basicas del juego
      */
     protected void setupKeys(){
+        inputManager.deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
+        
         inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
@@ -114,6 +126,7 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addMapping("MouseLeftButton", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping("MouseRightButton", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
         inputManager.addMapping("MouseCentralButton", new KeyTrigger(KeyInput.KEY_F), new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
+        inputManager.addMapping("Salir", new KeyTrigger(KeyInput.KEY_ESCAPE));
         
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
@@ -125,8 +138,29 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addListener(this, "MouseRightButton");
         inputManager.addListener(this, "MouseCentralButton");
         inputManager.addListener(this, "Correr");
+        inputManager.addListener(this, "Salir");
         
         inputManager.addListener(analogListener, "Jump");
+    }
+    
+    /**
+     *
+     */
+    protected void unSetupKeys(){
+        inputManager.deleteMapping("Left");
+        inputManager.deleteMapping("Right");
+        inputManager.deleteMapping("Up");
+        inputManager.deleteMapping("Down");
+        inputManager.deleteMapping("VSync");
+        inputManager.deleteMapping("SetUps");
+        inputManager.deleteMapping("Jump");
+        inputManager.deleteMapping("Correr");
+        inputManager.deleteMapping("MouseLeftButton");
+        inputManager.deleteMapping("MouseRightButton");
+        inputManager.deleteMapping("MouseCentralButton");
+        inputManager.deleteMapping("Salir");
+        
+        app.getFlyByCamera().setEnabled(false);
     }
 
     public void onAction(String name, boolean isPressed, float tpf) {
@@ -158,6 +192,9 @@ public class JuegoState extends AbstractAppState implements ActionListener{
             graficos.accionBloque("colocar");
         } else if (name.equals("MouseCentralButton") && !isPressed) {
             graficos.accionBloque("seleccionar");
+        }else if (name.equals("Salir") && !isPressed) {
+            cerrandoState = true;
+            unSetupKeys();
         }
     }
     
