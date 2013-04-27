@@ -26,6 +26,8 @@ import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.shadow.PssmShadowRenderer;
 import com.jme3.shadow.PssmShadowRenderer.FilterMode;
+import com.jme3.texture.Texture;
+import com.jme3.util.SkyFactory;
 
 /**
  *
@@ -226,8 +228,14 @@ public class JuegoGraficos {
     }
     
     private void setUpSky(){
-        /** /
-        rootNode.attachChild(SkyFactory.createSky(assetManager, "Textures/skybox_blue_sphere.jpg", true));
+        /**/
+        Texture arriba = assetManager.loadTexture("Textures/cielo_arriba.png");
+        Texture abajo = assetManager.loadTexture("Textures/cielo_abajo.png");
+        Texture izquierda = assetManager.loadTexture("Textures/cielo_izquierda.png");
+        Texture frente = assetManager.loadTexture("Textures/cielo_frente.png");
+        Texture derecha = assetManager.loadTexture("Textures/cielo_derecha.png");
+        Texture atras = assetManager.loadTexture("Textures/cielo_atras.png");
+        rootNode.attachChild(SkyFactory.createSky(assetManager, izquierda, derecha, frente, atras, arriba, abajo));
         /**/
     }
         

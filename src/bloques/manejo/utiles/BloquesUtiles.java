@@ -49,7 +49,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final Boolean ESTADISTICAS = true;
+    public static final Boolean ESTADISTICAS = false;
     
     /**
      *
