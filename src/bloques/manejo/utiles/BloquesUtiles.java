@@ -104,7 +104,7 @@ public class BloquesUtiles {
     /**
      *
      */
-    public static final float BLUR_SCALE = 3f;
+    public static final float BLUR_SCALE = 2f;
     
     
     /**
