@@ -10,10 +10,13 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.InputManager;
+import com.jme3.input.JoyInput;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.JoyAxisTrigger;
+import com.jme3.input.controls.JoyButtonTrigger;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.renderer.ViewPort;
@@ -119,19 +122,31 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
+        
+        inputManager.addMapping("JOY_Left", new JoyAxisTrigger(0, 1, true));
+        inputManager.addMapping("JOY_Right",new JoyAxisTrigger(0, 1, false));
+        inputManager.addMapping("JOY_Up", new JoyAxisTrigger(0, 0, true));
+        inputManager.addMapping("JOY_Down", new JoyAxisTrigger(0, 0, false));
+        
         inputManager.addMapping("VSync", new KeyTrigger(KeyInput.KEY_RBRACKET));
-        inputManager.addMapping("SetUps", new KeyTrigger(KeyInput.KEY_N));
-        inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-        inputManager.addMapping("Correr", new KeyTrigger(KeyInput.KEY_LSHIFT));
-        inputManager.addMapping("MouseLeftButton", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-        inputManager.addMapping("MouseRightButton", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-        inputManager.addMapping("MouseCentralButton", new KeyTrigger(KeyInput.KEY_F), new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
+        inputManager.addMapping("SetUps", new KeyTrigger(KeyInput.KEY_N), new JoyButtonTrigger(0, 7)); //button start
+        inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE), new JoyButtonTrigger(0, 0)); //Button A
+        inputManager.addMapping("Correr", new KeyTrigger(KeyInput.KEY_LSHIFT),new JoyButtonTrigger(0, 2)); //Button X
+        inputManager.addMapping("MouseLeftButton", new MouseButtonTrigger(MouseInput.BUTTON_LEFT), new JoyAxisTrigger(0, 4, true)); //gatillos
+        inputManager.addMapping("MouseRightButton", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT), new JoyAxisTrigger(0, 4, false)); //gatillos
+        inputManager.addMapping("MouseCentralButton", new KeyTrigger(KeyInput.KEY_F), new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE), new JoyButtonTrigger(0, 5)); //boton superior derecho;
         inputManager.addMapping("Salir", new KeyTrigger(KeyInput.KEY_ESCAPE));
         
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
         inputManager.addListener(this, "Down");
+        
+        inputManager.addListener(analogListener, "JOY_Left");
+        inputManager.addListener(analogListener, "JOY_Right");
+        inputManager.addListener(analogListener, "JOY_Up");
+        inputManager.addListener(analogListener, "JOY_Down");
+        
         inputManager.addListener(this, "VSync");
         inputManager.addListener(this, "SetUps");
         inputManager.addListener(this, "MouseLeftButton");
@@ -151,6 +166,12 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.deleteMapping("Right");
         inputManager.deleteMapping("Up");
         inputManager.deleteMapping("Down");
+        
+        inputManager.deleteMapping("JOY_Left");
+        inputManager.deleteMapping("JOY_Right");
+        inputManager.deleteMapping("JOY_Up");
+        inputManager.deleteMapping("JOY_Down");
+        
         inputManager.deleteMapping("VSync");
         inputManager.deleteMapping("SetUps");
         inputManager.deleteMapping("Jump");
@@ -161,6 +182,11 @@ public class JuegoState extends AbstractAppState implements ActionListener{
         inputManager.deleteMapping("Salir");
         
         app.getFlyByCamera().setEnabled(false);
+        
+        graficos.personaje.left = false;
+        graficos.personaje.right = false;
+        graficos.personaje.up = false;
+        graficos.personaje.down = false;
     }
 
     public void onAction(String name, boolean isPressed, float tpf) {
@@ -203,6 +229,32 @@ public class JuegoState extends AbstractAppState implements ActionListener{
             if (name.equals("Jump")) {
                 graficos.personaje.player.jump();
             }
+            
+            else if (name.equals("JOY_Left")) {
+                if (value > AppUtiles.JOY_XBOX360_DEADZONE_MOVIMIENTO){
+                    graficos.personaje.left = true;
+                }else{
+                    graficos.personaje.left = false;
+                }
+            } else if (name.equals("JOY_Right")) {
+                if (value > AppUtiles.JOY_XBOX360_DEADZONE_MOVIMIENTO){
+                    graficos.personaje.right = true;
+                }else{
+                    graficos.personaje.right = false;
+                }
+            } else if (name.equals("JOY_Up")) {
+                if (value > AppUtiles.JOY_XBOX360_DEADZONE_MOVIMIENTO){
+                    graficos.personaje.up = true;
+                }else{
+                    graficos.personaje.up = false;
+                }
+            } else if (name.equals("JOY_Down")) {
+                if (value > AppUtiles.JOY_XBOX360_DEADZONE_MOVIMIENTO){
+                    graficos.personaje.down = true;
+                }else{
+                    graficos.personaje.down = false;
+                }
+        }
         }
     };
     

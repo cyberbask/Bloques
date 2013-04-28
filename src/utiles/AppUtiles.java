@@ -26,6 +26,16 @@ public class AppUtiles {
     
     /**
      *
+     */
+    public static final float JOY_XBOX360_DEADZONE_CAMARA = 0.004f;
+    
+    /**
+     *
+     */
+    public static final float JOY_XBOX360_DEADZONE_MOVIMIENTO = 0.01f;
+    
+    /**
+     *
      * @param app Aplicacion general
      * @return Aplicacion general con los settings configurados
      */
@@ -39,6 +49,7 @@ public class AppUtiles {
             settings.put("Height", 576);
             settings.put("Title", "Bloques");
             settings.put("VSync", true);
+            settings.putBoolean("DisableJoysticks", false);
             //Anti-Aliasing
             settings.put("Samples", 0);
 
@@ -50,6 +61,7 @@ public class AppUtiles {
             app.setShowSettings(true);
             AppSettings settings = new AppSettings(false);
             settings.put("Title", "Bloques");
+            settings.putBoolean("DisableJoysticks", false);
             settings.setSettingsDialogImage("Interface/splashscreen.png");
             app.setSettings(settings);
             /**/
