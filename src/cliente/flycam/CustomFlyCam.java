@@ -103,11 +103,11 @@ public class CustomFlyCam extends FlyByCamera{
             }
         }else if (name.equals("FLYCAM_JOY_Up")){
             if (value > deadZone){
-                rotateCamera(-(value / 2) * (invertY ? -1 : 1), cam.getLeft());
+                rotateCamera(-(value / 4) * (invertY ? -1 : 1), cam.getLeft());
             }
         }else if (name.equals("FLYCAM_JOY_Down")){
             if (value > deadZone){
-                rotateCamera((value / 2)* (invertY ? -1 : 1), cam.getLeft());
+                rotateCamera((value / 4)* (invertY ? -1 : 1), cam.getLeft());
             }
         }
         
