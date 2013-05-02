@@ -18,7 +18,7 @@ import com.jme3.scene.Spatial;
  *
  * @author cyberbask
  */
-public class BloquesControlColision extends BloquesControlUpdates {
+public class BloquesControlColision extends BloquesControlPaginado {
     /**
      *
      */

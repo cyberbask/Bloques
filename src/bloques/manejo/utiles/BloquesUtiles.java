@@ -4,6 +4,8 @@
 package bloques.manejo.utiles;
 
 import com.jme3.math.Vector3f;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -316,5 +318,47 @@ public class BloquesUtiles {
         int R = r.nextInt(High-Low) + Low;
         
         return R;
+    }
+    
+    /**
+     *
+     * @param coord
+     * @return
+     */
+    public static Map<Integer,String> calculaChunksAlrededor(Vector3f coord){
+        Map<Integer,String> chunksAlrededor = new HashMap<Integer, String>();
+        
+        Vector3f coordChunk = calculaCoordenadasChunk(coord);
+        Vector3f nuevasCoordChunk;
+        
+        int cuantosChunksX = (TAMANO_DISTANCIA_DIBUJADO / TAMANO_CHUNK_X) / 2;
+        int cuantosChunksZ = (TAMANO_DISTANCIA_DIBUJADO / TAMANO_CHUNK_Z) / 2;
+        int cuantosChunksY = (MAX_ALTURA_BLOQUES / TAMANO_CHUNK_Y);
+        int contador = 0;
+        
+        for (int x = ((int)coordChunk.x - cuantosChunksX);x <= ((int)coordChunk.x + cuantosChunksX); x++){
+            if (x < 0){
+                continue;
+            }
+            
+            for (int z = ((int)coordChunk.z - cuantosChunksZ);z <= ((int)coordChunk.z + cuantosChunksZ); z++){
+                if (z < 0){
+                    continue;
+                }
+                
+                for(int y=0;y<cuantosChunksY;y++){
+                    nuevasCoordChunk = new Vector3f();
+                    nuevasCoordChunk.x = (int) (x * TAMANO_BLOQUE * TAMANO_CHUNK_X);
+                    nuevasCoordChunk.z = (int) (z * TAMANO_BLOQUE * TAMANO_CHUNK_Z);
+                    nuevasCoordChunk.y = (int) (y * TAMANO_BLOQUE * TAMANO_CHUNK_Y);
+                    
+                    chunksAlrededor.put(contador,generarNombreChunk(nuevasCoordChunk));
+                    
+                    contador++;
+                }
+            }            
+        }
+        
+        return chunksAlrededor;
     }
 }
